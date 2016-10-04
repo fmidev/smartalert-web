@@ -1,4 +1,3 @@
-// TODO language selection
 
 var DEBUG = true;
 var map;
@@ -8,6 +7,7 @@ var languages = [];
 var events = [];
 var selectedDAY = null;
 var selectedEVENT = null;
+var translations = {};
 
 // Remember previous state
 var selectedLANGUAGE  = localStorage.getItem("userLanguage")  ? localStorage.getItem("userLanguage")  : alertOptions.defaultlanguage;
@@ -132,11 +132,11 @@ function initialize () {
 	});
 
     $("#lang").html('');
-    $(alertOptions.languages).each(function() {
-	    debug('Added language '+ this.val + ' to language dropdown menu.');
-	    $("#lang").append($("<option>").attr('value',this.val).text(this.text));
-	    if (this.val === selectedLANGUAGE)
-		$("#lang").val(this.val).change();
+    $(Object.keys(translations)).each(function(i,lang) {
+	    debug('Added language '+ lang + ' to language dropdown menu.');
+	    $("#lang").append($("<option>").attr('value',lang).text(translations[lang][lang]));
+	    if (lang === selectedLANGUAGE)
+		$("#lang").val(lang).change();
 	});
 
     $( "#lang").on('change', changeLanguage );
