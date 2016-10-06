@@ -140,6 +140,9 @@ function initialize () {
 	});
 
     $( "#lang").on('change', changeLanguage );
+
+    if (Object.keys(translations).length < 2)
+	$( "#lang").css('display','none');
 	    
     setInterval(updateData, alertOptions.refresh*1000);
     changeLanguage();
@@ -551,14 +554,14 @@ function doCAP(dom) {
 
 	    if (windSpeed > 0)
 		var icon = {
-		    url: "wind.php?speed="+windSpeed+"&direction="+windDirection, 
+		    url: "img/wind.php?speed="+windSpeed+"&direction="+windDirection, 
 		    scaledSize: new google.maps.Size(50, 50), // scaled size
 		    anchor: new google.maps.Point(25, 25)
 		};
 
 	    if (waveHeight > 0) 
 		var icon = {
-		    url: "wave.php?height="+waveHeight, 
+		    url: "img/wave.php?height="+waveHeight, 
 		    scaledSize: new google.maps.Size(50, 50), // scaled size
 		    anchor: new google.maps.Point(25, 25)
 		};
