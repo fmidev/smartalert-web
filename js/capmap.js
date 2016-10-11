@@ -471,7 +471,7 @@ function doCAP(dom) {
 
     events.push(eventSelector);
 
-    debug('Event: ' + event);
+    debug('Event: ' + events);
     debug('Area Description: ' + area);
     debug('Number of polygons: ' + areapolygons.length);
 
