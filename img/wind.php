@@ -10,8 +10,10 @@ $paths = array("M28.13 53.88L40 59.82l11.87-5.94L40 77.62z","M21.79 41.42l4.2 12
 
 $path = $paths[floor(($direction+22.5)/45)];
 
+$fontsize = $speed > 99 ? 14 : 20;
+
 header("Content-type: image/svg+xml");
 print <<<EOT
 <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80"><circle fill="#ffffff" stroke="#000000" stroke-width="4" stroke-linejoin="round" stroke-miterlimit="10" cx="40" cy="40" r="19.32"/><path fill="#000000" d="$path"/><text x="26" y="47" fill="black" font-family="Verdana" 
-        font-size="20" font-weight="bold">$speed</text></svg>
+        font-size="$fontsize" font-weight="bold">$speed</text></svg>
 EOT;
