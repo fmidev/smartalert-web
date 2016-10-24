@@ -630,7 +630,7 @@ function doCAP(dom) {
 	    if (info.querySelector('senderName'))
 		sender = info.querySelector('senderName').textContent;
 	    else
-		alert.querySelector('sender').textContent;
+		sender = alert.querySelector('sender').textContent;
 
 	    var infowindow = new google.maps.InfoWindow({
 		    content: '<h4 class="iw-title">' + info.querySelector('event').textContent + ' ' + t('for') + ' ' +info.querySelector('areaDesc').textContent +'</h4>'
