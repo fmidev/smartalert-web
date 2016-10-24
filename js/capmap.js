@@ -100,7 +100,7 @@ Date.prototype.dateDiff = function() {
 }
 
 function initialize () {
-    //    selectedLANGUAGE = alertOptions.defaultLanguage;
+
     var mapOptions = {
 	zoom: alertOptions.zoom,
 	center: alertOptions.center,
@@ -253,7 +253,7 @@ function showMarkers(day) {
 	var toDate = new Date(markers[i].toDate);
 
 
-	if (polygons[i].polygonArea < 35000000)
+	if (polygons[i].polygonArea < alertOptions.areaLimitForMarkers)
 	    {
 		markers[i].setVisible(false);
 	    }
@@ -440,7 +440,7 @@ function doCAP(dom) {
     var parameters = info.querySelectorAll('parameter');
     var d = new Date(alert.querySelector('sent').textContent);
     var windSpeed,windDirection,waveHeight;
-    var eventSelector = info.querySelector('event').textContent.replace('Strong','').replace("Moderate","").replace('Heavy','').trim().split(' ')[0].trim().toLowerCase();
+    var eventSelector = info.querySelector('event').textContent.replace('High Seas','').replace('Severe weather for','').replace('Moderate to Fresh','').replace('Gale force','').replace('Strong','').replace("Moderate","").replace('Heavy','').trim().split(' ')[0].trim().toLowerCase();
 
     // Check available languages
     languages = [];
@@ -466,8 +466,8 @@ function doCAP(dom) {
 
     var toDate = new Date(info.querySelector('expires').textContent);
 
-    //if (!toDate.isAfterDay(0))
-    //	return;
+    if (!toDate.isAfterDay(0))
+    	return;
 
     events.push(eventSelector);
 
@@ -555,20 +555,46 @@ function doCAP(dom) {
 	    if (windSpeed > 0)
 		var icon = {
 		    url: "img/wind.php?speed="+windSpeed+"&direction="+windDirection, 
-		    scaledSize: new google.maps.Size(50, 50), // scaled size
-		    anchor: new google.maps.Point(25, 25)
+		    scaledSize: new google.maps.Size(24, 24), // scaled size
+		    anchor: new google.maps.Point(12, 12)
 		};
 
 	    if (waveHeight > 0) 
 		var icon = {
 		    url: "img/wave.php?height="+waveHeight, 
-		    scaledSize: new google.maps.Size(50, 50), // scaled size
-		    anchor: new google.maps.Point(25, 25)
+		    scaledSize: new google.maps.Size(24, 24), // scaled size
+		    anchor: new google.maps.Point(12, 12)
+		};
+
+	    if (eventSelector == "tsunami") 
+		var icon = {
+		    url: "img/tsunami.png", 
+		    scaledSize: new google.maps.Size(24, 24), // scaled size
+		    anchor: new google.maps.Point(12, 12)
+		};
+
+	    else if (eventSelector == "volcanic") 
+		var icon = {
+		    url: "img/volcano.png", 
+		    scaledSize: new google.maps.Size(24, 24), // scaled size
+		    anchor: new google.maps.Point(12, 12)
+		};
+	    else if (eventSelector == "tropical") 
+		var icon = {
+		    url: "img/cyclone.png", 
+		    scaledSize: new google.maps.Size(24, 24), // scaled size
+		    anchor: new google.maps.Point(12, 12)
+		};
+	    else if (eventSelector == "rainfall") 
+		var icon = {
+		    url: "img/rainfall.png", 
+		    scaledSize: new google.maps.Size(24, 24), // scaled size
+		    anchor: new google.maps.Point(12, 12)
 		};
 
 	    var marker;
 
-	    if (windSpeed > 0 || waveHeight > 0) 
+	    if (windSpeed > 0 || waveHeight > 0 || eventSelector == "tsunami" || eventSelector == "volcanic" || eventSelector == "tropical" || eventSelector == "rainfall") 
 		{
 
 		    // create a marker for polygon
@@ -600,12 +626,18 @@ function doCAP(dom) {
 	    markers.push(marker);
 
 	    //create an infowindow 
+	    var sender;
+	    if (info.querySelector('senderName'))
+		sender = info.querySelector('senderName').textContent;
+	    else
+		alert.querySelector('sender').textContent;
+
 	    var infowindow = new google.maps.InfoWindow({
 		    content: '<h4 class="iw-title">' + info.querySelector('event').textContent + ' ' + t('for') + ' ' +info.querySelector('areaDesc').textContent +'</h4>'
 		    + '<i>' + t('Valid from')+' <b>'+fromDate.toLocaleString()+'</b><br>'+ t('to') +' <b>'+toDate.toLocaleString()+'</b></i><br/>'
 		    + '<i>' + t('Active for next') + ' <b>'+toDate.dateDiff()+'</b></i>'
 		    + '<p>' + ( info.querySelector('description') ? info.querySelector('description').textContent : "" )+'</p>'
-		    + '<p><i>' + t('Issued by') + ' ' +alert.querySelector('sender').textContent
+		    + '<p><i>' + t('Issued by') + ' ' + sender
 		    + ' '+  t('at') + ' '+d.toLocaleString()+' ('+d.dateDiff()+')</i></p>',
 		    
 		    maxWidth: 220
