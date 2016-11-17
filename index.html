@@ -1,0 +1,58 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <title>SmartAlert</title>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <link rel="apple-touch-icon" href="cap-logo.png">
+    <meta name="viewport" content="initial-scale=1.0,
+				   maximum-scale=1.0, user-scalable=0"/>
+    <link rel="stylesheet" href="css/capmap.css"/>
+    <script type="text/javascript"
+	    src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript"
+            src="https://maps.googleapis.com/maps/api/js?key=ADD-YOUR-API-KEY&amp;libraries=geometry"></script>
+    <script type="text/javascript" src="capmap-config.js"></script>
+    <script type="text/javascript" src="js/capmap.js"></script>
+    <!-- Add translation files for required languages-->
+    <script type="text/javascript" src="i18n/translations-en-US.js"></script>
+
+    <script type="text/javascript">
+      $( document ).ready(function() {
+         google.maps.event.addDomListener(window, 'load', initialize);
+      });
+    </script>
+
+  </head>
+
+  <body>
+    <div id="map-canvas"></div>
+    <div id="legend">
+      <div id="eventSelect">
+	<!--Events shows automatically based on capmap-config.js settings -->
+	<select id="eventType">
+          <option value="">All Hazard Types</option>
+	</select>
+	<!-- Languages shows automatically based on loaded translations -->
+	<select id="lang">
+          <option value="en-US">English</option>
+	</select>
+      </div>
+      <table>
+        <tr>
+          <td class="colorLegend" id="levelNone"></td>
+          <td id="levelNoneText">no awareness needed</td>
+          <td class="colorLegend" id="levelOrange"></td>
+          <td id="levelOrangeText">dangerous</td>
+        </tr>
+        <tr>
+          <td class="colorLegend" id="levelYellow"></td>
+          <td id="levelYellowText">potentially dangerous</td>
+          <td class="colorLegend" id="levelRed"></td>
+          <td id="levelRedText">very dangerous</td>
+        </tr>
+      </table>
+      <div id="senderName"></div>
+    </div>
+  </body>
+</html>
+<!-- SmartAlert FMI (c) 2015-2016 -->
