@@ -81,3 +81,7 @@ html, body {
     margin-bottom: 0.5em;
     display: block;
 }
+
+#senderName {
+    text-align: center;
+}
