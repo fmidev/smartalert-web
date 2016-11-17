@@ -13,18 +13,21 @@ foreach ($FILES as $file)
       {
 	$content = file_get_contents($DIR."/".$file);
 	$xml = new SimpleXmlElement($content);
+	$senderName = $xml->info->senderName;
 	if (time() > strtotime($xml->info->expires))
 	  continue;
 	$atom .= "<entry>\n";
 	$atom .= "<id>$address".$DIR."/".$file."</id>\n";
 	$atom .= "<title>".$xml->info->event." for ".$xml->info->area->areaDesc  ." issued ". date('F j \a\t g:i A T',strtotime($xml->info->onset)) ." until " . date('F j \a\t g:i A T',strtotime($xml->info->expires)) ." </title>\n";
 	$atom .= "<summary>".$xml->info->description."</summary>\n";
+	$atom .= "<cap:effective>".$xml->info->effective."</cap:effective>\n";
+	$atom .= "<cap:expires>".$xml->info->expires."</cap:expires>\n";
 #	$atom .= "<updated>".date("c",filemtime($DIR."/".$file))."</updated>\n";
 	$atom .= "<updated>".$xml->sent."</updated>\n";
 	$updated = date("c",filemtime($DIR."/".$file));
 	$atom .= '<link rel="related" type="application/cap+xml" href="'.$address."/".$DIR."/".$file.'"/>'."\n";
 	$atom .= "</entry>\n";
-	$senderName = $xml->info->senderName;
+
       }
   }
 
@@ -47,7 +50,7 @@ EOT;
 header("Content-type: application/xml");
 print<<<EOT
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-
+<!--?xml-stylesheet href='capatom.xsl' type='text/xsl'?-->
 <!--
   This atom/xml feed is an index to active advisories, watches and warnings
   issued by the $senderName.  This index file
