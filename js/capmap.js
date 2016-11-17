@@ -12,6 +12,8 @@ var translations = {};
 // Remember previous state
 var selectedLANGUAGE  = localStorage.getItem("userLanguage")  ? localStorage.getItem("userLanguage")  : alertOptions.defaultlanguage;
 
+var selectedEVENT  = localStorage.getItem("userEventType")  ? localStorage.getItem("userEventType")  : "";
+
 function debug(str)
 {
     if (DEBUG)
@@ -22,9 +24,12 @@ function debug(str)
 	}
 }
 
-function t (key)
+function t(key)
 {
-    return translations[selectedLANGUAGE][key];
+    if (translations[selectedLANGUAGE][key] != null)
+	return translations[selectedLANGUAGE][key];
+    else
+	return key;
 }
 
 if (!google.maps.Polygon.prototype.getBounds) {
@@ -90,7 +95,7 @@ Date.prototype.dateDiff = function() {
 
     if (minutes == 1)
 	string = string + minutes + " " + t('minute') + " ";
-    else if (minutes > 1)
+    else if (minutes > 1 || minutes==0)
 	string = string + minutes + " " + t('minutes') + " ";
 
     if (diff < 0)
@@ -107,6 +112,7 @@ function initialize () {
 	mapTypeId: google.maps.MapTypeId.TERRAIN,
 	mapTypeControl: false,
 	streetViewControl: false,
+	scaleControl: true,
 	zoomControl: true,
 	zoomControlOptions: {
 	    position: google.maps.ControlPosition.RIGHT_CENTER
@@ -143,6 +149,17 @@ function initialize () {
 
     if (Object.keys(translations).length < 2)
 	$( "#lang").css('display','none');
+
+    $("#eventType").html('');
+    $("#eventType").append($("<option>").attr('value',"").text(t("All Hazard Types")));
+    $(Object.keys(alertOptions.eventTypes)).each(function(i,eventType) {
+	    debug('Added eventType '+ eventType + ' to eventType dropdown menu.');
+	    $("#eventType").append($("<option>").attr('value',eventType).text(t(alertOptions.eventTypes[eventType])));
+	    if (eventType === selectedEVENT)
+	    	$("#eventType").val(eventType).change();
+	});
+
+    //    $( "#eventType").on('change', changeLanguage );
 	    
     setInterval(updateData, alertOptions.refresh*1000);
     changeLanguage();
@@ -259,14 +276,14 @@ function showMarkers(day) {
 	    }
 	else if (day == null) 
 	    {
-		if (selectedEVENT == polygons[i].capEvent || selectedEVENT == null)
+		if (~polygons[i].capEvent.indexOf(selectedEVENT) || selectedEVENT == null)
 		    markers[i].setVisible(true);
 		else
 		    markers[i].setVisible(false);
 	    }
 	else if (fromDate.isBeforeDay(day) && toDate.isAfterDay(day))
 	    {
-		if (selectedEVENT == polygons[i].capEvent || selectedEVENT == null)
+		if (~polygons[i].capEvent.indexOf(selectedEVENT) || selectedEVENT == null)
 		    markers[i].setVisible(true);
 		else
 		    markers[i].setVisible(false);
@@ -284,13 +301,13 @@ function showPolygons(day) {
 	var toDate = new Date(polygons[i].toDate);
 	
 	if (day == null) {
-	    if (selectedEVENT == polygons[i].capEvent || selectedEVENT == null)
+	    if (~polygons[i].capEvent.indexOf(selectedEVENT) || selectedEVENT == null)
 		polygons[i].setVisible(true);
 	    else
 	    	polygons[i].setVisible(false);
 	}
 	else if (fromDate.isBeforeDay(day) && toDate.isAfterDay(day)) {
-	    if (selectedEVENT == polygons[i].capEvent || selectedEVENT == null)
+	    if (~polygons[i].capEvent.indexOf(selectedEVENT) || selectedEVENT == null)
 		polygons[i].setVisible(true);
 	    else
 		polygons[i].setVisible(false);
@@ -430,7 +447,11 @@ function DayControl(controlDiv, map) {
 
 function doCAP(dom) {
 
-    debug("Loaded CAP with identifier: " + dom.querySelector('identifier').textContent);
+    debug("Loaded CAP:\n" + 
+	  "- Identifier: " + dom.querySelector('identifier').textContent +"\n"+
+	  "- Sent by: " + dom.querySelector('sender').textContent +"\n"+
+	  "- Sent at: " + dom.querySelector('sent').textContent);
+ 
     var alert = dom.querySelector('alert');
     var info  = alert.querySelector('info');
     var infos  = alert.querySelectorAll('info');
@@ -439,8 +460,9 @@ function doCAP(dom) {
     var areapolygons = info.querySelectorAll('polygon');
     var parameters = info.querySelectorAll('parameter');
     var d = new Date(alert.querySelector('sent').textContent);
-    var windSpeed,windDirection,waveHeight;
+    var windSpeed,windDirection,waveHeight,waveDirection,swellHeight,surfHeigth;
     var eventSelector = info.querySelector('event').textContent.replace('High Seas','').replace('Severe weather for','').replace('Moderate to Fresh','').replace('Gale force','').replace('Strong','').replace("Moderate","").replace('Heavy','').trim().split(' ')[0].trim().toLowerCase();
+    var eventRaw = info.querySelector('event').textContent.toLowerCase();
 
     // Check available languages
     languages = [];
@@ -465,6 +487,7 @@ function doCAP(dom) {
 	}
 
     var toDate = new Date(info.querySelector('expires').textContent);
+    var dnow = new Date();
 
     if (!toDate.isAfterDay(0))
     	return;
@@ -482,6 +505,10 @@ function doCAP(dom) {
 	    windDirection = Math.round(parameters[v].querySelector('value').textContent);
 	if (parameters[v].querySelector('valueName').textContent == "WaveHeight")
 	    waveHeight = Math.round(parameters[v].querySelector('value').textContent);
+	if (parameters[v].querySelector('valueName').textContent == "SwellHeight")
+	    swellHeight = Math.round(parameters[v].querySelector('value').textContent);
+	if (parameters[v].querySelector('valueName').textContent == "SurfHeight")
+	    surfHeight = Math.round(parameters[v].querySelector('value').textContent);
 	debug(parameters[v].querySelector('valueName').textContent);
 	debug(parameters[v].querySelector('value').textContent);
     }
@@ -533,12 +560,13 @@ function doCAP(dom) {
 		    fillColor: color,
 		    fillOpacity: alertOptions.polygonOptions.fillOpacity,
 		    strokeColor: color,
+		    strokeOpacity: alertOptions.polygonOptions.strokeOpacity,
 		    strokeWeight: alertOptions.polygonOptions.strokeWeight,
 		    map: map,
 		    visible: false,
 		    fromDate: fromDateISO,
 		    toDate: info.querySelector('expires').textContent,
-		    capEvent: eventSelector,
+		    capEvent: eventRaw,
 		    polygonArea: google.maps.geometry.spherical.computeArea(path),
 		    zIndex: zindex
 		});
@@ -555,23 +583,70 @@ function doCAP(dom) {
 	    if (windSpeed > 0)
 		var icon = {
 		    url: "img/wind.php?speed="+windSpeed+"&direction="+windDirection, 
-		    scaledSize: new google.maps.Size(24, 24), // scaled size
-		    anchor: new google.maps.Point(12, 12)
+		    scaledSize: new google.maps.Size(alertOptions.iconWidth, alertOptions.iconHeight), // scaled size
+		    anchor: new google.maps.Point(alertOptions.iconWidth/2, alertOptions.iconHeight/2)
 		};
 
-	    if (waveHeight > 0) 
+	    else if (waveHeight > 0) 
 		var icon = {
 		    url: "img/wave.php?height="+waveHeight, 
-		    scaledSize: new google.maps.Size(24, 24), // scaled size
-		    anchor: new google.maps.Point(12, 12)
+		    scaledSize: new google.maps.Size(30, 30), // scaled size
+		    anchor: new google.maps.Point(0, 26)
 		};
 
-	    if (eventSelector == "tsunami") 
+	    else if (swellHeight > 0) 
+		var icon = {
+		    url: "img/wave.php?height="+swellHeight, 
+		    scaledSize: new google.maps.Size(30, 30), // scaled size
+		    anchor: new google.maps.Point(0, 26)
+		};
+
+	    else if (surfHeight > 0) 
+		var icon = {
+		    url: "img/wave.php?height="+surfHeight, 
+		    scaledSize: new google.maps.Size(30, 30), // scaled size
+		    anchor: new google.maps.Point(0, 26)
+		};
+
+	    // Earthquake
+	    else if (~eventRaw.indexOf("earthquake")) 
+		var icon = {
+		    url: "img/earthquake.png", 
+		    scaledSize: new google.maps.Size(alertOptions.iconWidth, alertOptions.iconHeight),
+		    anchor: new google.maps.Point(0, 0)
+		};
+
+
+            else if (~eventRaw.indexOf("flood"))
+                var icon = {
+                    url: "img/flood.png",
+		    scaledSize: new google.maps.Size(alertOptions.iconWidth, alertOptions.iconHeight), // scaled size,
+                    anchor: new google.maps.Point(alertOptions.iconWidth, 0)
+                };
+
+	    else if (~eventRaw.indexOf("frost")) 
+		var icon = {
+		    url: "img/frost.png", 
+		    scaledSize: new google.maps.Size(alertOptions.iconWidth, alertOptions.iconHeight),
+		    anchor: new google.maps.Point(0, 0)
+		};
+
+	    // Rainfall Icon
+	    else if (~eventRaw.indexOf("rain")) 
+		var icon = {
+		    url: "img/rainfall.png",
+		    scaledSize: new google.maps.Size(alertOptions.iconWidth, alertOptions.iconHeight), 
+		    anchor: new google.maps.Point(0, alertOptions.iconHeight)
+		};
+
+	    // Tsunami Icon
+	    else if (~eventRaw.indexOf("tsunami")) 
 		var icon = {
 		    url: "img/tsunami.png", 
-		    scaledSize: new google.maps.Size(24, 24), // scaled size
-		    anchor: new google.maps.Point(12, 12)
+		    scaledSize: new google.maps.Size(alertOptions.iconWidth, alertOptions.iconHeight),
+		    anchor: new google.maps.Point(0, 0)
 		};
+
 
 	    else if (eventSelector == "volcanic") 
 		var icon = {
@@ -579,22 +654,31 @@ function doCAP(dom) {
 		    scaledSize: new google.maps.Size(24, 24), // scaled size
 		    anchor: new google.maps.Point(12, 12)
 		};
-	    else if (eventSelector == "tropical") 
+
+	    else if (~eventRaw.indexOf("thunderstorm")) 
+		var icon = {
+		    url: "img/thunderstorm.png", 
+		    scaledSize: new google.maps.Size(alertOptions.iconWidth, alertOptions.iconHeight),
+		    anchor: new google.maps.Point(alertOptions.iconWidth, alertOptions.iconHeight)
+		};
+
+	    else if (~eventRaw.indexOf("hail")) 
+		var icon = {
+		    url: "img/hail.png", 
+		    scaledSize: new google.maps.Size(alertOptions.iconWidth, alertOptions.iconHeight),
+		    anchor: new google.maps.Point(alertOptions.iconWidth, alertOptions.iconHeight)
+		};
+
+	    else if (~eventRaw.indexOf("tropical")) 
 		var icon = {
 		    url: "img/cyclone.png", 
-		    scaledSize: new google.maps.Size(24, 24), // scaled size
-		    anchor: new google.maps.Point(12, 12)
-		};
-	    else if (eventSelector == "rainfall") 
-		var icon = {
-		    url: "img/rainfall.png", 
-		    scaledSize: new google.maps.Size(24, 24), // scaled size
+		    scaledSize: new google.maps.Size(alertOptions.iconWidth, alertOptions.iconHeight),
 		    anchor: new google.maps.Point(12, 12)
 		};
 
 	    var marker;
 
-	    if (windSpeed > 0 || waveHeight > 0 || eventSelector == "tsunami" || eventSelector == "volcanic" || eventSelector == "tropical" || eventSelector == "rainfall") 
+	    if (icon != null ) 
 		{
 
 		    // create a marker for polygon
@@ -605,7 +689,7 @@ function doCAP(dom) {
 			    icon: icon,
 			    fromDate: fromDateISO,
 			    toDate: info.querySelector('expires').textContent,
-			    capEvent: eventSelector,
+			    capEvent: eventRaw,
 			    zIndex: zindex
 			});
 		}
@@ -619,10 +703,11 @@ function doCAP(dom) {
 			    visible: false,
 			    fromDate: fromDateISO,
 			    toDate: info.querySelector('expires').textContent,
-			    capEvent: eventSelector,
+			    capEvent: eventRaw,
 			    zIndex: zindex
 			});
 		}
+
 	    markers.push(marker);
 
 	    //create an infowindow 
@@ -632,10 +717,17 @@ function doCAP(dom) {
 	    else
 		sender = alert.querySelector('sender').textContent;
 
+	    $("#senderName").html(sender);
+
+	    if (dnow.getTime() > fromDate.getTime())
+		var active_str = '<i>' + t('Active for next') + ' <b>'+toDate.dateDiff()+'</b></i>';
+	    else
+		var active_str = '';
+
 	    var infowindow = new google.maps.InfoWindow({
 		    content: '<h4 class="iw-title">' + info.querySelector('event').textContent + ' ' + t('for') + ' ' +info.querySelector('areaDesc').textContent +'</h4>'
 		    + '<i>' + t('Valid from')+' <b>'+fromDate.toLocaleString()+'</b><br>'+ t('to') +' <b>'+toDate.toLocaleString()+'</b></i><br/>'
-		    + '<i>' + t('Active for next') + ' <b>'+toDate.dateDiff()+'</b></i>'
+		    + active_str 
 		    + '<p>' + ( info.querySelector('description') ? info.querySelector('description').textContent : "" )+'</p>'
 		    + '<p><i>' + t('Issued by') + ' ' + sender
 		    + ' '+  t('at') + ' '+d.toLocaleString()+' ('+d.dateDiff()+')</i></p>',
@@ -646,6 +738,9 @@ function doCAP(dom) {
 	    google.maps.event.addListener(marker, 'click', function() {
 		    infowindow.open(map,this);
 		});
+	    google.maps.event.addListener(areapolygon, 'click', function () {
+		    infowindow.open(map,this);
+		}); 
 
 	} // for loop
 
