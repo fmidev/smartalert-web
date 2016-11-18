@@ -150,6 +150,16 @@ function initialize () {
     if (Object.keys(translations).length < 2)
 	$( "#lang").css('display','none');
 
+
+    updateEventSelect();
+    //    $( "#eventType").on('change', changeLanguage );
+	    
+    setInterval(updateData, alertOptions.refresh*1000);
+    changeLanguage();
+
+}
+
+function updateEventSelect () {
     $("#eventType").html('');
     $("#eventType").append($("<option>").attr('value',"").text(t("All Hazard Types")));
     $(Object.keys(alertOptions.eventTypes)).each(function(i,eventType) {
@@ -158,12 +168,6 @@ function initialize () {
 	    if (eventType === selectedEVENT)
 	    	$("#eventType").val(eventType).change();
 	});
-
-    //    $( "#eventType").on('change', changeLanguage );
-	    
-    setInterval(updateData, alertOptions.refresh*1000);
-    changeLanguage();
-
 }
 
 function changeLanguage () {
@@ -184,7 +188,8 @@ function changeLanguage () {
     dayControlDiv.style['padding-top'] = '10px';
     map.controls[google.maps.ControlPosition.TOP_CENTER].clear();
     map.controls[google.maps.ControlPosition.TOP_CENTER].push(dayControlDiv);
-    
+
+    updateEventSelect();
     updateData();
 
 }
@@ -460,7 +465,7 @@ function doCAP(dom) {
     var areapolygons = info.querySelectorAll('polygon');
     var parameters = info.querySelectorAll('parameter');
     var d = new Date(alert.querySelector('sent').textContent);
-    var windSpeed,windDirection,waveHeight,waveDirection,swellHeight,surfHeigth;
+    var windSpeed,windDirection,waveHeight,waveDirection,swellHeight,surfHeight;
     var eventSelector = info.querySelector('event').textContent.replace('High Seas','').replace('Severe weather for','').replace('Moderate to Fresh','').replace('Gale force','').replace('Strong','').replace("Moderate","").replace('Heavy','').trim().split(' ')[0].trim().toLowerCase();
     var eventRaw = info.querySelector('event').textContent.toLowerCase();
 
