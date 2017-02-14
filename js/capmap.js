@@ -10,7 +10,7 @@ var selectedEVENT = null;
 var translations = {};
 
 // Remember previous state
-var selectedLANGUAGE  = localStorage.getItem("userLanguage")  ? localStorage.getItem("userLanguage")  : alertOptions.defaultlanguage;
+var selectedLANGUAGE  = localStorage.getItem("userLanguage")  ? localStorage.getItem("userLanguage")  : alertOptions.defaultLanguage;
 
 var selectedEVENT  = localStorage.getItem("userEventType")  ? localStorage.getItem("userEventType")  : "";
 
