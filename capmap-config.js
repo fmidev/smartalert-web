@@ -4,6 +4,7 @@ var alertOptions = {
     center: new google.maps.LatLng(FILL_YOUR_LAT, FILL_YOUR_LON),
     polygonOptions: {
 	fillOpacity: 0.55,
+	strokeOpacity: 1,
 	strokeWeight: 3,
     },
     dayControl: true,
@@ -13,6 +14,20 @@ var alertOptions = {
     allDayControl: true,
     refresh: 300, // Refresh interval seconds
     areaLimitForMarkers: 60000000,
+    iconWidth: 30,
+    iconHeight: 30,
+    eventTypes: {
+        edit: "edit capmap-config.js",
+        flood: "Flash Flood",
+        rain: "Rain",
+        tide: "Tide",
+        earthquake: "Earthquake",
+        thunderstorm: "Thunderstorm",
+        swell: "Swell",
+        cyclone: "Tropical Cyclone",
+        tsunami: "Tsunami",
+        wind: "Wind",
+    }
 };
 
 // Google Analytics
