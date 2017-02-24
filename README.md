@@ -1,12 +1,12 @@
 # SmartAlert CAP Web
 
-All customizations are to be done to capma-config.js and index.html files.
+All customizations are to be done to capmap-config.js and index.html files.
 
 1. edit capmap-config.js 
   * set default language
   * specify initial map position and zoom level
   * specify which day buttons will be shown
-  * add event types for the dropdown menu, key is word appearing in event tag
+  * add event types for the dropdown menu, key is unique word appearing in event tag
   * add your google analytics id
 
 2. edit index.html
