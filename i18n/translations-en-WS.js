@@ -25,4 +25,12 @@ translations['en-WS'] = {
     "potentially dangerous": "potentially dangerous",
     "dangerous": "dangerous",
     "very dangerous": "very dangerous",
+    "All Hazard Types": "All Hazard Types",
+    "Coastal Flood": "Coastal Flood",
+    "Heavy Rain": "Heavy Rain",
+    "Small Crafts": "Small Crafts",
+    "Tropical Cyclone": "Tropical Cyclone",
+    "Tsunami": "Tsunami",
+    "Wind": "Wind",
+    "Earthquake": "Earthquake"
 };
