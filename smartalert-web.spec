@@ -35,6 +35,7 @@ cp %_topdir/SOURCES/smartalert-web/*.js %{buildroot}%{smartmetroot}/www/smartale
 cp -r %_topdir/SOURCES/smartalert-web/i18n %{buildroot}%{smartmetroot}/www/smartalert/
 cp -r %_topdir/SOURCES/smartalert-web/css %{buildroot}%{smartmetroot}/www/smartalert/
 cp -r %_topdir/SOURCES/smartalert-web/js %{buildroot}%{smartmetroot}/www/smartalert/
+cp -r %_topdir/SOURCES/smartalert-web/img %{buildroot}%{smartmetroot}/www/smartalert/
 
 %post
 
