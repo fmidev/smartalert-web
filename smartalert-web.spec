@@ -1,7 +1,7 @@
 %define smartmetroot /smartmet
 
 Name:           smartalert-web
-Version:        17.2.24
+Version:        17.11.8
 Release:        1%{?dist}.fmi
 Summary:        SmartMet SmartAlert Website
 Group:          System Environment/Base
@@ -32,6 +32,7 @@ mkdir -p .%{smartmetroot}/www/smartalert
 cp %_topdir/SOURCES/smartalert-web/index.html %{buildroot}%{smartmetroot}/www/smartalert/
 cp %_topdir/SOURCES/smartalert-web/*.php %{buildroot}%{smartmetroot}/www/smartalert/
 cp %_topdir/SOURCES/smartalert-web/*.js %{buildroot}%{smartmetroot}/www/smartalert/
+cp %_topdir/SOURCES/smartalert-web/cap-logo.png %{buildroot}%{smartmetroot}/www/smartalert/
 cp -r %_topdir/SOURCES/smartalert-web/i18n %{buildroot}%{smartmetroot}/www/smartalert/
 cp -r %_topdir/SOURCES/smartalert-web/css %{buildroot}%{smartmetroot}/www/smartalert/
 cp -r %_topdir/SOURCES/smartalert-web/js %{buildroot}%{smartmetroot}/www/smartalert/
@@ -48,5 +49,7 @@ rm -rf $RPM_BUILD_ROOT
 %{smartmetroot}/www/smartalert/*
 
 %changelog
+* Wed Nov 8 2017 Mikko Rauhala <mikko.rauhala@fmi.fi> 17.11.8-1.el7.fmi
+- Updated pictograms
 * Fri Feb 24 2017 Mikko Rauhala <mikko.rauhala@fmi.fi> 17.2.24-1.el7.fmi
 - Initial build 

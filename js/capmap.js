@@ -11,7 +11,12 @@ var translations = {};
 
 // Remember previous state
 var selectedLANGUAGE  = localStorage.getItem("userLanguage")  ? localStorage.getItem("userLanguage")  : alertOptions.defaultLanguage;
-
+//if (translations[selectedLANGUAGE] == null)
+//{
+//    selectedLANGUAGE = alertOptions.defaultLanguage;
+//    localStorage.setItem("userLanguage",selectedLANGUAGE);
+//}
+//selectedLANGUAGE = "en-BS";
 var selectedEVENT  = localStorage.getItem("userEventType")  ? localStorage.getItem("userEventType")  : "";
 
 function debug(str)
@@ -126,6 +131,7 @@ function initialize () {
 
     map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(document.getElementById('legend'));
     centerUserLocation();
+    map.fitBounds(alertOptions.bounds);
 
     document.getElementById('eventType').addEventListener('change', function() {
 	    debug('Event Type selected: ' + document.getElementById('eventType').value);
@@ -454,6 +460,7 @@ function doCAP(dom) {
 
     debug("Loaded CAP:\n" + 
 	  "- Identifier: " + dom.querySelector('identifier').textContent +"\n"+
+	  "- Web:     " + dom.querySelector('web').textContent +"\n"+
 	  "- Sent by: " + dom.querySelector('sender').textContent +"\n"+
 	  "- Sent at: " + dom.querySelector('sent').textContent);
  
@@ -591,7 +598,6 @@ function doCAP(dom) {
 		    scaledSize: new google.maps.Size(alertOptions.iconWidth, alertOptions.iconHeight), // scaled size
 		    anchor: new google.maps.Point(alertOptions.iconWidth/2, alertOptions.iconHeight/2)
 		};
-
 	    else if (waveHeight > 0) 
 		var icon = {
 		    url: "img/wave.php?height="+waveHeight, 
@@ -621,6 +627,35 @@ function doCAP(dom) {
 		    anchor: new google.maps.Point(0, 0)
 		};
 
+	    // Fire
+	    else if (~eventRaw.indexOf("fire")) 
+		var icon = {
+		    url: "img/fire.png", 
+		    scaledSize: new google.maps.Size(alertOptions.iconWidth, alertOptions.iconHeight),
+		    anchor: new google.maps.Point(0, 0)
+		};
+
+	    else if (~eventRaw.indexOf("craft")) 
+		var icon = {
+		    url: "img/smallcraft.png", 
+		    scaledSize: new google.maps.Size(alertOptions.iconWidth, alertOptions.iconHeight),
+		    anchor: new google.maps.Point(0, 0)
+		};
+
+	    else if (~eventRaw.indexOf("gale")) 
+		var icon = {
+		    url: "img/gale.png", 
+		    scaledSize: new google.maps.Size(alertOptions.iconWidth, alertOptions.iconHeight),
+		    anchor: new google.maps.Point(0, 0)
+		};
+
+	    else if (~eventRaw.indexOf("fog")) 
+		var icon = {
+		    url: "img/fog.png", 
+		    scaledSize: new google.maps.Size(alertOptions.iconWidth, alertOptions.iconHeight),
+		    anchor: new google.maps.Point(0, 0)
+		};
+
 
             else if (~eventRaw.indexOf("flood"))
                 var icon = {
@@ -632,6 +667,13 @@ function doCAP(dom) {
 	    else if (~eventRaw.indexOf("frost")) 
 		var icon = {
 		    url: "img/frost.png", 
+		    scaledSize: new google.maps.Size(alertOptions.iconWidth, alertOptions.iconHeight),
+		    anchor: new google.maps.Point(0, 0)
+		};
+
+	    else if (~eventRaw.indexOf("temperature")) 
+		var icon = {
+		    url: "img/temperature.png", 
 		    scaledSize: new google.maps.Size(alertOptions.iconWidth, alertOptions.iconHeight),
 		    anchor: new google.maps.Point(0, 0)
 		};
@@ -648,6 +690,20 @@ function doCAP(dom) {
 	    else if (~eventRaw.indexOf("tsunami")) 
 		var icon = {
 		    url: "img/tsunami.png", 
+		    scaledSize: new google.maps.Size(alertOptions.iconWidth, alertOptions.iconHeight),
+		    anchor: new google.maps.Point(0, 0)
+		};
+
+	    else if (~eventRaw.indexOf("tornado")) 
+		var icon = {
+		    url: "img/tornado.png", 
+		    scaledSize: new google.maps.Size(alertOptions.iconWidth, alertOptions.iconHeight),
+		    anchor: new google.maps.Point(0, 0)
+		};
+
+	    else if (~eventRaw.indexOf("waterspout")) 
+		var icon = {
+		    url: "img/waterspout.png", 
 		    scaledSize: new google.maps.Size(alertOptions.iconWidth, alertOptions.iconHeight),
 		    anchor: new google.maps.Point(0, 0)
 		};
@@ -672,6 +728,27 @@ function doCAP(dom) {
 		    url: "img/hail.png", 
 		    scaledSize: new google.maps.Size(alertOptions.iconWidth, alertOptions.iconHeight),
 		    anchor: new google.maps.Point(alertOptions.iconWidth, alertOptions.iconHeight)
+		};
+
+	    else if (~eventRaw.indexOf("hurricane")) 
+		var icon = {
+		    url: "img/tropical-hurricane.png", 
+		    scaledSize: new google.maps.Size(alertOptions.iconWidth, alertOptions.iconHeight),
+		    anchor: new google.maps.Point(12, 12)
+		};
+
+	    else if (~eventRaw.indexOf("tropical storm")) 
+		var icon = {
+		    url: "img/tropical-storm.png", 
+		    scaledSize: new google.maps.Size(alertOptions.iconWidth, alertOptions.iconHeight),
+		    anchor: new google.maps.Point(12, 12)
+		};
+
+	    else if (~eventRaw.indexOf("depression")) 
+		var icon = {
+		    url: "img/tropical-depression.png", 
+		    scaledSize: new google.maps.Size(alertOptions.iconWidth, alertOptions.iconHeight),
+		    anchor: new google.maps.Point(12, 12)
 		};
 
 	    else if (~eventRaw.indexOf("tropical")) 
@@ -721,6 +798,9 @@ function doCAP(dom) {
 		sender = info.querySelector('senderName').textContent;
 	    else
 		sender = alert.querySelector('sender').textContent;
+
+	    if (alert.querySelector('web'))
+		sender = '<a href="http://'+ dom.querySelector('web').textContent + '">'+sender+'</a>';
 
 	    $("#senderName").html(sender);
 
