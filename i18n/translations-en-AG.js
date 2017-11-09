@@ -22,7 +22,7 @@ translations['en-AG'] = {
     "ago": "ago",
     "at": "at",
     "no awareness needed": "No Awareness Needed",
-    "potentially dangerous": "Potentially Dngerous",
+    "potentially dangerous": "Potentially Dangerous",
     "dangerous": "Dangerous",
     "very dangerous": "Very Dangerous",
     "All Hazard Types": "All Hazard Types"
