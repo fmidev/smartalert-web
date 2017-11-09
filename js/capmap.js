@@ -459,9 +459,9 @@ function DayControl(controlDiv, map) {
 function doCAP(dom) {
 
     debug("Loaded CAP:\n" + 
-	  "- Identifier: " + dom.querySelector('identifier').textContent +"\n"+
-	  "- Web:     " + dom.querySelector('web').textContent +"\n"+
-	  "- Sent by: " + dom.querySelector('sender').textContent +"\n"+
+	  "- Identifier: " + dom.querySelector('identifier').textContent + "\n"+
+	  "- Web:     " + (dom.querySelector('web').textContent || "") + "\n"+
+	  "- Sent by: " + dom.querySelector('sender').textContent + "\n"+
 	  "- Sent at: " + dom.querySelector('sent').textContent);
  
     var alert = dom.querySelector('alert');
@@ -638,6 +638,13 @@ function doCAP(dom) {
 	    else if (~eventRaw.indexOf("craft")) 
 		var icon = {
 		    url: "img/smallcraft.png", 
+		    scaledSize: new google.maps.Size(alertOptions.iconWidth, alertOptions.iconHeight),
+		    anchor: new google.maps.Point(0, 0)
+		};
+
+	    else if (~eventRaw.indexOf("dust")) 
+		var icon = {
+		    url: "img/dust.png", 
 		    scaledSize: new google.maps.Size(alertOptions.iconWidth, alertOptions.iconHeight),
 		    anchor: new google.maps.Point(0, 0)
 		};
