@@ -1,8 +1,8 @@
 %define smartmetroot /smartmet
 
 Name:           smartalert-web
-Version:        17.11.8
-Release:        1%{?dist}.fmi
+Version:        17.11.9
+Release:        2%{?dist}.fmi
 Summary:        SmartMet SmartAlert Website
 Group:          System Environment/Base
 License:        MIT
@@ -49,6 +49,8 @@ rm -rf $RPM_BUILD_ROOT
 %{smartmetroot}/www/smartalert/*
 
 %changelog
+* Thu Nov 9 2017 Mikko Rauhala <mikko.rauhala@fmi.fi> 17.11.9-1.el7.fmi
+- Added pictogram for dust
 * Wed Nov 8 2017 Mikko Rauhala <mikko.rauhala@fmi.fi> 17.11.8-1.el7.fmi
 - Updated pictograms
 * Fri Feb 24 2017 Mikko Rauhala <mikko.rauhala@fmi.fi> 17.2.24-1.el7.fmi
