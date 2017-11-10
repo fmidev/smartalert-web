@@ -1,8 +1,8 @@
 %define smartmetroot /smartmet
 
 Name:           smartalert-web
-Version:        17.11.9
-Release:        2%{?dist}.fmi
+Version:        17.11.10
+Release:        1%{?dist}.fmi
 Summary:        SmartMet SmartAlert Website
 Group:          System Environment/Base
 License:        MIT
@@ -46,9 +46,12 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,smartmet,smartmet,-)
 %config(noreplace) %{smartmetroot}/www/smartalert/capmap-config.js
+%config(noreplace) %{smartmetroot}/www/smartalert/index.html
 %{smartmetroot}/www/smartalert/*
 
 %changelog
+* Fri Nov 10 2017 Mikko Rauhala <mikko.rauhala@fmi.fi> 17.11.10-1.el7.fmi
+- Added pictogram for drought
 * Thu Nov 9 2017 Mikko Rauhala <mikko.rauhala@fmi.fi> 17.11.9-1.el7.fmi
 - Added pictogram for dust
 * Wed Nov 8 2017 Mikko Rauhala <mikko.rauhala@fmi.fi> 17.11.8-1.el7.fmi
