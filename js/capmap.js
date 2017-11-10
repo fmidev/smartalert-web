@@ -460,7 +460,7 @@ function doCAP(dom) {
 
     debug("Loaded CAP:\n" + 
 	  "- Identifier: " + dom.querySelector('identifier').textContent + "\n"+
-	  "- Web:     " + (dom.querySelector('web').textContent || "") + "\n"+
+	  //"- Web:     " + (dom.querySelector('web').textContent || "") + "\n"+
 	  "- Sent by: " + dom.querySelector('sender').textContent + "\n"+
 	  "- Sent at: " + dom.querySelector('sent').textContent);
  
@@ -602,21 +602,21 @@ function doCAP(dom) {
 		var icon = {
 		    url: "img/wave.php?height="+waveHeight, 
 		    scaledSize: new google.maps.Size(30, 30), // scaled size
-		    anchor: new google.maps.Point(0, 26)
+		    anchor: new google.maps.Point(0, alertOptions.iconHeight)
 		};
 
 	    else if (swellHeight > 0) 
 		var icon = {
 		    url: "img/wave.php?height="+swellHeight, 
 		    scaledSize: new google.maps.Size(30, 30), // scaled size
-		    anchor: new google.maps.Point(0, 26)
+		    anchor: new google.maps.Point(0, alertOptions.iconHeight)
 		};
 
 	    else if (surfHeight > 0) 
 		var icon = {
 		    url: "img/wave.php?height="+surfHeight, 
-		    scaledSize: new google.maps.Size(30, 30), // scaled size
-		    anchor: new google.maps.Point(0, 26)
+		    scaledSize: new google.maps.Size(40, 40), // scaled size
+		    anchor: new google.maps.Point(0, alertOptions.iconHeight)
 		};
 
 	    // Earthquake
@@ -631,6 +631,14 @@ function doCAP(dom) {
 	    else if (~eventRaw.indexOf("fire")) 
 		var icon = {
 		    url: "img/fire.png", 
+		    scaledSize: new google.maps.Size(alertOptions.iconWidth, alertOptions.iconHeight),
+		    anchor: new google.maps.Point(0, 0)
+		};
+
+	    // Drought
+	    else if (~eventRaw.indexOf("drought")) 
+		var icon = {
+		    url: "img/drought.png", 
 		    scaledSize: new google.maps.Size(alertOptions.iconWidth, alertOptions.iconHeight),
 		    anchor: new google.maps.Point(0, 0)
 		};
@@ -678,12 +686,20 @@ function doCAP(dom) {
 		    anchor: new google.maps.Point(0, 0)
 		};
 
+	    else if (~eventRaw.indexOf("heat")) 
+		var icon = {
+		    url: "img/temperature.png", 
+		    scaledSize: new google.maps.Size(alertOptions.iconWidth, alertOptions.iconHeight),
+		    anchor: new google.maps.Point(0, 0)
+		};
+
 	    else if (~eventRaw.indexOf("temperature")) 
 		var icon = {
 		    url: "img/temperature.png", 
 		    scaledSize: new google.maps.Size(alertOptions.iconWidth, alertOptions.iconHeight),
 		    anchor: new google.maps.Point(0, 0)
 		};
+
 
 	    // Rainfall Icon
 	    else if (~eventRaw.indexOf("rain")) 
@@ -719,8 +735,8 @@ function doCAP(dom) {
 	    else if (eventSelector == "volcanic") 
 		var icon = {
 		    url: "img/volcano.png", 
-		    scaledSize: new google.maps.Size(24, 24), // scaled size
-		    anchor: new google.maps.Point(12, 12)
+		    scaledSize: new google.maps.Size(alertOptions.iconWidth, alertOptions.iconHeight), // scaled size
+		    anchor: new google.maps.Point(alertOptions.iconWidth,0)
 		};
 
 	    else if (~eventRaw.indexOf("thunderstorm")) 
@@ -741,14 +757,14 @@ function doCAP(dom) {
 		var icon = {
 		    url: "img/tropical-hurricane.png", 
 		    scaledSize: new google.maps.Size(alertOptions.iconWidth, alertOptions.iconHeight),
-		    anchor: new google.maps.Point(12, 12)
+		    anchor: new google.maps.Point(alertOptions.iconWidth, alertOptions.iconHeight)
 		};
 
 	    else if (~eventRaw.indexOf("tropical storm")) 
 		var icon = {
 		    url: "img/tropical-storm.png", 
 		    scaledSize: new google.maps.Size(alertOptions.iconWidth, alertOptions.iconHeight),
-		    anchor: new google.maps.Point(12, 12)
+		    anchor: new google.maps.Point(26, 26)
 		};
 
 	    else if (~eventRaw.indexOf("depression")) 
