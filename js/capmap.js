@@ -183,6 +183,7 @@ function changeLanguage () {
 
     // Translate Legend
     $( "#levelNoneText" ).text(t("no awareness needed"));
+    $( "#levelGreenText" ).text(t("minor threat"));
     $( "#levelYellowText" ).text(t("potentially dangerous"));
     $( "#levelOrangeText" ).text(t("dangerous"));
     $( "#levelRedText" ).text(t("very dangerous"));

@@ -21,6 +21,7 @@ translations['en-AG'] = {
     "minutes": "minutes",
     "ago": "ago",
     "at": "at",
+    "minor threat": "Minor Threat",
     "no awareness needed": "No Awareness Needed",
     "potentially dangerous": "Potentially Dangerous",
     "dangerous": "Dangerous",
