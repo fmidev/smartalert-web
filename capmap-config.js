@@ -6,9 +6,9 @@ var alertOptions = {
     bounds: {north: 27.0, east: -71.0, south: 20.0, west: -80.0},
     attribution: 'Finnish Meteorological Institute',
     polygonOptions: {
-	fillOpacity: 0.55,
-	strokeOpacity: 1,
-	strokeWeight: 3,
+        fillOpacity: 0.2,
+        strokeOpacity: 1,
+        strokeWeight: 3,
     },
     dayControl: true,
     day0Control: true,

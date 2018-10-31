@@ -127,7 +127,6 @@ function initialize () {
 	// },
     // };
 
-
     map = L.map('map-canvas', {
         zoom: alertOptions.zoom,
         fullscreenControl: true,
@@ -138,7 +137,7 @@ function initialize () {
   
 
     // user location disabled
-    //centerUserLocation();
+    // centerUserLocation();
     
     // map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 
@@ -629,7 +628,6 @@ function doCAP(dom) {
 	    
 	    for (i=0;i<latLngs.length-1;i++) {
             var latLng = latLngs[i].split(',');
-            // path.push(new google.maps.LatLng(parseFloat(latLng[0]), parseFloat(latLng[1])));
             path.push(new L.LatLng(parseFloat(latLng[0]), parseFloat(latLng[1])));
 	    }
 
@@ -656,30 +654,15 @@ function doCAP(dom) {
 		break;
 	    default:
 		color = "#FFFFFF";
-	    }
+        }
 
-	    // var areapolygon = new google.maps.Polygon({
-		//     paths: path,
-		//     fillColor: color,
-		//     fillOpacity: alertOptions.polygonOptions.fillOpacity,
-		//     strokeColor: color,
-		//     strokeOpacity: alertOptions.polygonOptions.strokeOpacity,
-		//     strokeWeight: alertOptions.polygonOptions.strokeWeight,
-		//     map: map,
-		//     visible: false,
-		//     fromDate: fromDateISO,
-		//     toDate: info.querySelector('expires').textContent,
-		//     capEvent: eventRaw,
-		//     polygonArea: google.maps.geometry.spherical.computeArea(path),
-		//     zIndex: zindex
-        // });
         var areapolygon = L.polygon(path, {
             paths: path,
 		    color: color,
-		    // fillOpacity: alertOptions.polygonOptions.fillOpacity,
-		    // strokeColor: color,
-		    // strokeOpacity: alertOptions.polygonOptions.strokeOpacity,
-		    // strokeWeight: alertOptions.polygonOptions.strokeWeight,
+		    fillOpacity: alertOptions.polygonOptions.fillOpacity,
+		    strokeColor: color,
+		    strokeOpacity: alertOptions.polygonOptions.strokeOpacity,
+		    strokeWeight: alertOptions.polygonOptions.strokeWeight,
 		    map: map,
 		    visible: false,
 		    fromDate: fromDateISO,
@@ -919,21 +902,9 @@ function doCAP(dom) {
         
 
         var marker;
-        // limit the number of icons with really small polygons
         if (icon != null) 
         {
-
             // create a marker for polygon
-            // marker = new google.maps.Marker({
-            //     position: markerLocation,
-            //     map: map,
-            //     visible: false,
-            //     icon: icon,
-            //     fromDate: fromDateISO,
-            //     toDate: info.querySelector('expires').textContent,
-            //     capEvent: eventRaw,
-            //     zIndex: zindex
-            // });
             marker = L.marker(markerLocation, 
                 {
                     icon: icon,
@@ -991,11 +962,10 @@ function doCAP(dom) {
         + ' '+  t('at') + ' '+d.toLocaleString()+' ('+d.dateDiff()+')</i></p>'
         
 
-        marker.bindPopup(content).addTo(map)
+        marker.bindPopup(content,{
+            maxWidth: 220
+        }).addTo(map)
         markers.push(marker);
-
-		//     maxWidth: 220
-		// });
 
 	    // google.map.event.addListener(marker, 'click', function() {
 		//     infowindow.open(map,this);
