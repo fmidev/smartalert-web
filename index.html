@@ -9,8 +9,13 @@
     <link rel="stylesheet" href="css/capmap.css"/>
     <script type="text/javascript"
 	    src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <!--
     <script type="text/javascript"
             src="https://maps.googleapis.com/maps/api/js?key=ADD-YOUR-API-KEY&amp;libraries=geometry"></script>
+    -->
+    <link rel="stylesheet" href="css/leaflet.css" />
+    <script type="text/javascript" src="js/leaflet.js"></script>
+
     <script type="text/javascript" src="capmap-config.js"></script>
     <script type="text/javascript" src="js/capmap.js"></script>
     <!-- Add translation files for required languages-->
@@ -18,7 +23,9 @@
 
     <script type="text/javascript">
       $( document ).ready(function() {
-         google.maps.event.addDomListener(window, 'load', initialize);
+        //  google.maps.event.addDomListener(window, 'load', initialize);
+        L.DomEvent.addListener(window, 'load', initialize);
+        // initialize ()
       });
     </script>
 
@@ -34,7 +41,7 @@
 	</select>
 	<!-- Languages shows automatically based on loaded translations -->
 	<select id="lang">
-          <option value="en-US">English</option>
+        <option value="en-US">English</option>
 	</select>
       </div>
       <table>
