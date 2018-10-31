@@ -3,7 +3,7 @@ var alertOptions = {
     defaultLanguage: 'en-US',
     accesToken: 'pk.eyJ1IjoibmFra2ltIiwiYSI6ImNqNWYzNzVvaDB3YmUyeHBuOWdwZnM0bHMifQ.QZCKhwf3ET5ujEeZ6_8X_Q',
     zoom: 7,
-    center: [25.0480, -77.355],
+    center: [FILL_YOUR_LAT, FILL_YOUR_LON],
     bounds: {north: 27.0, east: -71.0, south: 20.0, west: -80.0},
     attribution: 'Finnish Meteorological Institute',
     polygonOptions: {

@@ -7,7 +7,9 @@ All customizations are to be done to capmap-config.js and index.html files.
   * specify initial map position and zoom level
   * specify which day buttons will be shown
   * add event types for the dropdown menu, key is unique word appearing in event tag
+  * add map bounds
   * add your google analytics id
+  * create and add your MapBox access token (optional)
 
 2. edit index.html
   * add your google maps API-key
