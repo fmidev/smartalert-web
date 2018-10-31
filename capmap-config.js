@@ -1,4 +1,5 @@
 var alertOptions = {
+    useLocation: false,
     defaultLanguage: 'en-US',
     accesToken: 'pk.eyJ1IjoibmFra2ltIiwiYSI6ImNqNWYzNzVvaDB3YmUyeHBuOWdwZnM0bHMifQ.QZCKhwf3ET5ujEeZ6_8X_Q',
     zoom: 7,

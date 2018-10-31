@@ -137,7 +137,8 @@ function initialize () {
   
 
     // user location disabled
-    // centerUserLocation();
+    if (alertOptions.useLocation == true)
+    centerUserLocation();
     
     // map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 
@@ -308,33 +309,22 @@ function centerUserLocation () {
 		    lng: position.coords.longitude
 		};
 		
-		var bluedot = {
-		    path: 'M-6,0a6,6 0 1,0 12,0a6,6 0 1,0 -12,0',
-		    fillColor: '#1E90FF',
-		    fillOpacity: 0.7,
-		    scale: 1,
-		    strokeColor: 'blue',
-		    strokeWeight: 1
-		};
-		
-		// var marker = new google.maps.Marker({
-		// 	    position: pos,
-		// 	    icon: bluedot,
-		// 	    map: map
-        //     });
+		// var bluedot = {
+		//     path: 'M-6,0a6,6 0 1,0 12,0a6,6 0 1,0 -12,0',
+		//     fillColor: '#1E90FF',
+		//     fillOpacity: 0.7,
+		//     scale: 1,
+		//     strokeColor: 'blue',
+		//     strokeWeight: 1
+		// };
 
-        // var iconPath = '<svg><path d="M-6,0a6,6 0 1,0 12,0a6,6 0 1,0 -12,0"/></svg>';
-        // var icon = encodeURI("data:image/svg+xml," + iconPath).replace('#','%23');
+        var icon = L.icon({
+            iconUrl: '../img/location.svg'
+        });
 
-        // var icon = L.icon({
-        //     iconUrl: icon
-        // });
-
-        // var marker = L.marker(pos,{icon: icon}).addTo(map);
-        // map.setView([position.coords.latitude,position.coords.longitude]);
+        var marker = L.marker(pos,{icon: icon}).addTo(map);
+        map.setView([position.coords.latitude,position.coords.longitude]);
         
-        // map.setCenter(pos);
-
 	    }, function() {
 		    debug("Unable to get location");
         });
