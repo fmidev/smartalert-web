@@ -3,11 +3,14 @@ var DEBUG = true;
 var map;
 var markers = [];
 var polygons = [];
+var mapMarkers = L.layerGroup();
+var mapPolygons = L.layerGroup();
 var languages = [];
 var events = [];
 var selectedDAY = null;
 var selectedEVENT = null;
 var translations = {};
+var dayControll;
 
 // Remember previous state
 var selectedLANGUAGE  = localStorage.getItem("userLanguage")  ? localStorage.getItem("userLanguage")  : alertOptions.defaultLanguage;
@@ -37,13 +40,13 @@ function t(key)
 	return key;
 }
 
-if (!google.maps.Polygon.prototype.getBounds) {
-    google.maps.Polygon.prototype.getBounds=function(){
-	var bounds = new google.maps.LatLngBounds()
-	this.getPath().forEach(function(element,index){bounds.extend(element)})
-	return bounds
-    }
-}
+// if (!google.maps.Polygon.prototype.getBounds) {
+//     google.maps.Polygon.prototype.getBounds=function(){
+// 	var bounds = new google.maps.LatLngBounds()
+// 	this.getPath().forEach(function(element,index){bounds.extend(element)})
+// 	return bounds
+//     }
+// }
 
 Date.prototype.isBeforeDay = function(day) {
     var d = new Date();
@@ -74,7 +77,7 @@ Date.prototype.isAfterDay = function(day) {
     if (this.getTime() > d.getTime())
 	return true;
     else
-	return false;
+    return false;
 }
 
 Date.prototype.dateDiff = function() {
@@ -111,27 +114,50 @@ Date.prototype.dateDiff = function() {
 
 function initialize () {
 
-    var mapOptions = {
-	zoom: alertOptions.zoom,
-	center: alertOptions.center,
-	mapTypeId: google.maps.MapTypeId.TERRAIN,
-	mapTypeControl: false,
-	streetViewControl: false,
-	scaleControl: true,
-	zoomControl: true,
-	zoomControlOptions: {
-	    position: google.maps.ControlPosition.RIGHT_CENTER
-	},
-    };
+    // var mapOptions = {
+	// zoom: alertOptions.zoom,
+	// center: alertOptions.center,
+	// mapTypeId: google.maps.MapTypeId.TERRAIN,
+	// mapTypeControl: false,
+	// streetViewControl: false,
+	// scaleControl: true,
+	// zoomControl: true,
+	// zoomControlOptions: {
+	//     position: google.maps.ControlPosition.RIGHT_CENTER
+	// },
+    // };
 
 
+    map = L.map('map-canvas', {
+        zoom: alertOptions.zoom,
+        fullscreenControl: true,
+        scrollWheelZoom: true,
+        center: alertOptions.center,
+        accessToken: alertOptions.accesToken
+    });
+  
 
+    // user location disabled
+    //centerUserLocation();
+    
+    // map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 
-    map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+    // map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(document.getElementById('legend'));
+    // map.fitBounds(alertOptions.bounds);
 
-    map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(document.getElementById('legend'));
-    centerUserLocation();
-    map.fitBounds(alertOptions.bounds);
+    // mapbox access token
+    // https://www.mapbox.com/account/
+
+    var Esri_WorldTopoMap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
+        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors, '+alertOptions.attribution,
+        maxZoom: 18,
+        id: 'mapbox.streets',
+    }).addTo(map);
+
+    var southWest = new L.LatLng( alertOptions.bounds.south,alertOptions.bounds.east );
+    var northEast = new L.LatLng( alertOptions.bounds.north,alertOptions.bounds.west ); 
+    var bounds = new L.LatLngBounds(southWest,northEast);
+    map.fitBounds(bounds, { padding: [5, 5] }); 
 
     document.getElementById('eventType').addEventListener('change', function() {
 	    debug('Event Type selected: ' + document.getElementById('eventType').value);
@@ -159,7 +185,7 @@ function initialize () {
 
     updateEventSelect();
     //    $( "#eventType").on('change', changeLanguage );
-	    
+        
     setInterval(updateData, alertOptions.refresh*1000);
     changeLanguage();
 
@@ -192,52 +218,86 @@ function changeLanguage () {
     var dayControl = new DayControl(dayControlDiv, map);
 
     dayControlDiv.index = 1;
-    dayControlDiv.style['padding-top'] = '10px';
-    map.controls[google.maps.ControlPosition.TOP_CENTER].clear();
-    map.controls[google.maps.ControlPosition.TOP_CENTER].push(dayControlDiv);
+    // dayControlDiv.style['padding-top'] = '10px';
+    dayControlDiv.style['border'] = 'none';
+
+    if(dayControll !== undefined)
+    map.removeControl(dayControll);
+    
+    addControlPlaceholders(map);
+    dayControll = new L.Control.Zoom({ position: 'horizontalcentertop' }).addTo(map);
+    
+    dayControll._container.style['border'] = 'none';
+
+    $(dayControll._container).html(dayControlDiv);
+
+    // console.log(dayControlDiv);
+    // map.controls[google.maps.ControlPosition.TOP_CENTER].clear();
+    // map.controls[google.maps.ControlPosition.TOP_CENTER].push(dayControlDiv);
 
     updateEventSelect();
     updateData();
 
 }
 
+// Create additional Control placeholders
+function addControlPlaceholders (mapObject) {
+    var corners = mapObject._controlCorners,
+        l = 'leaflet-',
+        container = mapObject._controlContainer;
+
+    function createCorner(vSide, hSide) {
+        var className = l + vSide + ' ' + l + hSide;
+
+        corners[vSide + hSide] = L.DomUtil.create('div', className, container);
+    }
+
+    createCorner('horizontalcenter', 'top');
+    createCorner('horizontalcenter', 'bottom');
+    createCorner('verticalcenter', 'left');
+    createCorner('verticalcenter', 'right');
+}
 
 function updateData () {
     debug("Updating data:");
     $.getJSON("list.php",processCAP);
 }
 
-function testcircle (polygon) {
-    var bounds = polygon.getBounds();
-    var r1 = bounds.getSouthWest();
-    var r2 = bounds.getNorthEast();
-    var vertices = polygon.getPath();
-    var mindistance = 100000000000000;
-    var centerpoint;
+function testcircle (polygon,path) {
 
-    for (i=1; i <= 40; i++) {
-	var step = (1/40);
-	var interpolated = google.maps.geometry.spherical.interpolate(r1, r2, step * i);
+    // TODO
 
-	// Drop points that are not inside polygon
-	if (google.maps.geometry.poly.containsLocation(interpolated, polygon) == false)
-		continue;
+    // var bounds = polygon.getBounds();
+    // var r1 = bounds.getSouthWest();
+    // var r2 = bounds.getNorthEast();
+    // var vertices = polygon.getPath();
+    // var mindistance = 100000000000000;
+    // var centerpoint;
 
-	var distance = 0;
-	for (var j =0; j < vertices.getLength(); j++) {
-	    var xy = vertices.getAt(j);
-	    distance = distance + google.maps.geometry.spherical.computeDistanceBetween(xy, interpolated);
+    // for (i=1; i <= 40; i++) {
+	// var step = (1/40);
+	// var interpolated = google.maps.geometry.spherical.interpolate(r1, r2, step * i);
+
+	// // Drop points that are not inside polygon
+	// if (google.maps.geometry.poly.containsLocation(interpolated, polygon) == false)
+	// 	continue;
+
+	// var distance = 0;
+	// for (var j =0; j < vertices.getLength(); j++) {
+	//     var xy = vertices.getAt(j);
+	//     distance = distance + google.maps.geometry.spherical.computeDistanceBetween(xy, interpolated);
 	    
-	} // for
+	// } // for
 
-	if (distance < mindistance)
-	    {
-		mindistance = distance;
-		centerpoint = interpolated;
-	    } // fi
-    } // for
+	// if (distance < mindistance)
+	//     {
+	// 	mindistance = distance;
+	// 	centerpoint = interpolated;
+	//     } // fi
+    // } // for
 
-    return centerpoint;
+    // return centerpoint;
+    return false
 }
 
 function centerUserLocation () {
@@ -258,50 +318,65 @@ function centerUserLocation () {
 		    strokeWeight: 1
 		};
 		
-		var marker = new google.maps.Marker({
-			    position: pos,
-			    icon: bluedot,
-			    map: map
-		    });
+		// var marker = new google.maps.Marker({
+		// 	    position: pos,
+		// 	    icon: bluedot,
+		// 	    map: map
+        //     });
 
-		map.setCenter(pos);
+        // var iconPath = '<svg><path d="M-6,0a6,6 0 1,0 12,0a6,6 0 1,0 -12,0"/></svg>';
+        // var icon = encodeURI("data:image/svg+xml," + iconPath).replace('#','%23');
+
+        // var icon = L.icon({
+        //     iconUrl: icon
+        // });
+
+        // var marker = L.marker(pos,{icon: icon}).addTo(map);
+        // map.setView([position.coords.latitude,position.coords.longitude]);
+        
+        // map.setCenter(pos);
 
 	    }, function() {
-		debug("Unable to get location");
-	    });
+		    debug("Unable to get location");
+        });
+        
     } else {
-	// Browser doesn't support Geolocation
-	debug("Browser doesn't support Geolocation");
+        // Browser doesn't support Geolocation
+        debug("Browser doesn't support Geolocation");
     }
 }
 
 function showMarkers(day) {
     for (var i = 0; i < markers.length; i++) {
+	var fromDate = new Date(markers[i].options.fromDate);
+	var toDate = new Date(markers[i].options.toDate);
 
-	var fromDate = new Date(markers[i].fromDate);
-	var toDate = new Date(markers[i].toDate);
-
-
-	if (polygons[i].polygonArea < alertOptions.areaLimitForMarkers)
+	if (polygons[i].options.polygonArea < alertOptions.areaLimitForMarkers)
 	    {
-		markers[i].setVisible(false);
+        // markers[i].visible = false;
+        markers[i].getElement().style.display = 'none'; 
 	    }
-	else if (day == null) 
+	else if (day == null || day == 'undefined') 
 	    {
-		if (~polygons[i].capEvent.indexOf(selectedEVENT) || selectedEVENT == null)
-		    markers[i].setVisible(true);
+		if (~polygons[i].options.capEvent.indexOf(selectedEVENT) || selectedEVENT == null)
+            // markers[i].visible = true;
+            markers[i].getElement().style.display = 'inline'; 
 		else
-		    markers[i].setVisible(false);
+            // markers[i].visible = false;
+            markers[i].getElement().style.display = 'none';             
 	    }
 	else if (fromDate.isBeforeDay(day) && toDate.isAfterDay(day))
 	    {
-		if (~polygons[i].capEvent.indexOf(selectedEVENT) || selectedEVENT == null)
-		    markers[i].setVisible(true);
+		if (~polygons[i].options.capEvent.indexOf(selectedEVENT) || selectedEVENT == null)
+            // markers[i].visible = true;
+            markers[i].getElement().style.display = 'inline';             
 		else
-		    markers[i].setVisible(false);
+            // markers[i].visible = false;
+            markers[i].getElement().style.display = 'none';             
 	    }
 	else
-	    markers[i].setVisible(false);
+        // markers[i].visible = false;
+        markers[i].getElement().style.display = 'none';         
     }
     debug('Number of markers: ' + markers.length);
 }
@@ -309,23 +384,31 @@ function showMarkers(day) {
 function showPolygons(day) {
     for (var i = 0; i < polygons.length; i++) {
 
-	var fromDate = new Date(polygons[i].fromDate);
-	var toDate = new Date(polygons[i].toDate);
+	var fromDate = new Date(polygons[i].options.fromDate);
+	var toDate = new Date(polygons[i].options.toDate);
 	
 	if (day == null) {
-	    if (~polygons[i].capEvent.indexOf(selectedEVENT) || selectedEVENT == null)
-		polygons[i].setVisible(true);
-	    else
-	    	polygons[i].setVisible(false);
+	    if (~polygons[i].options.capEvent.indexOf(selectedEVENT) || selectedEVENT == null) {
+            //polygons[i].visible = true;
+            polygons[i].getElement().style.display = 'inline'; 
+        } else {
+            //polygons[i].visible = false;
+            polygons[i].getElement().style.display = 'none';
+        } 
 	}
 	else if (fromDate.isBeforeDay(day) && toDate.isAfterDay(day)) {
-	    if (~polygons[i].capEvent.indexOf(selectedEVENT) || selectedEVENT == null)
-		polygons[i].setVisible(true);
-	    else
-		polygons[i].setVisible(false);
+	    if (~polygons[i].options.capEvent.indexOf(selectedEVENT) || selectedEVENT == null) {
+            // polygons[i].options.visible = true;
+            polygons[i].getElement().style.display = 'inline';
+        } else {
+            // 	polygons[i].options.visible = false;    
+            polygons[i].getElement().style.display = 'none';
+        }
+        
 	}
 	else
-	    polygons[i].setVisible(false);
+        // polygons[i].options.visible = false;
+        polygons[i].getElement().style.display = 'none';
     }
     debug('Number of polygons: ' + polygons.length);
 }
@@ -334,15 +417,23 @@ function processCAP(json) {
     debug("Loaded JSON: " + json);
 
     // Clear all markers
-    for (var i = 0; i < markers.length; i++) {
-	markers[i].setMap(null);
-    }
+    // for (var i = 0; i < markers.length; i++) {
+	// markers[i].setMap(null);
+    // }
+    // markers.clearLayers()
+    // clear all previous polygons and markers before adding new ones
+    mapPolygons.clearLayers();
+    mapMarkers.clearLayers();
     markers = [];
 
     // Clear all polygons
-    for (var i = 0; i < polygons.length; i++) {
-	polygons[i].setMap(null);
-    }
+    // for (var i = 0; i < polygons.length; i++) {
+	// polygons[i].setMap(null);
+    // }
+    // polygons.clearLayers()
+    // clear all previous polygons and markers before adding new ones
+    mapPolygons.clearLayers();
+    mapMarkers.clearLayers();
     polygons = [];
 
     for (var i=0;i<json.length;i++)
@@ -449,8 +540,8 @@ function DayControl(controlDiv, map) {
 
 	    setAllDaysUI.addEventListener('click', function() {
 		    selectedDAY = null;
-		    showMarkers();
-		    showPolygons();
+		    showMarkers(null);
+		    showPolygons(null);
 		    debug("Show all events.");
 		});
 	} // fi
@@ -526,8 +617,7 @@ function doCAP(dom) {
 	debug(parameters[v].querySelector('value').textContent);
     }
     
-    for (p=0;p<areapolygons.length;p++)
-	{
+    for (p=0;p<areapolygons.length;p++) {
 	    var color;
 	    var zindex;
 	    var latLngs = areapolygons[p].textContent.split(' ');
@@ -538,9 +628,9 @@ function doCAP(dom) {
 	    var i, latLng, path = [];
 	    
 	    for (i=0;i<latLngs.length-1;i++) {
-		var latLng = latLngs[i].split(',');
-		//console.log(latLng);
-		path.push(new google.maps.LatLng(parseFloat(latLng[0]), parseFloat(latLng[1])));
+            var latLng = latLngs[i].split(',');
+            // path.push(new google.maps.LatLng(parseFloat(latLng[0]), parseFloat(latLng[1])));
+            path.push(new L.LatLng(parseFloat(latLng[0]), parseFloat(latLng[1])));
 	    }
 
 	    switch(severity) {
@@ -568,294 +658,376 @@ function doCAP(dom) {
 		color = "#FFFFFF";
 	    }
 
-	    var areapolygon = new google.maps.Polygon({
-		    paths: path,
-		    fillColor: color,
-		    fillOpacity: alertOptions.polygonOptions.fillOpacity,
-		    strokeColor: color,
-		    strokeOpacity: alertOptions.polygonOptions.strokeOpacity,
-		    strokeWeight: alertOptions.polygonOptions.strokeWeight,
+	    // var areapolygon = new google.maps.Polygon({
+		//     paths: path,
+		//     fillColor: color,
+		//     fillOpacity: alertOptions.polygonOptions.fillOpacity,
+		//     strokeColor: color,
+		//     strokeOpacity: alertOptions.polygonOptions.strokeOpacity,
+		//     strokeWeight: alertOptions.polygonOptions.strokeWeight,
+		//     map: map,
+		//     visible: false,
+		//     fromDate: fromDateISO,
+		//     toDate: info.querySelector('expires').textContent,
+		//     capEvent: eventRaw,
+		//     polygonArea: google.maps.geometry.spherical.computeArea(path),
+		//     zIndex: zindex
+        // });
+        var areapolygon = L.polygon(path, {
+            paths: path,
+		    color: color,
+		    // fillOpacity: alertOptions.polygonOptions.fillOpacity,
+		    // strokeColor: color,
+		    // strokeOpacity: alertOptions.polygonOptions.strokeOpacity,
+		    // strokeWeight: alertOptions.polygonOptions.strokeWeight,
 		    map: map,
 		    visible: false,
 		    fromDate: fromDateISO,
 		    toDate: info.querySelector('expires').textContent,
 		    capEvent: eventRaw,
-		    polygonArea: google.maps.geometry.spherical.computeArea(path),
+            //polygonArea: google.maps.geometry.spherical.computeArea(path),
+            polygonArea: polygonArea(path),
 		    zIndex: zindex
-		});
-	    //debug(info.querySelector('event').textContent.split(' ')[0].trim());
+        })
+
+        // add polygons to a polygongroup
+        areapolygon.addTo(mapPolygons);
+        mapPolygons.addTo(map)
+
 	    polygons.push(areapolygon);
-	    
 	    var bounds = areapolygon.getBounds();
 
-	    if (google.maps.geometry.spherical.computeArea(path) > 35000000)
-		var markerLocation = testcircle(areapolygon);
-	    else
-	    	var markerLocation = bounds.getCenter();
+        // TODO
+	    // if (polygonArea(path) > 1)
+		// var markerLocation = testcircle(areapolygon);
+        // else
+        var markerLocation = bounds.getCenter();
 
 	    if (windSpeed > 0)
-		var icon = {
-		    url: "img/wind.php?speed="+windSpeed+"&direction="+windDirection, 
-		    scaledSize: new google.maps.Size(alertOptions.iconWidth, alertOptions.iconHeight), // scaled size
-		    anchor: new google.maps.Point(alertOptions.iconWidth/2, alertOptions.iconHeight/2)
-		};
+        var icon = L.icon({
+            iconUrl: 'img/wind.php?speed='+windSpeed+'&direction='+windDirection,
+            iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
+            iconAnchor: [alertOptions.iconWidth/2, alertOptions.iconHeight/2],
+            popupAnchor: [0, alertOptions.iconHeight]
+        });
+
 	    else if (waveHeight > 0) 
-		var icon = {
-		    url: "img/wave.php?height="+waveHeight, 
-		    scaledSize: new google.maps.Size(30, 30), // scaled size
-		    anchor: new google.maps.Point(0, alertOptions.iconHeight)
-		};
+        var icon = L.icon({
+            iconUrl: 'img/wave.php?height='+waveHeight,
+            iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
+            iconAnchor: [alertOptions.iconWidth/2, alertOptions.iconHeight/2],
+            popupAnchor: [0, alertOptions.iconHeight]
+        });
 
 	    else if (swellHeight > 0) 
-		var icon = {
-		    url: "img/wave.php?height="+swellHeight, 
-		    scaledSize: new google.maps.Size(30, 30), // scaled size
-		    anchor: new google.maps.Point(0, alertOptions.iconHeight)
-		};
+        var icon = L.icon({
+            iconUrl: 'img/wave.php?height='+swellHeight,
+            iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
+            iconAnchor: [alertOptions.iconWidth/2, alertOptions.iconHeight/2],
+            popupAnchor: [0, alertOptions.iconHeight]
+        });
 
 	    else if (surfHeight > 0) 
-		var icon = {
-		    url: "img/wave.php?height="+surfHeight, 
-		    scaledSize: new google.maps.Size(40, 40), // scaled size
-		    anchor: new google.maps.Point(0, alertOptions.iconHeight)
-		};
+        var icon = L.icon({
+            iconUrl: 'img/wave.php?height='+surfHeight,
+            iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
+            iconAnchor: [alertOptions.iconWidth/2, alertOptions.iconHeight/2],
+            popupAnchor: [0, alertOptions.iconHeight]
+        });
 
 	    // Earthquake
 	    else if (~eventRaw.indexOf("earthquake")) 
-		var icon = {
-		    url: "img/earthquake.png", 
-		    scaledSize: new google.maps.Size(alertOptions.iconWidth, alertOptions.iconHeight),
-		    anchor: new google.maps.Point(0, 0)
-		};
+        var icon = L.icon({
+            iconUrl: 'img/earthquake.png',
+            iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
+            iconAnchor: [alertOptions.iconWidth/2, alertOptions.iconHeight/2],
+            popupAnchor: [0, 0]
+        });
 
 	    // Fire
 	    else if (~eventRaw.indexOf("fire")) 
-		var icon = {
-		    url: "img/fire.png", 
-		    scaledSize: new google.maps.Size(alertOptions.iconWidth, alertOptions.iconHeight),
-		    anchor: new google.maps.Point(0, 0)
-		};
+        var icon = L.icon({
+            iconUrl: 'img/fire.png',
+            iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
+            iconAnchor: [alertOptions.iconWidth/2, alertOptions.iconHeight/2],
+            popupAnchor: [0, 0]
+        });
 
 	    // Drought
 	    else if (~eventRaw.indexOf("drought")) 
-		var icon = {
-		    url: "img/drought.png", 
-		    scaledSize: new google.maps.Size(alertOptions.iconWidth, alertOptions.iconHeight),
-		    anchor: new google.maps.Point(0, 0)
-		};
+        var icon = L.icon({
+            iconUrl: 'img/drought.png',
+            iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
+            iconAnchor: [alertOptions.iconWidth/2, alertOptions.iconHeight/2],
+            popupAnchor: [0, 0]
+        });
 
 	    else if (~eventRaw.indexOf("craft")) 
-		var icon = {
-		    url: "img/smallcraft.png", 
-		    scaledSize: new google.maps.Size(alertOptions.iconWidth, alertOptions.iconHeight),
-		    anchor: new google.maps.Point(0, 0)
-		};
+        var icon = L.icon({
+            iconUrl: 'img/smallcraft.png',
+            iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
+            iconAnchor: [alertOptions.iconWidth*2, alertOptions.iconHeight*2],
+            popupAnchor: [0, 0]
+        });
 
 	    else if (~eventRaw.indexOf("dust")) 
-		var icon = {
-		    url: "img/dust.png", 
-		    scaledSize: new google.maps.Size(alertOptions.iconWidth, alertOptions.iconHeight),
-		    anchor: new google.maps.Point(0, 0)
-		};
+		var icon = L.icon({
+            iconUrl: 'img/dust.png',
+            iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
+            iconAnchor: [alertOptions.iconWidth/2, alertOptions.iconHeight/2],
+            popupAnchor: [0, 0]
+        });
 
 	    else if (~eventRaw.indexOf("gale")) 
-		var icon = {
-		    url: "img/gale.png", 
-		    scaledSize: new google.maps.Size(alertOptions.iconWidth, alertOptions.iconHeight),
-		    anchor: new google.maps.Point(0, 0)
-		};
+		var icon = L.icon({
+            iconUrl: 'img/gale.png',
+            iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
+            iconAnchor: [alertOptions.iconWidth/2, alertOptions.iconHeight/2],
+            popupAnchor: [0, 0]
+        });
 
 	    else if (~eventRaw.indexOf("fog")) 
-		var icon = {
-		    url: "img/fog.png", 
-		    scaledSize: new google.maps.Size(alertOptions.iconWidth, alertOptions.iconHeight),
-		    anchor: new google.maps.Point(0, 0)
-		};
+		var icon = L.icon({
+            iconUrl: 'img/fog.png',
+            iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
+            iconAnchor: [alertOptions.iconWidth/2, alertOptions.iconHeight/2],
+            popupAnchor: [0, 0]
+        });
 
-
-            else if (~eventRaw.indexOf("flood"))
-                var icon = {
-                    url: "img/flood.png",
-		    scaledSize: new google.maps.Size(alertOptions.iconWidth, alertOptions.iconHeight), // scaled size,
-                    anchor: new google.maps.Point(alertOptions.iconWidth, 0)
-                };
+        else if (~eventRaw.indexOf("flood"))
+        var icon = L.icon({
+            iconUrl: 'img/flood.png',
+            iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
+            iconAnchor: [alertOptions.iconWidth/2, alertOptions.iconHeight/2],
+            popupAnchor: [0, 0]
+        });
 
 	    else if (~eventRaw.indexOf("frost")) 
-		var icon = {
-		    url: "img/frost.png", 
-		    scaledSize: new google.maps.Size(alertOptions.iconWidth, alertOptions.iconHeight),
-		    anchor: new google.maps.Point(0, 0)
-		};
+        var icon = L.icon({
+            iconUrl: 'img/frost.png',
+            iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
+            iconAnchor: [alertOptions.iconWidth/2, alertOptions.iconHeight/2],
+            popupAnchor: [0, 0]
+        });
 
 	    else if (~eventRaw.indexOf("heat")) 
-		var icon = {
-		    url: "img/temperature.png", 
-		    scaledSize: new google.maps.Size(alertOptions.iconWidth, alertOptions.iconHeight),
-		    anchor: new google.maps.Point(0, 0)
-		};
+        var icon = L.icon({
+            iconUrl: 'img/temperature.png',
+            iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
+            iconAnchor: [alertOptions.iconWidth/2, alertOptions.iconHeight/2],
+            popupAnchor: [0, 0]
+        });
 
 	    else if (~eventRaw.indexOf("temperature")) 
-		var icon = {
-		    url: "img/temperature.png", 
-		    scaledSize: new google.maps.Size(alertOptions.iconWidth, alertOptions.iconHeight),
-		    anchor: new google.maps.Point(0, 0)
-		};
-
-
+        var icon = L.icon({
+            iconUrl: 'img/temperature.png',
+            iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
+            iconAnchor: [alertOptions.iconWidth/2, alertOptions.iconHeight/2],
+            popupAnchor: [0, 0]
+        });
+        
 	    // Rainfall Icon
 	    else if (~eventRaw.indexOf("rain")) 
-		var icon = {
-		    url: "img/rainfall.png",
-		    scaledSize: new google.maps.Size(alertOptions.iconWidth, alertOptions.iconHeight), 
-		    anchor: new google.maps.Point(0, alertOptions.iconHeight)
-		};
+        var icon = L.icon({
+            iconUrl: 'img/trainfall.png',
+            iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
+            iconAnchor: [alertOptions.iconWidth/2, alertOptions.iconHeight/2],
+            popupAnchor: [alertOptions.iconWidth*2, alertOptions.iconHeight*2]
+        });
 
 	    // Tsunami Icon
 	    else if (~eventRaw.indexOf("tsunami")) 
-		var icon = {
-		    url: "img/tsunami.png", 
-		    scaledSize: new google.maps.Size(alertOptions.iconWidth, alertOptions.iconHeight),
-		    anchor: new google.maps.Point(0, 0)
-		};
+        var icon = L.icon({
+            iconUrl: 'img/tsunami.png',
+            iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
+            iconAnchor: [alertOptions.iconWidth/2, alertOptions.iconHeight/2],
+            popupAnchor: [0, 0]
+        });
 
 	    else if (~eventRaw.indexOf("tornado")) 
-		var icon = {
-		    url: "img/tornado.png", 
-		    scaledSize: new google.maps.Size(alertOptions.iconWidth, alertOptions.iconHeight),
-		    anchor: new google.maps.Point(0, 0)
-		};
+        var icon = L.icon({
+            iconUrl: 'img/tornado.png',
+            iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
+            iconAnchor: [alertOptions.iconWidth/2, alertOptions.iconHeight/2],
+            popupAnchor: [0, 0]
+        });
 
 	    else if (~eventRaw.indexOf("waterspout")) 
-		var icon = {
-		    url: "img/waterspout.png", 
-		    scaledSize: new google.maps.Size(alertOptions.iconWidth, alertOptions.iconHeight),
-		    anchor: new google.maps.Point(0, 0)
-		};
+        var icon = L.icon({
+            iconUrl: 'img/waterspout.png',
+            iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
+            iconAnchor: [alertOptions.iconWidth/2, alertOptions.iconHeight/2],
+            popupAnchor: [0, 0]
+        });
 
 
 	    else if (eventSelector == "volcanic") 
-		var icon = {
-		    url: "img/volcano.png", 
-		    scaledSize: new google.maps.Size(alertOptions.iconWidth, alertOptions.iconHeight), // scaled size
-		    anchor: new google.maps.Point(alertOptions.iconWidth,0)
-		};
+        var icon = L.icon({
+            iconUrl: 'img/volcano.png',
+            iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
+            iconAnchor: [alertOptions.iconWidth/2, alertOptions.iconHeight/2],
+            popupAnchor: [0, 0]
+        });
 
 	    else if (~eventRaw.indexOf("thunderstorm")) 
-		var icon = {
-		    url: "img/thunderstorm.png", 
-		    scaledSize: new google.maps.Size(alertOptions.iconWidth, alertOptions.iconHeight),
-		    anchor: new google.maps.Point(alertOptions.iconWidth, alertOptions.iconHeight)
-		};
+        var icon = L.icon({
+            iconUrl: 'img/thunderstorm.png',
+            iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
+            iconAnchor: [alertOptions.iconWidth/2, alertOptions.iconHeight/2],
+            popupAnchor: [0, 0]
+        });
 
 	    else if (~eventRaw.indexOf("hail")) 
-		var icon = {
-		    url: "img/hail.png", 
-		    scaledSize: new google.maps.Size(alertOptions.iconWidth, alertOptions.iconHeight),
-		    anchor: new google.maps.Point(alertOptions.iconWidth, alertOptions.iconHeight)
-		};
+        var icon = L.icon({
+            iconUrl: 'img/hail.png',
+            iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
+            iconAnchor: [alertOptions.iconWidth/2, alertOptions.iconHeight/2],
+            popupAnchor: [-0, 0]
+        });
 
 	    else if (~eventRaw.indexOf("hurricane")) 
-		var icon = {
-		    url: "img/tropical-hurricane.png", 
-		    scaledSize: new google.maps.Size(alertOptions.iconWidth, alertOptions.iconHeight),
-		    anchor: new google.maps.Point(alertOptions.iconWidth, alertOptions.iconHeight)
-		};
+        var icon = L.icon({
+            iconUrl: 'img/tropical-hurricane.png',
+            iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
+            iconAnchor: [alertOptions.iconWidth/2, alertOptions.iconHeight/2],
+            popupAnchor: [0, 0]
+        });
 
 	    else if (~eventRaw.indexOf("tropical storm")) 
-		var icon = {
-		    url: "img/tropical-storm.png", 
-		    scaledSize: new google.maps.Size(alertOptions.iconWidth, alertOptions.iconHeight),
-		    anchor: new google.maps.Point(26, 26)
-		};
+        var icon = L.icon({
+            iconUrl: 'img/tropical-storm.png',
+            iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
+            iconAnchor: [alertOptions.iconWidth/2, alertOptions.iconHeight/2],
+            popupAnchor: [0, 0]
+        });
 
 	    else if (~eventRaw.indexOf("depression")) 
-		var icon = {
-		    url: "img/tropical-depression.png", 
-		    scaledSize: new google.maps.Size(alertOptions.iconWidth, alertOptions.iconHeight),
-		    anchor: new google.maps.Point(12, 12)
-		};
+        var icon = L.icon({
+            iconUrl: 'img/tropical-depression.png',
+            iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
+            iconAnchor: [-20, -20],
+            popupAnchor: [20, 20]
+        });
 
 	    else if (~eventRaw.indexOf("tropical")) 
-		var icon = {
-		    url: "img/cyclone.png", 
-		    scaledSize: new google.maps.Size(alertOptions.iconWidth, alertOptions.iconHeight),
-		    anchor: new google.maps.Point(12, 12)
-		};
+        var icon = L.icon({
+            iconUrl: 'img/cyclone.png',
+            iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
+            iconAnchor: [alertOptions.iconWidth/2, alertOptions.iconHeight/2],
+            popupAnchor: [0, 0]
+        });
+        
 
-	    var marker;
+        var marker;
+        // limit the number of icons with really small polygons
+        if (icon != null) 
+        {
 
-	    if (icon != null ) 
-		{
+            // create a marker for polygon
+            // marker = new google.maps.Marker({
+            //     position: markerLocation,
+            //     map: map,
+            //     visible: false,
+            //     icon: icon,
+            //     fromDate: fromDateISO,
+            //     toDate: info.querySelector('expires').textContent,
+            //     capEvent: eventRaw,
+            //     zIndex: zindex
+            // });
+            marker = L.marker(markerLocation, 
+                {
+                    icon: icon,
+                    visible: false,
+                    icon: icon,
+                    fromDate: fromDateISO,
+                    toDate: info.querySelector('expires').textContent,
+                    capEvent: eventRaw,
+                    zIndex: zindex
+                })
+                marker.addTo(mapMarkers);
+                mapMarkers.addTo(map);
+        }
+        else
+        {
+            // create a marker for polygon
+            // marker = new google.maps.Marker({
+            //     position: markerLocation,
+            //     label: eventSelector.charAt(0).toUpperCase(),
+            //     map: map,
+            //     visible: false,
+            //     fromDate: fromDateISO,
+            //     toDate: info.querySelector('expires').textContent,
+            //     capEvent: eventRaw,
+            //     zIndex: zindex
+            // });
+            marker = L.marker(markerLocation, {icon: null})
+            marker.addTo(mapMarkers);
+            mapMarkers.addTo(map);
+        }
 
-		    // create a marker for polygon
-		    marker = new google.maps.Marker({
-			    position: markerLocation,
-			    map: map,
-			    visible: false,
-			    icon: icon,
-			    fromDate: fromDateISO,
-			    toDate: info.querySelector('expires').textContent,
-			    capEvent: eventRaw,
-			    zIndex: zindex
-			});
-		}
-	    else
-		{
-		    // create a marker for polygon
-		    marker = new google.maps.Marker({
-			    position: markerLocation,
-			    label: eventSelector.charAt(0).toUpperCase(),
-			    map: map,
-			    visible: false,
-			    fromDate: fromDateISO,
-			    toDate: info.querySelector('expires').textContent,
-			    capEvent: eventRaw,
-			    zIndex: zindex
-			});
-		}
+        //create an infowindow 
+        var sender;
+        if (info.querySelector('senderName'))
+        sender = info.querySelector('senderName').textContent;
+        else
+        sender = alert.querySelector('sender').textContent;
 
-	    markers.push(marker);
+        if (alert.querySelector('web'))
+        sender = '<a href="http://'+ dom.querySelector('web').textContent + '">'+sender+'</a>';
 
-	    //create an infowindow 
-	    var sender;
-	    if (info.querySelector('senderName'))
-		sender = info.querySelector('senderName').textContent;
-	    else
-		sender = alert.querySelector('sender').textContent;
+        $("#senderName").html(sender);
 
-	    if (alert.querySelector('web'))
-		sender = '<a href="http://'+ dom.querySelector('web').textContent + '">'+sender+'</a>';
+        if (dnow.getTime() > fromDate.getTime())
+        var active_str = '<i>' + t('Active for next') + ' <b>'+toDate.dateDiff()+'</b></i>';
+        else
+        var active_str = '';
 
-	    $("#senderName").html(sender);
+        // var infowindow = new google.maps.InfoWindow({
+        var content = '<h4 class="iw-title">' + info.querySelector('event').textContent + ' ' + t('for') + ' ' +info.querySelector('areaDesc').textContent +'</h4>'
+        + '<i>' + t('Valid from')+' <b>'+fromDate.toLocaleString()+'</b><br>'+ t('to') +' <b>'+toDate.toLocaleString()+'</b></i><br/>'
+        + active_str 
+        + '<p>' + ( info.querySelector('description') ? info.querySelector('description').textContent : "" )+'</p>'
+        + '<p><i>' + t('Issued by') + ' ' + sender
+        + ' '+  t('at') + ' '+d.toLocaleString()+' ('+d.dateDiff()+')</i></p>'
+        
 
-	    if (dnow.getTime() > fromDate.getTime())
-		var active_str = '<i>' + t('Active for next') + ' <b>'+toDate.dateDiff()+'</b></i>';
-	    else
-		var active_str = '';
+        marker.bindPopup(content).addTo(map)
+        markers.push(marker);
 
-	    var infowindow = new google.maps.InfoWindow({
-		    content: '<h4 class="iw-title">' + info.querySelector('event').textContent + ' ' + t('for') + ' ' +info.querySelector('areaDesc').textContent +'</h4>'
-		    + '<i>' + t('Valid from')+' <b>'+fromDate.toLocaleString()+'</b><br>'+ t('to') +' <b>'+toDate.toLocaleString()+'</b></i><br/>'
-		    + active_str 
-		    + '<p>' + ( info.querySelector('description') ? info.querySelector('description').textContent : "" )+'</p>'
-		    + '<p><i>' + t('Issued by') + ' ' + sender
-		    + ' '+  t('at') + ' '+d.toLocaleString()+' ('+d.dateDiff()+')</i></p>',
-		    
-		    maxWidth: 220
-		});
+		//     maxWidth: 220
+		// });
 
-	    google.maps.event.addListener(marker, 'click', function() {
-		    infowindow.open(map,this);
-		});
-	    google.maps.event.addListener(areapolygon, 'click', function () {
-		    infowindow.open(map,this);
-		}); 
+	    // google.map.event.addListener(marker, 'click', function() {
+		//     infowindow.open(map,this);
+		// });
+	    // google.maps.event.addListener(areapolygon, 'click', function () {
+		//     infowindow.open(map,this);
+        // }); 
 
 	} // for loop
-
 
     showMarkers();
     showPolygons();
     debug(events);
-  
 };    
+
+
+// http://www.mathopenref.com/coordpolygonarea2.html
+function polygonArea(path) { 
+
+    var numPoints = path.length
+    X = [];
+    Y = [];
+
+    for (var i =0; i < numPoints; i++) {
+        X.push(path[i].lat)
+        Y.push(path[i].lng)
+    }
+    area = 0;         // Accumulates area in the loop
+    j = numPoints-1;  // The last vertex is the 'previous' one to the first
+    for (i=0; i<numPoints; i++) { 
+        area = area +  (X[j]+X[i]) * (Y[j]-Y[i]); 
+        j = i;  //j is previous vertex to i
+    }
+    return Math.abs(area/2);
+}

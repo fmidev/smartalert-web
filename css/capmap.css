@@ -6,6 +6,31 @@ html, body {
 
 #map-canvas{
     height: 100%;
+    z-index: 1;
+}
+
+.leaflet-horizontalcenter {
+    position: absolute;
+    z-index: 1000;
+    pointer-events: none;
+    left: calc(50% - 160px); 
+}
+
+.leaflet-horizontallcenter .leaflet-control {
+    margin-bottom: 10px;
+}
+
+.leaflet-verticalcenter {
+    position: absolute;
+    z-index: 1000;
+    pointer-events: none;
+    top: 50%;
+    transform: translateY(-50%);
+    padding-top: 10px;
+}
+
+.leaflet-verticalcenter .leaflet-control {
+    margin-bottom: 10px;
 }
 
 #setDay0UI, #setDay1UI, #setDay2UI, #setAllDaysUI {
@@ -39,6 +64,35 @@ html, body {
     box-shadow: 0 2px 6px rgba(0,0,0,.3);
     padding: 5px;
     margin-bottom: 22px;
+    z-index: 100;
+    position: absolute;
+    bottom: 0;
+    left: calc(50% - 120px);
+}
+
+@media only screen and (max-width: 500px) {
+    #legend {
+        font-size: 12px;
+        margin-bottom: 40px; 
+    }
+
+    #setDay0Text, #setDay1Text, #setDay2Text, #setAllDaysText {
+        font-size: 12px;
+    }
+
+    #setDay0UI, #setDay1UI, #setDay2UI {
+        margin-bottom: 5px;
+    }
+
+    #setAllDaysUI {
+        margin-left: 0;
+    }
+
+    .leaflet-horizontalcenter {
+        margin-left: 50px;
+    }
+
+    
 }
 
 .colorLegend {
