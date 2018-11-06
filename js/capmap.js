@@ -538,7 +538,7 @@ function DayControl(controlDiv, map) {
 }
 
 function doCAP(dom) {
-
+    console.log('Selected day number: ',selectedDAY);
     debug("Loaded CAP:\n" + 
 	  "- Identifier: " + dom.querySelector('identifier').textContent + "\n"+
 	  //"- Web:     " + (dom.querySelector('web').textContent || "") + "\n"+
@@ -966,8 +966,8 @@ function doCAP(dom) {
 
 	} // for loop
 
-    showMarkers();
-    showPolygons();
+    showMarkers(selectedDAY);
+    showPolygons(selectedDAY);
     debug(events);
 };    
 
