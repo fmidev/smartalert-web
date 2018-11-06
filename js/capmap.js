@@ -952,12 +952,17 @@ function doCAP(dom) {
         + ' '+  t('at') + ' '+d.toLocaleString()+' ('+d.dateDiff()+')</i></p>'
         
 
+        // bind markers to marker and polygon
         marker.bindPopup(content,{
             maxWidth: 220
         }).addTo(map)
+        areapolygon.bindPopup(content,{
+            maxWidth: 220
+        }).addTo(map)
+
         markers.push(marker);
 
-	    // google.map.event.addListener(marker, 'click', function() {
+        // google.map.event.addListener(marker, 'click', function() {
 		//     infowindow.open(map,this);
 		// });
 	    // google.maps.event.addListener(areapolygon, 'click', function () {
