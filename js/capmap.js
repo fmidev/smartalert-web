@@ -231,7 +231,6 @@ function changeLanguage () {
 
     $(dayControll._container).html(dayControlDiv);
 
-    // console.log(dayControlDiv);
     // map.controls[google.maps.ControlPosition.TOP_CENTER].clear();
     // map.controls[google.maps.ControlPosition.TOP_CENTER].push(dayControlDiv);
 
@@ -308,15 +307,6 @@ function centerUserLocation () {
 		    lat: position.coords.latitude,
 		    lng: position.coords.longitude
 		};
-		
-		// var bluedot = {
-		//     path: 'M-6,0a6,6 0 1,0 12,0a6,6 0 1,0 -12,0',
-		//     fillColor: '#1E90FF',
-		//     fillOpacity: 0.7,
-		//     scale: 1,
-		//     strokeColor: 'blue',
-		//     strokeWeight: 1
-		// };
 
         var icon = L.icon({
             iconUrl: '../img/location.svg'
@@ -342,29 +332,23 @@ function showMarkers(day) {
 
 	if (polygons[i].options.polygonArea < alertOptions.areaLimitForMarkers)
 	    {
-        // markers[i].visible = false;
         markers[i].getElement().style.display = 'none'; 
 	    }
 	else if (day == null || day == 'undefined') 
 	    {
 		if (~polygons[i].options.capEvent.indexOf(selectedEVENT) || selectedEVENT == null)
-            // markers[i].visible = true;
             markers[i].getElement().style.display = 'inline'; 
 		else
-            // markers[i].visible = false;
             markers[i].getElement().style.display = 'none';             
 	    }
 	else if (fromDate.isBeforeDay(day) && toDate.isAfterDay(day))
 	    {
 		if (~polygons[i].options.capEvent.indexOf(selectedEVENT) || selectedEVENT == null)
-            // markers[i].visible = true;
             markers[i].getElement().style.display = 'inline';             
 		else
-            // markers[i].visible = false;
             markers[i].getElement().style.display = 'none';             
 	    }
 	else
-        // markers[i].visible = false;
         markers[i].getElement().style.display = 'none';         
     }
     debug('Number of markers: ' + markers.length);
@@ -378,25 +362,19 @@ function showPolygons(day) {
 	
 	if (day == null) {
 	    if (~polygons[i].options.capEvent.indexOf(selectedEVENT) || selectedEVENT == null) {
-            //polygons[i].visible = true;
             polygons[i].getElement().style.display = 'inline'; 
         } else {
-            //polygons[i].visible = false;
             polygons[i].getElement().style.display = 'none';
         } 
 	}
 	else if (fromDate.isBeforeDay(day) && toDate.isAfterDay(day)) {
 	    if (~polygons[i].options.capEvent.indexOf(selectedEVENT) || selectedEVENT == null) {
-            // polygons[i].options.visible = true;
             polygons[i].getElement().style.display = 'inline';
         } else {
-            // 	polygons[i].options.visible = false;    
             polygons[i].getElement().style.display = 'none';
         }
-        
 	}
 	else
-        // polygons[i].options.visible = false;
         polygons[i].getElement().style.display = 'none';
     }
     debug('Number of polygons: ' + polygons.length);
@@ -406,20 +384,12 @@ function processCAP(json) {
     debug("Loaded JSON: " + json);
 
     // Clear all markers
-    // for (var i = 0; i < markers.length; i++) {
-	// markers[i].setMap(null);
-    // }
-    // markers.clearLayers()
     // clear all previous polygons and markers before adding new ones
     mapPolygons.clearLayers();
     mapMarkers.clearLayers();
     markers = [];
 
     // Clear all polygons
-    // for (var i = 0; i < polygons.length; i++) {
-	// polygons[i].setMap(null);
-    // }
-    // polygons.clearLayers()
     // clear all previous polygons and markers before adding new ones
     mapPolygons.clearLayers();
     mapMarkers.clearLayers();
@@ -961,13 +931,6 @@ function doCAP(dom) {
         }).addTo(map)
 
         markers.push(marker);
-
-        // google.map.event.addListener(marker, 'click', function() {
-		//     infowindow.open(map,this);
-		// });
-	    // google.maps.event.addListener(areapolygon, 'click', function () {
-		//     infowindow.open(map,this);
-        // }); 
 
 	} // for loop
 
