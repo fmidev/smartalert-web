@@ -778,6 +778,33 @@ function doCAP(dom) {
             popupAnchor: [alertOptions.iconWidth*2, alertOptions.iconHeight*2]
         });
 
+        // Placeholder for snowfall
+        else if (~eventRaw.indexOf("snow"))
+        var icon = L.icon({
+            iconUrl: 'img/snow.png',
+            iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
+            iconAnchor: [alertOptions.iconWidth/2, alertOptions.iconHeight/2],
+            popupAnchor: [alertOptions.iconWidth*2, alertOptions.iconHeight*2]
+        });
+
+        // Placeholder for sleet
+        else if (~eventRaw.indexOf("sleet"))
+        var icon = L.icon({
+            iconUrl: 'img/snow.png',
+            iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
+            iconAnchor: [alertOptions.iconWidth/2, alertOptions.iconHeight/2],
+            popupAnchor: [alertOptions.iconWidth*2, alertOptions.iconHeight*2]
+        });
+
+        // Placeholder for snowfall
+        else if (~eventRaw.indexOf("wetsnow"))
+            var icon = L.icon({
+            iconUrl: 'img/snow.png',
+            iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
+            iconAnchor: [alertOptions.iconWidth/2, alertOptions.iconHeight/2],
+            popupAnchor: [alertOptions.iconWidth*2, alertOptions.iconHeight*2]
+        });
+
 	    // Tsunami Icon
 	    else if (~eventRaw.indexOf("tsunami")) 
         var icon = L.icon({
