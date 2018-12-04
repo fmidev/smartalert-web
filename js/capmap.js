@@ -772,7 +772,7 @@ function doCAP(dom) {
 	    // Rainfall Icon
 	    else if (~eventRaw.indexOf("rain")) 
         var icon = L.icon({
-            iconUrl: 'img/trainfall.png',
+            iconUrl: 'img/rainfall.png',
             iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
             iconAnchor: [alertOptions.iconWidth/2, alertOptions.iconHeight/2],
             popupAnchor: [alertOptions.iconWidth*2, alertOptions.iconHeight*2]
