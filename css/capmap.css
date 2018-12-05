@@ -30,17 +30,18 @@ html, body {
 }
 
 .leaflet-verticalcenter .leaflet-control {
-    margin-bottom: 10px;
+    margin-bottom: 15px;
 }
 
 #setDay0UI, #setDay1UI, #setDay2UI, #setAllDaysUI {
+    margin-right: 12px;
     background-color: #fff;
     border: 2px solid #fff;
     border-radius: 3px;
     box-shadow: 0 2px 6px rgba(0,0,0,.3);
     cursor: pointer;
     float: left;
-    margin-bottom: 22px;
+    margin-bottom: 15px;
     text-align: center;
 }
 
@@ -54,7 +55,14 @@ html, body {
 }
 
 #setDay1UI, #setDay2UI, #setAllDaysUI {
-    margin-left: 12px;
+    margin-right: 12px;
+}
+
+#legend-container {
+    width: 100%;
+    /* height: 30px; */
+    max-width: 400px; 
+    margin: 0 auto;
 }
 
 #legend {
@@ -65,34 +73,33 @@ html, body {
     padding: 5px;
     margin-bottom: 22px;
     z-index: 100;
+    width: 100%;
     max-width: 400px;
     position: absolute;
     bottom: 0;
-    left: calc(50% - 200px);
+    /* left: calc(50% - 130px); */
 }
 
 @media only screen and (max-width: 500px) {
-    #legend {
-        font-size: 12px;
-        margin-bottom: 40px; 
+    #legend, #legend-container {
+        max-width: 260px;
+        margin-bottom: 40px;
     }
+    
+}
 
-    #setDay0Text, #setDay1Text, #setDay2Text, #setAllDaysText {
-        font-size: 12px;
-    }
-
-    #setDay0UI, #setDay1UI, #setDay2UI {
-        margin-bottom: 5px;
-    }
-
-    #setAllDaysUI {
-        margin-left: 0;
-    }
-
+@media only screen and (max-width: 420px) {
     .leaflet-horizontalcenter {
-        margin-left: 50px;
+        max-width: 320px;
+        margin-left: 30px; 
     }
+}
 
+@media only screen and (max-width: 370px) {
+    .leaflet-horizontalcenter {
+        max-width: 320px;
+        margin-left: 50px; 
+    }
     
 }
 

@@ -20,6 +20,8 @@
     <script type="text/javascript" src="js/capmap.js"></script>
     <!-- Add translation files for required languages-->
     <script type="text/javascript" src="i18n/translations-en-US.js"></script>
+    <script type="text/javascript" src="i18n/translations-bi-VU.js"></script>
+
 
     <script type="text/javascript">
       $( document ).ready(function() {
@@ -33,32 +35,34 @@
 
   <body>
     <div id="map-canvas"></div>
-    <div id="legend">
-      <div id="eventSelect">
-        <!--Events shows automatically based on capmap-config.js settings -->
-        <select id="eventType">
-          <option value="">All Hazard Types</option>
-        </select>
-        <!-- Languages shows automatically based on loaded translations -->
-        <select id="lang" style="margin-top: 10px;">
-          <option value="en-US">English</option>
-        </select>
+    <div id="legend-container">
+      <div id="legend">
+        <div id="eventSelect">
+          <!--Events shows automatically based on capmap-config.js settings -->
+          <select id="eventType">
+            <option value="">All Hazard Types</option>
+          </select>
+          <!-- Languages shows automatically based on loaded translations -->
+          <select id="lang" style="margin-top: 10px;">
+            <option value="en-US">English</option>
+          </select>
+        </div>
+        <table align="center"  style="margin-top: 10px;">
+          <tr>
+            <td class="colorLegend" id="levelNone"></td>
+            <td id="levelNoneText">no awareness needed</td>
+            <td class="colorLegend" id="levelOrange"></td>
+            <td id="levelOrangeText">dangerous</td>
+          </tr>
+          <tr>
+            <td class="colorLegend" id="levelYellow"></td>
+            <td id="levelYellowText">potentially dangerous</td>
+            <td class="colorLegend" id="levelRed"></td>
+            <td id="levelRedText">very dangerous</td>
+          </tr>
+        </table>
+        <div id="senderName"  style="margin-top: 10px;"></div>
       </div>
-      <table align="center"  style="margin-top: 10px;">
-        <tr>
-          <td class="colorLegend" id="levelNone"></td>
-          <td id="levelNoneText">no awareness needed</td>
-          <td class="colorLegend" id="levelOrange"></td>
-          <td id="levelOrangeText">dangerous</td>
-        </tr>
-        <tr>
-          <td class="colorLegend" id="levelYellow"></td>
-          <td id="levelYellowText">potentially dangerous</td>
-          <td class="colorLegend" id="levelRed"></td>
-          <td id="levelRedText">very dangerous</td>
-        </tr>
-      </table>
-      <div id="senderName"  style="margin-top: 10px;"></div>
     </div>
   </body>
 </html>
