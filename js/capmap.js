@@ -149,7 +149,7 @@ function initialize () {
     // https://www.mapbox.com/account/
 
     var Esri_WorldTopoMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors, <a href="http://meteo.kg">'+alertOptions.attribution+'</a>',
+        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors, <a href="'+alertOptions.attributionLink+'">'+alertOptions.attribution+'</a>',
         maxZoom: 18,
         id: 'mapbox.streets',
     }).addTo(map);
@@ -638,9 +638,9 @@ function doCAP(dom) {
         // add polygons to a polygongroup
         areapolygon.addTo(mapPolygons);
         mapPolygons.addTo(map)
-
-	    polygons.push(areapolygon);
-	    var bounds = areapolygon.getBounds();
+	
+	polygons.push(areapolygon);
+	var bounds = areapolygon.getBounds();
 
         // TODO
 	    // if (polygonArea(path) > 1)
@@ -831,8 +831,8 @@ function doCAP(dom) {
             popupAnchor: [alertOptions.iconWidth*1.24, alertOptions.iconHeight]
         });
 
-	    // Tsunami Icon
-	    else if (~eventRaw.indexOf("tsunami")) 
+	// Tsunami Icon
+	else if (~eventRaw.indexOf("tsunami")) 
         var icon = L.icon({
             iconUrl: 'img/tsunami.png',
             iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
@@ -857,7 +857,7 @@ function doCAP(dom) {
         });
 
 
-	    else if (eventSelector == "volcanic") 
+	else if (eventSelector == "volcanic") 
         var icon = L.icon({
             iconUrl: 'img/volcano.png',
             iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
@@ -865,7 +865,7 @@ function doCAP(dom) {
             popupAnchor: [alertOptions.iconWidth*(-0.5), alertOptions.iconWidth*(-0.5)]
         });
 
-	    else if (~eventRaw.indexOf("thunderstorm")) 
+	else if (~eventRaw.indexOf("thunderstorm")) 
         var icon = L.icon({
             iconUrl: 'img/thunderstorm.png',
             iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
@@ -873,7 +873,15 @@ function doCAP(dom) {
             popupAnchor: [-10, -10]
         });
 
-	    else if (~eventRaw.indexOf("storm")) 
+	else if (~eventRaw.indexOf("lightning")) 
+        var icon = L.icon({
+            iconUrl: 'img/thunderstorm.png',
+            iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
+            iconAnchor: [0, 0],
+            popupAnchor: [0, 0]
+        });
+
+	else if (~eventRaw.indexOf("storm")) 
         var icon = L.icon({
             iconUrl: 'img/thunderstorm.png',
             iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
@@ -881,7 +889,7 @@ function doCAP(dom) {
             popupAnchor: [-30, -30]
         });
 
-	    else if (~eventRaw.indexOf("hail")) 
+	else if (~eventRaw.indexOf("hail")) 
         var icon = L.icon({
             iconUrl: 'img/hail.png',
             iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
@@ -889,7 +897,7 @@ function doCAP(dom) {
             popupAnchor: [15, 15]
         });
 
-	    else if (~eventRaw.indexOf("hurricane")) 
+	else if (~eventRaw.indexOf("hurricane")) 
         var icon = L.icon({
             iconUrl: 'img/tropical-hurricane.png',
             iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
@@ -897,7 +905,7 @@ function doCAP(dom) {
             popupAnchor: [10, 40]
         });
 
-	    else if (~eventRaw.indexOf("tropical storm")) 
+	else if (~eventRaw.indexOf("tropical storm")) 
         var icon = L.icon({
             iconUrl: 'img/tropical-storm.png',
             iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
@@ -913,7 +921,7 @@ function doCAP(dom) {
             popupAnchor: [-20, -20]
         });
 
-	    else if (~eventRaw.indexOf("tropical")) 
+	else if (~eventRaw.indexOf("tropical")) 
         var icon = L.icon({
             iconUrl: 'img/cyclone.png',
             iconSize: [alertOptions.iconWidth*1.2, alertOptions.iconHeight*1.2],
