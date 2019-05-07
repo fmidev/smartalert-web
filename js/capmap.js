@@ -974,10 +974,12 @@ function doCAP(dom) {
 
 	var fromDateFormatted = fromDate.toLocaleString();
 	var toDateFormatted = toDate.toLocaleString();
+	var dFormatted = d.toLocaleString();
 	if(alertOptions.dateFormat === "long") {
 	    var lang = selectedLANGUAGE.split("-")[0];
-	    fromDateFormatted = moment(fromDate).locale(lang).format('MMMM Do YYYY, HH:mm:ss');
-	    toDateFormatted = moment(toDate).locale(lang).format('MMMM Do YYYY, HH:mm:ss');
+	    fromDateFormatted = moment(fromDate).locale(lang).format(alertOptions.dateFormatString);
+	    toDateFormatted = moment(toDate).locale(lang).format(alertOptions.dateFormatString);
+	    dFormatted = moment(d).locale(lang).format(alertOptions.dateFormatString);
 	}
 
         // var infowindow = new google.maps.InfoWindow({
@@ -986,7 +988,7 @@ function doCAP(dom) {
         + active_str 
         + '<p>' + ( info.querySelector('description') ? info.querySelector('description').textContent : "" )+'</p>'
         + '<p><i>' + t('Issued by') + ' ' + sender
-        + ' '+  t('at') + ' '+d.toLocaleString()+' ('+d.dateDiff()+')</i></p>'
+        + ' '+  t('at') + ' '+dFormatted+' ('+d.dateDiff()+')</i></p>'
         
 
         // bind markers to marker and polygon
