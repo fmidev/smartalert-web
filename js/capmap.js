@@ -510,7 +510,6 @@ function DayControl(controlDiv, map) {
 }
 
 function doCAP(dom) {
-    console.log('Selected day number: ',selectedDAY);
     debug("Loaded CAP:\n" + 
 	  "- Identifier: " + dom.querySelector('identifier').textContent + "\n"+
 	  //"- Web:     " + (dom.querySelector('web').textContent || "") + "\n"+
@@ -647,7 +646,6 @@ function doCAP(dom) {
 		// var markerLocation = testcircle(areapolygon);
         // else
         var markerLocation = bounds.getCenter();
-        console.log('event: ',eventRaw);
 
 	if (windSpeed > 0)
         var icon = L.icon({
@@ -764,14 +762,6 @@ function doCAP(dom) {
             popupAnchor: [0, 0]
         });
 
-	else if (~eventRaw.indexOf("extreme")) 
-        var icon = L.icon({
-            iconUrl: 'img/cold.png',
-            iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-            iconAnchor: [-5, 5],
-            popupAnchor: [-5, 5],
-        });
-
 	else if (~eventRaw.indexOf("cold")) 
         var icon = L.icon({
             iconUrl: 'img/cold.png',
@@ -825,7 +815,7 @@ function doCAP(dom) {
 
         else if (~eventRaw.indexOf("wind"))
             var icon = L.icon({
-            iconUrl: 'img/strong-wind.png',
+            iconUrl: 'img/gale.png',
             iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
             iconAnchor: [-5, -5],
             popupAnchor: [-5, -5]
@@ -883,7 +873,7 @@ function doCAP(dom) {
 
 	else if (~eventRaw.indexOf("storm")) 
         var icon = L.icon({
-            iconUrl: 'img/thunderstorm.png',
+            iconUrl: 'img/gale.png',
             iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
             iconAnchor: [-5, -5],
             popupAnchor: [-5, -5]
