@@ -749,7 +749,7 @@ function doCAP(dom) {
 	else if (~eventRaw.indexOf("frost")) 
         var icon = L.icon({
             iconUrl: 'img/frost.png',
-            iconSize: [alertOptions.iconWidth*2.5, alertOptions.iconHeight*2.5],
+            iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
             iconAnchor: [5, -5],
             popupAnchor: [-5, 5],
         });
