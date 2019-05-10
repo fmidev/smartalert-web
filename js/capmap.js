@@ -70,7 +70,7 @@ Date.prototype.isAfterDay = function(day) {
     d.setHours(0);
     d.setMinutes(0);
     d.setSeconds(0);
-    d.setMilliseconds(000);
+    d.setMilliseconds(0);
 
     debug("After check: " + this + " > " + d);
 
