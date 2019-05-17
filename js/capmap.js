@@ -6,6 +6,8 @@ var polygons = [];
 var mapMarkers = L.layerGroup();
 var mapPolygons = L.layerGroup();
 var markerLocations = [];
+var xDisplacement = 0;
+var xDisplacementValue = 0;
 var languages = [];
 var events = [];
 var selectedDAY = null;
@@ -397,13 +399,12 @@ function processCAP(json) {
     polygons = [];
     
     if(json !== null) {
-      for (var i=0;i<json.length;i++)
-	{
-	    debug("Loading CAP file: " + json[i]);
-	    $.get(json[i], function( data ) {
-		    doCAP(data);
-		});    
-	}
+        for (var i=0;i<json.length;i++) {
+            debug("Loading CAP file: " + json[i]);
+            $.get(json[i], function( data ) {
+                doCAP(data);
+            });
+        }
     }
 }
 
@@ -511,6 +512,8 @@ function DayControl(controlDiv, map) {
 }
 
 function doCAP(dom) {
+    xDisplacement = 0;
+    xDisplacementValue = 0;
     debug("Loaded CAP:\n" + 
 	  "- Identifier: " + dom.querySelector('identifier').textContent + "\n"+
 	  //"- Web:     " + (dom.querySelector('web').textContent || "") + "\n"+
@@ -644,45 +647,53 @@ function doCAP(dom) {
         areapolygon.addTo(mapPolygons);
         mapPolygons.addTo(map)
 	
-	polygons.push(areapolygon);
-	var bounds = areapolygon.getBounds();
+	    polygons.push(areapolygon);
+	    var bounds = areapolygon.getBounds();
 
         // TODO
 	    // if (polygonArea(path) > 1)
 		// var markerLocation = testcircle(areapolygon);
         // else
         var markerLocation = bounds.getCenter();
+        var test = parseFloat(markerLocation['lat']).toFixed(4)+" "+parseFloat(markerLocation['lng']).toFixed(4);
+
+        var value = coordinatesExist(markerLocations, test)
+        if(alertOptions.polygonOptions.preventSymbolOverlapping === true)
+        xDisplacement = (alertOptions.iconWidth+5)*value
+        else
+        xDisplacement = 0
+        markerLocations.push(test);
 
 	if (windSpeed > 0)
         var icon = L.icon({
             iconUrl: 'img/wind.php?speed='+windSpeed+'&direction='+windDirection,
             iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-            iconAnchor: [3, -3],
-            popupAnchor: [-3, 3]
+            iconAnchor: [alertOptions.iconWidth/2 + xDisplacement,  alertOptions.iconWidth/2],
+            popupAnchor: [0, 0]
         });
 
 	else if (waveHeight > 0) 
         var icon = L.icon({
             iconUrl: 'img/wave.php?height='+waveHeight,
             iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-            iconAnchor: [-3, 3],
-            popupAnchor: [3, -3]
+            iconAnchor: [alertOptions.iconWidth/2 + xDisplacement,  alertOptions.iconWidth/2],
+            popupAnchor: [0, 0]
         });
 
 	else if (swellHeight > 0) 
         var icon = L.icon({
             iconUrl: 'img/wave.php?height='+swellHeight,
             iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-            iconAnchor: [5, 5],
-            popupAnchor: [5, 5],
+            iconAnchor: [alertOptions.iconWidth/2 + xDisplacement,  alertOptions.iconWidth/2],
+            popupAnchor: [0, 0]
         });
 
 	else if (surfHeight > 0) 
         var icon = L.icon({
             iconUrl: 'img/wave.php?height='+surfHeight,
             iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-            iconAnchor: [-5, 0],
-            popupAnchor: [-5, 0]
+            iconAnchor: [alertOptions.iconWidth/2 + xDisplacement,  alertOptions.iconWidth/2],
+            popupAnchor: [0, 0]
         });
 
 	// Earthquake
@@ -690,8 +701,8 @@ function doCAP(dom) {
         var icon = L.icon({
             iconUrl: 'img/earthquake.png',
             iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-            iconAnchor: [0, -10],
-            popupAnchor: [0, -10]
+            iconAnchor: [alertOptions.iconWidth/2 + xDisplacement,  alertOptions.iconWidth/2],
+            popupAnchor: [0, 0]
         });
 
 	// Fire
@@ -699,7 +710,7 @@ function doCAP(dom) {
         var icon = L.icon({
             iconUrl: 'img/fire.png',
             iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-            iconAnchor: [0, 0],
+            iconAnchor: [alertOptions.iconWidth/2 + xDisplacement,  alertOptions.iconWidth/2],
             popupAnchor: [0, 0]
         });
 
@@ -708,39 +719,39 @@ function doCAP(dom) {
         var icon = L.icon({
             iconUrl: 'img/drought.png',
             iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-            iconAnchor: [5, 0],
-            popupAnchor: [5, 0]
+            iconAnchor: [alertOptions.iconWidth/2 + xDisplacement,  alertOptions.iconWidth/2],
+            popupAnchor: [0, 0]
         });
 
 	else if (~eventRaw.indexOf("craft")) 
         var icon = L.icon({
             iconUrl: 'img/smallcraft.png',
             iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-            iconAnchor: [5, -5],
-            popupAnchor: [5, -5]
+            iconAnchor: [alertOptions.iconWidth/2 + xDisplacement,  alertOptions.iconWidth/2],
+            popupAnchor: [0, 0]
         });
 
 	else if (~eventRaw.indexOf("dust")) 
 	    var icon = L.icon({
             iconUrl: 'img/dust.png',
             iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-            iconAnchor: [-5, 0],
-            popupAnchor: [-5, 0]
+            iconAnchor: [alertOptions.iconWidth/2 + xDisplacement,  alertOptions.iconWidth/2],
+            popupAnchor: [0, 0]
         });
 
 	else if (~eventRaw.indexOf("gale")) 
 	    var icon = L.icon({
             iconUrl: 'img/gale.png',
             iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-            iconAnchor: [3, 3],
-            popupAnchor: [3, 3]
+            iconAnchor: [alertOptions.iconWidth/2 + xDisplacement,  alertOptions.iconWidth/2],
+            popupAnchor: [0, 0]
         });
 
 	else if (~eventRaw.indexOf("fog")) 
 	    var icon = L.icon({
             iconUrl: 'img/fog.png',
             iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-            iconAnchor: [0, 0],
+            iconAnchor: [alertOptions.iconWidth/2 + xDisplacement,  alertOptions.iconWidth/2],
             popupAnchor: [0, 0]
         });
 
@@ -748,23 +759,23 @@ function doCAP(dom) {
         var icon = L.icon({
             iconUrl: 'img/flood.png',
             iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-            iconAnchor: [-5, 5],
-            popupAnchor: [-5, 5]
+            iconAnchor: [alertOptions.iconWidth/2 + xDisplacement,  alertOptions.iconWidth/2],
+            popupAnchor: [0, 0]
         });
 
 	else if (~eventRaw.indexOf("frost")) 
         var icon = L.icon({
             iconUrl: 'img/frost.png',
             iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-            iconAnchor: [5, -5],
-            popupAnchor: [-5, 5],
+            iconAnchor: [alertOptions.iconWidth/2 + xDisplacement,  alertOptions.iconWidth/2],
+            popupAnchor: [0, 0]
         });
 
 	else if (~eventRaw.indexOf("heat")) 
         var icon = L.icon({
             iconUrl: 'img/temperature.png',
             iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-            iconAnchor: [0, 0],
+            iconAnchor: [alertOptions.iconWidth/2 + xDisplacement,  alertOptions.iconWidth/2],
             popupAnchor: [0, 0]
         });
 
@@ -772,15 +783,15 @@ function doCAP(dom) {
         var icon = L.icon({
             iconUrl: 'img/cold.png',
             iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-            iconAnchor: [-5, 0],
-            popupAnchor: [-5, 0]
+            iconAnchor: [alertOptions.iconWidth/2 + xDisplacement,  alertOptions.iconWidth/2],
+            popupAnchor: [0, 0]
         });
 
 	else if (~eventRaw.indexOf("temperature")) 
         var icon = L.icon({
             iconUrl: 'img/temperature.png',
             iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-            iconAnchor: [0, 0],
+            iconAnchor: [alertOptions.iconWidth/2 + xDisplacement,  alertOptions.iconWidth/2],
             popupAnchor: [0, 0]
         });
         
@@ -789,15 +800,15 @@ function doCAP(dom) {
         var icon = L.icon({
             iconUrl: 'img/rainfall.png',
             iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-            iconAnchor: [5, -5],
-            popupAnchor: [5, -5],
+            iconAnchor: [alertOptions.iconWidth/2 + xDisplacement,  alertOptions.iconWidth/2],
+            popupAnchor: [0, 0]
         });
 
         else if (~eventRaw.indexOf("snow"))
         var icon = L.icon({
             iconUrl: 'img/snow.png',
             iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-            iconAnchor: [0, 0],
+            iconAnchor: [alertOptions.iconWidth/2 + xDisplacement,  alertOptions.iconWidth/2],
             popupAnchor: [0, 0]
         });
 
@@ -806,8 +817,8 @@ function doCAP(dom) {
         var icon = L.icon({
             iconUrl: 'img/sleet.png',
             iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-            iconAnchor: [-5, -5],
-            popupAnchor: [-5, -5],
+            iconAnchor: [alertOptions.iconWidth/2 + xDisplacement,  alertOptions.iconWidth/2],
+            popupAnchor: [0, 0]
         });
 
         // Placeholder for snowfall
@@ -815,16 +826,16 @@ function doCAP(dom) {
         var icon = L.icon({
             iconUrl: 'img/snow.png',
             iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-            iconAnchor: [5, 5],
-            popupAnchor: [5, 5]
+            iconAnchor: [alertOptions.iconWidth/2 + xDisplacement,  alertOptions.iconWidth/2],
+            popupAnchor: [0, 0]
         });
 
         else if (~eventRaw.indexOf("wind"))
             var icon = L.icon({
             iconUrl: 'img/gale.png',
             iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-            iconAnchor: [-5, -5],
-            popupAnchor: [-5, -5]
+            iconAnchor: [alertOptions.iconWidth/2 + xDisplacement,  alertOptions.iconWidth/2],
+            popupAnchor: [0, 0]
         });
 
 	// Tsunami Icon
@@ -832,15 +843,15 @@ function doCAP(dom) {
         var icon = L.icon({
             iconUrl: 'img/tsunami.png',
             iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-            iconAnchor: [-5, 5],
-            popupAnchor: [-5, 5]
+            iconAnchor: [alertOptions.iconWidth/2 + xDisplacement,  alertOptions.iconWidth/2],
+            popupAnchor: [0, 0]
         });
 
 	else if (~eventRaw.indexOf("tornado")) 
         var icon = L.icon({
             iconUrl: 'img/tornado.png',
             iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-            iconAnchor: [0, 0],
+            iconAnchor: [alertOptions.iconWidth/2 + xDisplacement,  alertOptions.iconWidth/2],
             popupAnchor: [0, 0]
         });
 
@@ -848,8 +859,8 @@ function doCAP(dom) {
         var icon = L.icon({
             iconUrl: 'img/waterspout.png',
             iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-            iconAnchor: [-5, -5],
-            popupAnchor: [-5, -5]
+            iconAnchor: [alertOptions.iconWidth/2 + xDisplacement,  alertOptions.iconWidth/2],
+            popupAnchor: [0, 0]
         });
 
 
@@ -857,23 +868,23 @@ function doCAP(dom) {
         var icon = L.icon({
             iconUrl: 'img/volcano.png',
             iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-            iconAnchor: [alertOptions.iconWidth*(-0.5), alertOptions.iconHeight*(-0.5)],
-            popupAnchor: [alertOptions.iconWidth*(-0.5), alertOptions.iconWidth*(-0.5)]
+            iconAnchor: [alertOptions.iconWidth/2 + xDisplacement,  alertOptions.iconWidth/2],
+            popupAnchor: [0, 0]
         });
 
 	else if (~eventRaw.indexOf("thunderstorm")) 
         var icon = L.icon({
             iconUrl: 'img/thunderstorm.png',
             iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-            iconAnchor: [5, -5],
-            popupAnchor: [5, -5]
+            iconAnchor: [alertOptions.iconWidth/2 + xDisplacement,  alertOptions.iconWidth/2],
+            popupAnchor: [0, 0]
         });
 
 	else if (~eventRaw.indexOf("lightning")) 
         var icon = L.icon({
             iconUrl: 'img/thunderstorm.png',
             iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-            iconAnchor: [0, 0],
+            iconAnchor: [alertOptions.iconWidth/2 + xDisplacement,  alertOptions.iconWidth/2],
             popupAnchor: [0, 0]
         });
 
@@ -881,15 +892,15 @@ function doCAP(dom) {
         var icon = L.icon({
             iconUrl: 'img/gale.png',
             iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-            iconAnchor: [-5, -5],
-            popupAnchor: [-5, -5]
+            iconAnchor: [alertOptions.iconWidth/2 + xDisplacement,  alertOptions.iconWidth/2],
+            popupAnchor: [0, 0]
         });
 
 	else if (~eventRaw.indexOf("hail")) 
         var icon = L.icon({
             iconUrl: 'img/hail.png',
             iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-            iconAnchor: [0, 0],
+            iconAnchor: [alertOptions.iconWidth/2 + xDisplacement,  alertOptions.iconWidth/2],
             popupAnchor: [0, 0]
         });
 
@@ -897,15 +908,15 @@ function doCAP(dom) {
         var icon = L.icon({
             iconUrl: 'img/tropical-hurricane.png',
             iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-            iconAnchor: [10, 10],
-            popupAnchor: [10, 10]
+            iconAnchor: [alertOptions.iconWidth/2 + xDisplacement,  alertOptions.iconWidth/2],
+            popupAnchor: [0, 0]
         });
 
 	else if (~eventRaw.indexOf("tropical storm")) 
         var icon = L.icon({
             iconUrl: 'img/tropical-storm.png',
             iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-            iconAnchor: [0, 0],
+            iconAnchor: [alertOptions.iconWidth/2 + xDisplacement,  alertOptions.iconWidth/2],
             popupAnchor: [0, 0]
         });
 
@@ -913,15 +924,15 @@ function doCAP(dom) {
         var icon = L.icon({
             iconUrl: 'img/tropical-depression.png',
             iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-            iconAnchor: [5, -5],
-            popupAnchor: [5, -5]
+            iconAnchor: [alertOptions.iconWidth/2 + xDisplacement,  alertOptions.iconWidth/2],
+            popupAnchor: [0, 0]
         });
 
 	else if (~eventRaw.indexOf("tropical")) 
         var icon = L.icon({
             iconUrl: 'img/cyclone.png',
             iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-            iconAnchor: [3, 3],
+            iconAnchor: [alertOptions.iconWidth/2 + xDisplacement,  alertOptions.iconWidth/2],
             popupAnchor: [0, 0]
         });
         
@@ -1033,4 +1044,14 @@ function polygonArea(path) {
         j = i;  //j is previous vertex to i
     }
     return Math.abs(area/2);
+}
+
+function coordinatesExist(array, value) {
+    var k = 0;
+    for(i=0; i<array.length; i++) {
+        if(array[i] === value) {
+            k = k+1;
+        }
+    }
+    return k;
 }
