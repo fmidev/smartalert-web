@@ -5,6 +5,7 @@ var markers = [];
 var polygons = [];
 var mapMarkers = L.layerGroup();
 var mapPolygons = L.layerGroup();
+var markerLocations = [];
 var languages = [];
 var events = [];
 var selectedDAY = null;
@@ -579,7 +580,8 @@ function doCAP(dom) {
     
     for (p=0;p<areapolygons.length;p++) {
 	    var color;
-	    var zindex;
+        var zindex;
+        var opacity;
 	    var latLngs = areapolygons[p].textContent.split(' ');
 
 	    //debug(latLngs);
@@ -596,17 +598,20 @@ function doCAP(dom) {
 	    case "Extreme":
 		// Red
 		color = "#FF0000";
-		zindex = 4;
+        zindex = 4;
+        opacity = 0.4;
 		break;
 	    case "Severe":
 		// Orange
 		color = "#FFA500";
-		zindex = 3;
+        zindex = 3;
+        opacity = 0.15;       
 		break;
 	    case "Moderate":
 		// Yellow
 		color = "#FFFF00";
-		zindex = 2;
+        zindex = 2;
+        opacity = 0.1;       
 		break;
 	    case 'Minor':
 		// Green
@@ -614,13 +619,14 @@ function doCAP(dom) {
 		zindex = 1;
 		break;
 	    default:
-		color = "#FFFFFF";
+        color = "#FFFFFF";
+        opacity = 0.02;
         }
 
         var areapolygon = L.polygon(path, {
             paths: path,
 		    color: color,
-		    fillOpacity: alertOptions.polygonOptions.fillOpacity,
+		    fillOpacity: alertOptions.polygonOptions.fillOpacity * opacity,
 		    strokeColor: color,
 		    strokeOpacity: alertOptions.polygonOptions.strokeOpacity,
 		    strokeWeight: alertOptions.polygonOptions.strokeWeight,
