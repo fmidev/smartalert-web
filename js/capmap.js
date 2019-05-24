@@ -18,12 +18,6 @@ var nameLayer
 
 // Remember previous state
 var selectedLANGUAGE = localStorage.getItem('userLanguage') ? localStorage.getItem('userLanguage') : alertOptions.defaultLanguage
-// if (translations[selectedLANGUAGE] == null)
-// {
-//    selectedLANGUAGE = alertOptions.defaultLanguage;
-//    localStorage.setItem("userLanguage",selectedLANGUAGE);
-// }
-// selectedLANGUAGE = "en-BS";
 var selectedEVENT = localStorage.getItem('userEventType') ? localStorage.getItem('userEventType') : ''
 
 function debug (str) {
@@ -37,14 +31,6 @@ function debug (str) {
 function t (key) {
   if (translations[selectedLANGUAGE][key] != null) { return translations[selectedLANGUAGE][key] } else { return key }
 }
-
-// if (!google.maps.Polygon.prototype.getBounds) {
-//     google.maps.Polygon.prototype.getBounds=function(){
-// 	var bounds = new google.maps.LatLngBounds()
-// 	this.getPath().forEach(function(element,index){bounds.extend(element)})
-// 	return bounds
-//     }
-// }
 
 Date.prototype.isBeforeDay = function (day) {
   var d = new Date()
@@ -95,19 +81,6 @@ Date.prototype.dateDiff = function () {
 }
 
 function initialize () {
-  // var mapOptions = {
-  // zoom: alertOptions.zoom,
-  // center: alertOptions.center,
-  // mapTypeId: google.maps.MapTypeId.TERRAIN,
-  // mapTypeControl: false,
-  // streetViewControl: false,
-  // scaleControl: true,
-  // zoomControl: true,
-  // zoomControlOptions: {
-  //     position: google.maps.ControlPosition.RIGHT_CENTER
-  // },
-  // };
-
   map = L.map('map-canvas', {
     zoom: alertOptions.zoom,
     fullscreenControl: true,
@@ -118,11 +91,6 @@ function initialize () {
 
   // user location disabled
   if (alertOptions.useLocation == true) { centerUserLocation() }
-
-  // map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-
-  // map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(document.getElementById('legend'));
-  // map.fitBounds(alertOptions.bounds);
 
   // mapbox access token
   // https://www.mapbox.com/account/
@@ -165,8 +133,6 @@ function initialize () {
   if (Object.keys(translations).length < 2) { $('#lang').css('display', 'none') }
 
   updateEventSelect()
-  //    $( "#eventType").on('change', changeLanguage );
-
   setInterval(updateData, alertOptions.refresh * 1000)
   changeLanguage()
 }
@@ -208,9 +174,6 @@ function changeLanguage () {
   dayControll._container.style['border'] = 'none'
 
   $(dayControll._container).html(dayControlDiv)
-
-  // map.controls[google.maps.ControlPosition.TOP_CENTER].clear();
-  // map.controls[google.maps.ControlPosition.TOP_CENTER].push(dayControlDiv);
 
   updateEventSelect()
   updateData()
@@ -876,17 +839,6 @@ function doCAP (dom) {
       marker.addTo(mapMarkers)
       mapMarkers.addTo(map)
     } else {
-      // create a marker for polygon
-      // marker = new google.maps.Marker({
-      //     position: markerLocation,
-      //     label: eventSelector.charAt(0).toUpperCase(),
-      //     map: map,
-      //     visible: false,
-      //     fromDate: fromDateISO,
-      //     toDate: info.querySelector('expires').textContent,
-      //     capEvent: eventRaw,
-      //     zIndex: zindex
-      // });
       marker = L.marker(markerLocation, { icon: null })
       marker.addTo(mapMarkers)
       mapMarkers.addTo(map)
