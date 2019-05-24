@@ -14,6 +14,7 @@ var selectedDAY = null
 var selectedEVENT = null
 var translations = {}
 var dayControll
+var nameLayer
 
 // Remember previous state
 var selectedLANGUAGE = localStorage.getItem('userLanguage') ? localStorage.getItem('userLanguage') : alertOptions.defaultLanguage
@@ -129,8 +130,16 @@ function initialize () {
   var Esri_WorldTopoMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors, <a href="' + alertOptions.attributionLink + '">' + alertOptions.attribution + '</a>',
     maxZoom: 18,
-    id: 'mapbox.streets'
+    id: 'mapbox.streets',
+    opacity: 1,
   }).addTo(map)
+
+	map.createPane('labels');
+	// This pane is above markers but below popups
+	map.getPane('labels').style.zIndex = 590;
+	// Layers in this pane are non-interactive and do not obscure mouse/touch events
+	map.getPane('labels').style.pointerEvents = 'none';
+  nameLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {pane: 'labels', opacity: 0.7}).addTo(map)
 
   var southWest = new L.LatLng(alertOptions.bounds.south, alertOptions.bounds.east)
   var northEast = new L.LatLng(alertOptions.bounds.north, alertOptions.bounds.west)
@@ -337,6 +346,8 @@ function processCAP (json) {
   // clear all previous polygons and markers before adding new ones
   mapPolygons.clearLayers()
   mapMarkers.clearLayers()
+  xDisplacement = 0;
+  markerLocations = [];
   markers = []
 
   // Clear all polygons
@@ -530,38 +541,44 @@ function doCAP (dom) {
       case 'Extreme':
         // Red
         color = '#FF0000'
+        strokeColor = '#cc0000'
         zindex = 4
-        opacity = 0.4
+        opacity = 1
         break
       case 'Severe':
         // Orange
         color = '#FFA500'
+        strokeColor = '#ba7901'
         zindex = 3
-        opacity = 0.15
+        opacity = 1
         break
       case 'Moderate':
         // Yellow
         color = '#FFFF00'
+        strokeColor: '##afaf01'
         zindex = 2
-        opacity = 0.1
+        opacity = 1
         break
       case 'Minor':
         // Green
         color = '#00FF00'
+        strokeColor = '#01a801'
         zindex = 1
+        opacity = 1
         break
       default:
         color = '#FFFFFF'
-        opacity = 0.02
+        strokeColor = '#bcbcbc'
+        opacity = 1
     }
 
     var areapolygon = L.polygon(path, {
       paths: path,
-      color: color,
-      fillOpacity: alertOptions.polygonOptions.fillOpacity * opacity,
-      strokeColor: color,
-      strokeOpacity: alertOptions.polygonOptions.strokeOpacity,
-      strokeWeight: alertOptions.polygonOptions.strokeWeight,
+      fillColor: color,
+      fillOpacity: 1,
+      color: '#000000',
+      opacity: alertOptions.polygonOptions.strokeOpacity,
+      weight: alertOptions.polygonOptions.strokeWeight,
       map: map,
       visible: false,
       fromDate: fromDateISO,
@@ -855,7 +872,6 @@ function doCAP (dom) {
           fromDate: fromDateISO,
           toDate: info.querySelector('expires').textContent,
           capEvent: eventRaw,
-          zIndex: zindex
         })
       marker.addTo(mapMarkers)
       mapMarkers.addTo(map)
