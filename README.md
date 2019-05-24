@@ -12,7 +12,6 @@ All customizations are to be done to capmap-config.js and index.html files.
   * create and add your MapBox access token (optional)
 
 2. edit index.html
-  * add your google maps API-key
   * load relevant language files
 
 3. make or edit i18n/translations-xx-xx.js file
