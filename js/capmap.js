@@ -107,7 +107,10 @@ function initialize () {
 	map.getPane('labels').style.zIndex = 590;
 	// Layers in this pane are non-interactive and do not obscure mouse/touch events
 	map.getPane('labels').style.pointerEvents = 'none';
-  nameLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {pane: 'labels', opacity: 0.7}).addTo(map)
+  nameLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    pane: 'labels',
+    opacity: 0.45
+  }).addTo(map)
 
   var southWest = new L.LatLng(alertOptions.bounds.south, alertOptions.bounds.east)
   var northEast = new L.LatLng(alertOptions.bounds.north, alertOptions.bounds.west)
@@ -489,8 +492,6 @@ function doCAP (dom) {
     var zindex
     var opacity
     var latLngs = areapolygons[p].textContent.split(' ')
-
-    // debug(latLngs);
 
     // create polygon
     var i; var latLng; var path = []
@@ -915,4 +916,49 @@ function coordinatesExist (array, value) {
     }
   }
   return k
+}
+
+function isMarkerInsidePolygon(point, poly) {
+  var polyPoints = poly.getLatLngs();
+  var x = point.x, y = point.y;
+
+  var inside = false;
+  for (var i = 0, j = polyPoints.length - 1; i < polyPoints.length; j = i++) {
+      var xi = polyPoints[i].lat, yi = polyPoints[i].lng;
+      var xj = polyPoints[j].lat, yj = polyPoints[j].lng;
+
+      var intersect = ((yi > y) != (yj > y))
+          && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+      if (intersect) inside = !inside;
+  }
+  return inside;
+};
+
+// centroid of a non-self-intersecting closed polygon
+// https://en.wikipedia.org/wiki/Centroid#Centroid_of_polygon
+// https://stackoverflow.com/questions/22796520/finding-the-center-of-leaflet-polygon
+function getCentroid2 (arr) {
+
+  arr = arr[0]
+
+  var twoTimesSignedArea = 0;
+  var cxTimes6SignedArea = 0;
+  var cyTimes6SignedArea = 0;
+
+  var length = arr.length
+
+  // var x = function (i) { return arr[i % length][0] };
+  // var y = function (i) { return arr[i % length][1] };
+
+  var x = function (i) { return arr[i % length].lat };
+  var y = function (i) { return arr[i % length].lng };
+
+  for ( var i = 0; i < arr.length; i++) {
+      var twoSA = x(i)*y(i+1) - x(i+1)*y(i);
+      twoTimesSignedArea += twoSA;
+      cxTimes6SignedArea += (x(i) + x(i+1)) * twoSA;
+      cyTimes6SignedArea += (y(i) + y(i+1)) * twoSA;
+  }
+  var sixSignedArea = 3 * twoTimesSignedArea;
+  return [ cxTimes6SignedArea / sixSignedArea, cyTimes6SignedArea / sixSignedArea];
 }
