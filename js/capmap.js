@@ -571,6 +571,14 @@ function doCAP (dom) {
     if (alertOptions.polygonOptions.preventSymbolOverlapping === true) { xDisplacement = (alertOptions.iconWidth + 5) * value } else { xDisplacement = 0 }
     markerLocations.push(test)
 
+    // fallback icon
+    var icon = L.icon({
+      iconUrl: 'img/gale.png',
+      iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
+      iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
+      popupAnchor: [0, 0]
+    })
+
     if (windSpeed > 0) {
       var icon = L.icon({
         iconUrl: 'img/wind.php?speed=' + windSpeed + '&direction=' + windDirection,
@@ -703,6 +711,13 @@ function doCAP (dom) {
         popupAnchor: [0, 0]
       })
     } else if (~eventRaw.indexOf('snow')) {
+      var icon = L.icon({
+        iconUrl: 'img/snow.png',
+        iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
+        iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
+        popupAnchor: [0, 0]
+      })
+    } else if (~eventRaw.indexOf('icing')) {
       var icon = L.icon({
         iconUrl: 'img/snow.png',
         iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
