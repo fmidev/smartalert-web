@@ -19,6 +19,7 @@ var alertOptions = {
     day1Control: true,
     day2Control: true,
     allDayControl: true,
+    popUpMaxHeight: false, // maximum height in px
     refresh: 300, // Refresh interval seconds
     areaLimitForMarkers: 0.005,
     iconWidth: 30,

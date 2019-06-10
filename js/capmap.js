@@ -874,12 +874,17 @@ function doCAP (dom) {
         ' ' + t('at') + ' ' + dFormatted + ' (' + d.dateDiff() + ')</i></p>'
 
     // bind markers to marker and polygon
-    marker.bindPopup(content, {
-      maxWidth: 220
-    }).addTo(map)
-    areapolygon.bindPopup(content, {
-      maxWidth: 220
-    }).addTo(map)
+    var popup = L.popup({
+      maxWidth: 220,
+      minWidth: 220,
+      maxHeight: alertOptions.popUpMaxHeight,
+      autoPan: true,
+      autoPanPadding: [2,2]
+    });
+
+    popup.setContent(content)
+    marker.bindPopup(popup).addTo(map)
+    areapolygon.bindPopup(popup).addTo(map)
 
     markers.push(marker)
   } // for loop
