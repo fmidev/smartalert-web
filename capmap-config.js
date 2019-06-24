@@ -7,7 +7,7 @@ var alertOptions = {
     mapTileSource: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', // https://leaflet-extras.github.io/leaflet-providers/preview/
     zoom: 7,
     center: [FILL_YOUR_LAT, FILL_YOUR_LON],
-    bounds: {north: 27.0, east: -71.0, south: 20.0, west: -80.0},
+    bounds: {north: FILL_NORTH_BOUND, east: FILL_EAST_BOUND, south: FILL_SOUTH_BOUND, west: FILL_WEST_BOUND},
     attribution: 'Finnish Meteorological Institute',
     polygonOptions: {
         fillOpacity: 0.2,
@@ -25,6 +25,7 @@ var alertOptions = {
     areaLimitForMarkers: 0.005,
     iconWidth: 30,
     iconHeight: 30,
+    transparentIcons: false,
     eventTypes: {
         // edit: "edit capmap-config.js",
         "tropical storm": "Tropical Storm",
