@@ -4,10 +4,10 @@ var alertOptions = {
     dateFormat: 'long', // 'vs. ISOString'
     dateFormatString: 'MMMM Do YYYY, HH:mm:ss', // https://momentjs.com/docs/#/displaying/format/
     accesToken: 'pk.eyJ1IjoibmFra2ltIiwiYSI6ImNqNWYzNzVvaDB3YmUyeHBuOWdwZnM0bHMifQ.QZCKhwf3ET5ujEeZ6_8X_Q',
-    mapTileSource: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
+    mapTileSource: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', // https://leaflet-extras.github.io/leaflet-providers/preview/
     zoom: 7,
-    center: [FILL_YOUR_LAT, FILL_YOUR_LON],
-    bounds: {north: 27.0, east: -71.0, south: 20.0, west: -80.0},
+    center: [41,74],
+    bounds: {north: 38.0, east: 67.0, south: 43.0, west: 81.0},
     attribution: 'Finnish Meteorological Institute',
     polygonOptions: {
         fillOpacity: 0.2,
