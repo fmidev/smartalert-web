@@ -107,7 +107,7 @@ function initialize () {
 	map.getPane('labels').style.zIndex = 590;
 	// Layers in this pane are non-interactive and do not obscure mouse/touch events
 	map.getPane('labels').style.pointerEvents = 'none';
-  nameLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  nameLayer = L.tileLayer(alertOptions.mapTileSource, {
     pane: 'labels',
     opacity: 0.45
   }).addTo(map)
