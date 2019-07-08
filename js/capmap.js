@@ -89,6 +89,18 @@ function initialize () {
     accessToken: alertOptions.accesToken
   })
 
+  // use map panes to set layer z-index values
+  map.createPane('Extreme');
+  map.getPane('Extreme').style.zIndex = 585;
+  map.createPane('Severe');
+  map.getPane('Severe').style.zIndex = 584;
+  map.createPane('Moderate');
+  map.getPane('Moderate').style.zIndex = 583;
+  map.createPane('Minor');
+  map.getPane('Minor').style.zIndex = 582;
+  map.createPane('Default');
+  map.getPane('Default').style.zIndex = 581;
+
   // user location disabled
   if (alertOptions.useLocation == true) { centerUserLocation() }
 
@@ -310,7 +322,6 @@ function processCAP (json) {
 
   // Clear all markers
   // clear all previous polygons and markers before adding new ones
-  mapPolygons.clearLayers()
   mapMarkers.clearLayers()
   xDisplacement = 0;
   markerLocations = [];
@@ -319,7 +330,7 @@ function processCAP (json) {
   // Clear all polygons
   // clear all previous polygons and markers before adding new ones
   mapPolygons.clearLayers()
-  mapMarkers.clearLayers()
+
   polygons = []
 
   if (json !== null) {
@@ -519,7 +530,7 @@ function doCAP (dom) {
       case 'Moderate':
         // Yellow
         color = '#FFFF00'
-        strokeColor: '##afaf01'
+        strokeColor = '#afaf01'
         zindex = 2
         opacity = 1
         break
@@ -537,6 +548,7 @@ function doCAP (dom) {
     }
 
     var areapolygon = L.polygon(path, {
+      pane: severity,
       paths: path,
       fillColor: color,
       fillOpacity: 1,
