@@ -482,7 +482,6 @@ function doCAP (dom) {
     .replace('Intensive', '')
     .replace('High risk of', '')
     .trim().split(' ')[0].trim().toLowerCase()
-  console.log(info.querySelector('event'))
   var eventRaw = info.querySelector('event').textContent.toLowerCase()
 
   // Check available languages
