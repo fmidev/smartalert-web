@@ -85,8 +85,7 @@ function initialize () {
     zoom: alertOptions.zoom,
     fullscreenControl: true,
     scrollWheelZoom: true,
-    center: alertOptions.center,
-    accessToken: alertOptions.accesToken
+    center: alertOptions.center
   })
 
   // use map panes to set layer z-index values

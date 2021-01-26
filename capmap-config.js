@@ -3,7 +3,6 @@ var alertOptions = {
     defaultLanguage: 'en-US',
     dateFormat: 'long', // 'vs. ISOString'
     dateFormatString: 'MMMM Do YYYY, HH:mm:ss', // https://momentjs.com/docs/#/displaying/format/
-    accesToken: 'pk.eyJ1IjoibmFra2ltIiwiYSI6ImNqNWYzNzVvaDB3YmUyeHBuOWdwZnM0bHMifQ.QZCKhwf3ET5ujEeZ6_8X_Q',
     mapTileSource: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', // https://leaflet-extras.github.io/leaflet-providers/preview/
     zoom: 7,
     center: [FILL_YOUR_LAT, FILL_YOUR_LON],
