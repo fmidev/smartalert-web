@@ -1,32 +1,49 @@
 var alertOptions = {
+    useLocation: false,
     defaultLanguage: 'en-US',
-    zoom: 9,
-    center: new google.maps.LatLng(FILL_YOUR_LAT, FILL_YOUR_LON),
+    dateFormat: 'long', // 'vs. ISOString'
+    dateFormatString: 'MMMM Do YYYY, HH:mm:ss', // https://momentjs.com/docs/#/displaying/format/
+    mapTileSource: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', // https://leaflet-extras.github.io/leaflet-providers/preview/
+    zoom: 7,
+		center: [60, 25],
+		bounds: {north: 70.5, east: 17.45, south: 58.3, west: 33.65},
+    attribution: 'Finnish Meteorological Institute',
     polygonOptions: {
-	fillOpacity: 0.55,
-	strokeOpacity: 1,
-	strokeWeight: 3,
+        fillOpacity: 0.2,
+        strokeOpacity: 1,
+        strokeWeight: 3,
+				preventSymbolOverlapping: true
     },
     dayControl: true,
     day0Control: true,
     day1Control: true,
     day2Control: true,
     allDayControl: true,
+    popUpMaxHeight: false, // maximum height in px
     refresh: 300, // Refresh interval seconds
-    areaLimitForMarkers: 60000000,
+    areaLimitForMarkers: 0.005,
     iconWidth: 30,
     iconHeight: 30,
+    transparentIcons: false,
     eventTypes: {
-        edit: "edit capmap-config.js",
-        flood: "Flash Flood",
-        rain: "Rain",
-        tide: "Tide",
-        earthquake: "Earthquake",
-        thunderstorm: "Thunderstorm",
-        swell: "Swell",
-        cyclone: "Tropical Cyclone",
-        tsunami: "Tsunami",
+        // edit: "edit capmap-config.js",
+        "tropical storm": "Tropical Storm",
+        hurricane: "Hurricane",
+        thunderstorm: "Severe Thunderstorm",
+        tornado: "Severe Tornado",
+        waterspout: "Severe Waterspout",
+        flood: "Flood",
+        visibility: "Visibility",
         wind: "Wind",
+        rip: "Rip Current",
+        tsunami: "Tsunami",
+        swell: "Swell",
+        earthquake: "Earthquake",
+        temperature: "Temperature",
+        "seasonal temperature": "Seasonal Temperature",
+        drought: "Drought",
+        fire: "Fire",
+        craft: "Small Craft",
     }
 };
 
