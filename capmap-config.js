@@ -5,14 +5,14 @@ var alertOptions = {
     dateFormatString: 'MMMM Do YYYY, HH:mm:ss', // https://momentjs.com/docs/#/displaying/format/
     mapTileSource: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', // https://leaflet-extras.github.io/leaflet-providers/preview/
     zoom: 7,
-		center: [60, 25],
-		bounds: {north: 70.5, east: 17.45, south: 58.3, west: 33.65},
+    center: [FILL_YOUR_LAT, FILL_YOUR_LON],
+    bounds: {north: FILL_NORTH_BOUND, east: FILL_EAST_BOUND, south: FILL_SOUTH_BOUND, west: FILL_WEST_BOUND},
     attribution: 'Finnish Meteorological Institute',
     polygonOptions: {
         fillOpacity: 0.2,
         strokeOpacity: 1,
         strokeWeight: 3,
-				preventSymbolOverlapping: true
+	preventSymbolOverlapping: true
     },
     dayControl: true,
     day0Control: true,
