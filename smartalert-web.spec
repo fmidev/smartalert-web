@@ -1,7 +1,7 @@
 %define smartmetroot /smartmet
 
 Name:           smartalert-web
-Version:        17.11.10
+Version:        21.2.4
 Release:        2%{?dist}.fmi
 Summary:        SmartMet SmartAlert Website
 Group:          System Environment/Base
@@ -58,3 +58,5 @@ rm -rf $RPM_BUILD_ROOT
 - Updated pictograms
 * Fri Feb 24 2017 Mikko Rauhala <mikko.rauhala@fmi.fi> 17.2.24-1.el7.fmi
 - Initial build 
+* Thu Feb 4 2021 Ville Oravilkka <ville.oravilkka@fmi.fi> 21.2.4-1.el7.fmi
+- Convert application to use Leaflet and other changes
