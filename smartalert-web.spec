@@ -50,6 +50,8 @@ rm -rf $RPM_BUILD_ROOT
 %{smartmetroot}/www/smartalert/*
 
 %changelog
+* Thu Feb 4 2021 Ville Oravilkka <ville.oravilkka@fmi.fi> 21.2.4-1.el7.fmi
+- Convert application to use Leaflet and other changes
 * Fri Nov 10 2017 Mikko Rauhala <mikko.rauhala@fmi.fi> 17.11.10-1.el7.fmi
 - Added pictogram for drought
 * Thu Nov 9 2017 Mikko Rauhala <mikko.rauhala@fmi.fi> 17.11.9-1.el7.fmi
@@ -58,5 +60,3 @@ rm -rf $RPM_BUILD_ROOT
 - Updated pictograms
 * Fri Feb 24 2017 Mikko Rauhala <mikko.rauhala@fmi.fi> 17.2.24-1.el7.fmi
 - Initial build 
-* Thu Feb 4 2021 Ville Oravilkka <ville.oravilkka@fmi.fi> 21.2.4-1.el7.fmi
-- Convert application to use Leaflet and other changes
