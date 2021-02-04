@@ -2,7 +2,7 @@
 
 Name:           smartalert-web
 Version:        21.2.4
-Release:        2%{?dist}.fmi
+Release:        1%{?dist}.fmi
 Summary:        SmartMet SmartAlert Website
 Group:          System Environment/Base
 License:        MIT
