@@ -1,5 +1,5 @@
 
-var DEBUG = true
+var DEBUG = false
 var map
 var markers = []
 var polygons = []
