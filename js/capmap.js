@@ -850,7 +850,7 @@ function doCAP (dom) {
         iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
         popupAnchor: [0, 0]
       })
-    } else if (~eventRaw.indexOf('hurricane')) {
+    } else if (~eventRaw.indexOf('hurricane') || ~eventRaw.indexOf('typhoon') || ~eventRaw.indexOf('super')) {
       var icon = L.icon({
         iconUrl: symbolPath + 'tropical-hurricane.png',
         iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
