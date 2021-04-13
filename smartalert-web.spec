@@ -50,7 +50,7 @@ rm -rf $RPM_BUILD_ROOT
 %{smartmetroot}/www/smartalert/*
 
 %changelog
-* Tue Apr 13 2021 Ville Oravilkka <ville.oravilkka@fmi.fi> 21.2.4-1.el7.fmi
+* Tue Apr 13 2021 Ville Oravilkka <ville.oravilkka@fmi.fi> 21.4.13-1.el7.fmi
 - Update translation files
 * Thu Feb 4 2021 Ville Oravilkka <ville.oravilkka@fmi.fi> 21.2.4-1.el7.fmi
 - Convert application to use Leaflet and other changes
