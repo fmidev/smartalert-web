@@ -1,14 +1,14 @@
 %define smartmetroot /smartmet
 
 Name:           smartalert-web
-Version:        21.2.4
+Version:        21.4.13
 Release:        1%{?dist}.fmi
 Summary:        SmartMet SmartAlert Website
 Group:          System Environment/Base
 License:        MIT
 URL:            https://github.com/fmidev/smartalert-web
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildArch:	noarch
+BuildArch:	    noarch
 
 Requires:	httpd
 
@@ -50,6 +50,8 @@ rm -rf $RPM_BUILD_ROOT
 %{smartmetroot}/www/smartalert/*
 
 %changelog
+* Tue Apr 13 2021 Ville Oravilkka <ville.oravilkka@fmi.fi> 21.2.4-1.el7.fmi
+- Update translation files
 * Thu Feb 4 2021 Ville Oravilkka <ville.oravilkka@fmi.fi> 21.2.4-1.el7.fmi
 - Convert application to use Leaflet and other changes
 * Fri Nov 10 2017 Mikko Rauhala <mikko.rauhala@fmi.fi> 17.11.10-1.el7.fmi
