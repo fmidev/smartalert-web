@@ -7,7 +7,7 @@ $capfiles;
 
 foreach ($FILES as $file)
   {
-    if (preg_match("/_ALERT_/",$file))
+    if (preg_match("/_ALERT_/",$file) || preg_match("/_UPDATE_/",$file))
       {
 	$capfiles[]=$DIR."/".$file;
       }
