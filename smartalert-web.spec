@@ -1,7 +1,7 @@
 %define smartmetroot /smartmet
 
 Name:           smartalert-web
-Version:        21.4.20
+Version:        21.5.20
 Release:        1%{?dist}.fmi
 Summary:        SmartMet SmartAlert Website
 Group:          System Environment/Base
@@ -50,7 +50,9 @@ rm -rf $RPM_BUILD_ROOT
 %{smartmetroot}/www/smartalert/*
 
 %changelog
-* Tue Apr 13 2021 Ville Oravilkka <ville.oravilkka@fmi.fi> 21.4.20-1.el7.fmi
+* Tue May 20 2021 Ville Oravilkka <ville.oravilkka@fmi.fi> 21.5.20-1.el7.fmi
+- Add missing symbols
+* Tue Apr 20 2021 Ville Oravilkka <ville.oravilkka@fmi.fi> 21.4.20-1.el7.fmi
 - Add support for UPDATE messages
 * Tue Apr 13 2021 Ville Oravilkka <ville.oravilkka@fmi.fi> 21.4.13-1.el7.fmi
 - Update translation files
