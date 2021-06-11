@@ -13,7 +13,7 @@ html, body {
     position: absolute;
     z-index: 1000;
     pointer-events: none;
-    left: calc(50% - 160px); 
+    left: calc(50% - 260px); 
 }
 
 .leaflet-horizontallcenter .leaflet-control {
