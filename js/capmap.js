@@ -1042,10 +1042,20 @@ function doCAP (dom) {
     var toDateFormatted = toDate.toLocaleString()
     var dFormatted = d.toLocaleString()
     if (alertOptions.dateFormat === 'long') {
+
+      var formatter = ''
+      if(alertOptions.dateFormatString[selectedLANGUAGE] !== undefined){
+        formatter = alertOptions.dateFormatString[selectedLANGUAGE]
+      } else if(alertOptions.dateFormatString['default'] !== undefined){
+        formatter = alertOptions.dateFormatString['default']
+      } else {
+        formatter = alertOptions.dateFormatString
+      }
+
       var lang = selectedLANGUAGE.split('-')[0]
-      fromDateFormatted = moment(fromDate).locale(lang).format(alertOptions.dateFormatString)
-      toDateFormatted = moment(toDate).locale(lang).format(alertOptions.dateFormatString)
-      dFormatted = moment(d).locale(lang).format(alertOptions.dateFormatString)
+      fromDateFormatted = moment(fromDate).locale(lang).format(formatter)
+      toDateFormatted = moment(toDate).locale(lang).format(formatter)
+      dFormatted = moment(d).locale(lang).format(formatter)
     }
 
     // var infowindow = new google.maps.InfoWindow({
