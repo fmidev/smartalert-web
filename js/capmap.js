@@ -415,6 +415,48 @@ function DayControl (controlDiv, map) {
     })
   } // if
 
+  if (alertOptions.day3Control == true) {
+    // Set CSS for the setCenter control border
+    var setDay3UI = document.createElement('div')
+    setDay3UI.id = 'setDay3UI'
+    setDay3UI.title = t('Click to show alerts day 3')
+    controlDiv.appendChild(setDay3UI)
+
+    // Set CSS for the control interior
+    var setDay3Text = document.createElement('div')
+    setDay3Text.id = 'setDay3Text'
+    setDay3Text.innerHTML = t('Day 4')
+    setDay3UI.appendChild(setDay3Text)
+
+    setDay3UI.addEventListener('click', function () {
+      selectedDAY = 3
+      showMarkers(3)
+      showPolygons(3)
+      debug('Show events for day 4.')
+    })
+  } // if
+
+  if (alertOptions.day4Control == true) {
+    // Set CSS for the setCenter control border
+    var setDay4UI = document.createElement('div')
+    setDay4UI.id = 'setDay4UI'
+    setDay4UI.title = t('Click to show alerts day 4')
+    controlDiv.appendChild(setDay4UI)
+
+    // Set CSS for the control interior
+    var setDay4Text = document.createElement('div')
+    setDay4Text.id = 'setDay4Text'
+    setDay4Text.innerHTML = t('Day 5')
+    setDay4UI.appendChild(setDay4Text)
+
+    setDay4UI.addEventListener('click', function () {
+      selectedDAY = 4
+      showMarkers(4)
+      showPolygons(4)
+      debug('Show events for day 5.')
+    })
+  } // if
+
   if (alertOptions.allDayControl == true) {
     // Set CSS for the setAllDay control border
     var setAllDaysUI = document.createElement('div')

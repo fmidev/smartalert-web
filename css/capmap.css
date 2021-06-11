@@ -33,7 +33,7 @@ html, body {
     margin-bottom: 15px;
 }
 
-#setDay0UI, #setDay1UI, #setDay2UI, #setAllDaysUI {
+#setDay0UI, #setDay1UI, #setDay2UI, #setDay3UI, #setDay4UI, #setAllDaysUI {
     margin-right: 12px;
     background-color: #fff;
     border: 2px solid #fff;
@@ -45,7 +45,7 @@ html, body {
     text-align: center;
 }
 
-#setDay0Text, #setDay1Text, #setDay2Text, #setAllDaysText {
+#setDay0Text, #setDay1Text, #setDay2Text, #setDay3Text, #setDay4Text, #setAllDaysText {
     color: rgb(25,25,25);
     font-family: Roboto,Arial,sans-serif;
     font-size: 15px;
@@ -54,7 +54,7 @@ html, body {
     padding-right: 5px;
 }
 
-#setDay1UI, #setDay2UI, #setAllDaysUI {
+#setDay1UI, #setDay2UI, #setDay3UI, #setDay4UI, #setAllDaysUI {
     margin-right: 12px;
 }
 
