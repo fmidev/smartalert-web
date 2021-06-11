@@ -81,6 +81,8 @@ Date.prototype.dateDiff = function () {
 }
 
 function initialize () {
+  buildLegend()
+
   map = L.map('map-canvas', {
     zoom: alertOptions.zoom,
     fullscreenControl: true,
@@ -191,6 +193,62 @@ function changeLanguage () {
 
   updateEventSelect()
   updateData()
+}
+
+function buildLegend() {
+  // rebuild legend if useMinorThreat = true
+  if(alertOptions.useMinorThreat) {
+    var div = document.getElementById('legend-warning-types')
+    div.innerHTML = ''
+
+    var tr = document.createElement('tr')
+
+    var td = document.createElement('td')
+    td.className = 'colorLegend'
+    td.id = 'levelGreen'
+    tr.appendChild(td)
+
+    td = document.createElement('td')
+    td.id = 'levelNoneText'
+    td.innerHTML = "minor thread";
+    tr.appendChild(td)
+
+    td = document.createElement('td')
+    td.className = 'colorLegend'
+    td.id = 'levelOrange'
+    tr.appendChild(td)
+
+    td = document.createElement('td')
+    td.id = 'levelOrangetext'
+    td.innerHTML = "dangerous";
+    tr.appendChild(td)
+
+    div.appendChild(tr)
+
+    tr = document.createElement('tr')
+
+    var td = document.createElement('td')
+    td.className = 'colorLegend'
+    td.id = 'levelYellow'
+    tr.appendChild(td)
+
+    td = document.createElement('td')
+    td.id = 'levelYellowText'
+    td.innerHTML = "potentially dangerous";
+    tr.appendChild(td)
+
+    td = document.createElement('td')
+    td.className = 'colorLegend'
+    td.id = 'levelRed'
+    tr.appendChild(td)
+
+    td = document.createElement('td')
+    td.id = 'levelRedText'
+    td.innerHTML = "very dangerous";
+    tr.appendChild(td)
+
+    div.appendChild(tr)
+  }
 }
 
 // Create additional Control placeholders
