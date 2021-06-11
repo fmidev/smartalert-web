@@ -209,7 +209,7 @@ function buildLegend() {
     tr.appendChild(td)
 
     td = document.createElement('td')
-    td.id = 'levelNoneText'
+    td.id = 'levelGreenText'
     td.innerHTML = "minor thread";
     tr.appendChild(td)
 
