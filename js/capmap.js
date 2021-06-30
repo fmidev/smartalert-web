@@ -219,7 +219,7 @@ function buildLegend() {
     tr.appendChild(td)
 
     td = document.createElement('td')
-    td.id = 'levelOrangetext'
+    td.id = 'levelOrangeText'
     td.innerHTML = "dangerous";
     tr.appendChild(td)
 
@@ -477,7 +477,7 @@ function DayControl (controlDiv, map) {
     // Set CSS for the setCenter control border
     var setDay3UI = document.createElement('div')
     setDay3UI.id = 'setDay3UI'
-    setDay3UI.title = t('Click to show alerts day 3')
+    setDay3UI.title = t('Click to show alerts for day 4')
     controlDiv.appendChild(setDay3UI)
 
     // Set CSS for the control interior
@@ -498,7 +498,7 @@ function DayControl (controlDiv, map) {
     // Set CSS for the setCenter control border
     var setDay4UI = document.createElement('div')
     setDay4UI.id = 'setDay4UI'
-    setDay4UI.title = t('Click to show alerts day 4')
+    setDay4UI.title = t('Click to show alerts for day 5')
     controlDiv.appendChild(setDay4UI)
 
     // Set CSS for the control interior
