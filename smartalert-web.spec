@@ -1,7 +1,7 @@
 %define smartmetroot /smartmet
 
 Name:           smartalert-web
-Version:        30.6.21
+Version:        21.6.30
 Release:        1%{?dist}.fmi
 Summary:        SmartMet SmartAlert Website
 Group:          System Environment/Base
@@ -50,6 +50,8 @@ rm -rf $RPM_BUILD_ROOT
 %{smartmetroot}/www/smartalert/*
 
 %changelog
+* Wed Jun 30 2021 Ville Oravilkka <ville.oravilkka@fmi.fi> 21.6.30-1.el7.fmi
+- Fix incorrect version number format
 * Wed Jun 30 2021 Ville Oravilkka <ville.oravilkka@fmi.fi> 30.6.21-1.el7.fmi
 - Add an option to use multiple day selecting buttons and also allow user to define datetime format
 * Tue May 21 2021 Ville Oravilkka <ville.oravilkka@fmi.fi> 21.5.21-1.el7.fmi
