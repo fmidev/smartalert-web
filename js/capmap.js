@@ -413,7 +413,7 @@ function DayControl (controlDiv, map) {
     // Set CSS for the control border
     var setDay0UI = document.createElement('div')
     setDay0UI.id = 'setDay0UI'
-    setDay0UI.title = t('Click to show alerts for today.')
+    setDay0UI.title = t('Click to show alerts for today')
     controlDiv.appendChild(setDay0UI)
 
     // Set CSS for the control interior
@@ -435,7 +435,7 @@ function DayControl (controlDiv, map) {
     // Set CSS for the setDay1 control border
     var setDay1UI = document.createElement('div')
     setDay1UI.id = 'setDay1UI'
-    setDay1UI.title = t('Click to show alerts for tomorrow.')
+    setDay1UI.title = t('Click to show alerts for tomorrow')
     controlDiv.appendChild(setDay1UI)
 
     // Set CSS for the control interior
