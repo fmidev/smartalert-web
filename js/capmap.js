@@ -1036,7 +1036,11 @@ function doCAP (dom) {
 
     $('#senderName').html(sender)
 
-    if (dnow.getTime() > fromDate.getTime()) { var active_str = '<i>' + t('Active for next') + ' <b>' + toDate.dateDiff() + '</b></i>' } else { var active_str = '' }
+    if (dnow.getTime() > fromDate.getTime() && alertOptions.displayActiveFor) { 
+      var active_str = '<i>' + t('Active for next') + ' <b>' + toDate.dateDiff() + '</b></i>' 
+    } else { 
+      var active_str = '' 
+    }
 
     var fromDateFormatted = fromDate.toLocaleString()
     var toDateFormatted = toDate.toLocaleString()

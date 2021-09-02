@@ -12,7 +12,8 @@ var alertOptions = {
         fillOpacity: 0.2,
         strokeOpacity: 1,
         strokeWeight: 3,
-	preventSymbolOverlapping: true
+	  preventSymbolOverlapping: true,
+    displayActiveFor: true,
     },
     dayControl: true,
     day0Control: true,
