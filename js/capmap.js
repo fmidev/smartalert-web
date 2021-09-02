@@ -1064,7 +1064,7 @@ function doCAP (dom) {
 
     // var infowindow = new google.maps.InfoWindow({
     var content = '<h4 class="iw-title">' + info.querySelector('event').textContent + ' ' + t('for') + ' ' + info.querySelector('areaDesc').textContent + '</h4>' +
-        '<i>' + t('Valid from') + ' <b>' + fromDateFormatted + '</b><br>' + t('to') + ' <b>' + toDateFormatted + '</b></i><br/>' +
+        '<i>' + t('Valid from') + ' <b>' + fromDateFormatted + '</b> ' + t('to') + ' <b>' + toDateFormatted + '</b></i>' +
         active_str +
         '<p>' + (info.querySelector('description') ? info.querySelector('description').textContent : '') + '</p>' +
         '<p><i>' + t('Issued by') + ' ' + sender +
