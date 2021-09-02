@@ -950,16 +950,16 @@ function doCAP (dom) {
         iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
         popupAnchor: [0, 0]
       })
-    } else if (~eventRaw.indexOf('typhoon')) {
+    } else if (~eventRaw.indexOf('super')) {
       var icon = L.icon({
-        iconUrl: symbolPath + 'typhoon.png',
+        iconUrl: symbolPath + 'supertyphoon.png',
         iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
         iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
         popupAnchor: [0, 0]
       })
-    } else if (~eventRaw.indexOf('super')) {
+    } else if (~eventRaw.indexOf('typhoon')) {
       var icon = L.icon({
-        iconUrl: symbolPath + 'supertyphoon.png',
+        iconUrl: symbolPath + 'typhoon.png',
         iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
         iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
         popupAnchor: [0, 0]
