@@ -964,7 +964,14 @@ function doCAP (dom) {
         iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
         popupAnchor: [0, 0]
       })
-    } else if (~eventRaw.indexOf('severe tropical storm')) {
+    } else if (~eventRaw.indexOf('typhoon')) {
+      var icon = L.icon({
+        iconUrl: symbolPath + 'typhoon.png',
+        iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
+        iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
+        popupAnchor: [0, 0]
+      })
+    } else if (~eventRaw.indexOf('tropical storm')) {
       var icon = L.icon({
         iconUrl: symbolPath + 'tropical-storm.png',
         iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
