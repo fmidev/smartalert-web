@@ -950,13 +950,6 @@ function doCAP (dom) {
         iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
         popupAnchor: [0, 0]
       })
-    } else if (~eventRaw.indexOf('typhoon')) {
-      var icon = L.icon({
-        iconUrl: symbolPath + 'tropical-storm.png',
-        iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-        iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
-        popupAnchor: [0, 0]
-      })
     } else if (~eventRaw.indexOf('super')) {
       var icon = L.icon({
         iconUrl: symbolPath + 'tropical-storm.png',
@@ -971,9 +964,9 @@ function doCAP (dom) {
         iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
         popupAnchor: [0, 0]
       })
-    } else if (~eventRaw.indexOf('tropical storm')) {
+    } else if (~eventRaw.indexOf('super typhoon')) {
       var icon = L.icon({
-        iconUrl: symbolPath + 'tropical-storm.png',
+        iconUrl: symbolPath + 'supertyphoon.png',
         iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
         iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
         popupAnchor: [0, 0]
@@ -987,7 +980,7 @@ function doCAP (dom) {
       })
     } else if (~eventRaw.indexOf('severe tropical storm')) {
       var icon = L.icon({
-        iconUrl: symbolPath + 'tropical-storm.png',
+        iconUrl: symbolPath + 'severe-tropical-storm.png',
         iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
         iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
         popupAnchor: [0, 0]
