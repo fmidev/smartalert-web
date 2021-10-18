@@ -273,7 +273,11 @@ function addControlPlaceholders (mapObject) {
 
 function updateData () {
   debug('Updating data:')
-  $.getJSON('list.php', processCAP)
+  if(alertOptions.subDirectories) {
+    $.getJSON('list.php',{dir: alertOptions.subDirectories},processCAP)
+  } else {
+    $.getJSON('list.php',processCAP)
+  }
 }
 
 function testcircle (polygon, path) {

@@ -1,4 +1,5 @@
 var alertOptions = {
+    subDirectories: false,  //'meteorology,hydrology' etc.
     useLocation: false,
     defaultLanguage: 'en-US',
     dateFormat: 'long', // 'vs. ISOString'
