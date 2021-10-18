@@ -48,7 +48,7 @@ Fill in these values at initial se up
 | `defaultLanguage`     | `String`  | `'en-US'`       | Choose the defaylt language. |
 | `dateFormat`          | `String`  | `'ISOString'`   | Use longer date format. Available options are `long` and (default) `ISOString`. |
 | `dateFormatString`    | `String`  | `null`        | Define the date format used in warning popups if `dateFormat:long`. It's also possible to define date formats for each used language; `'default': 'MMMM Do YYYY, HH:mm'`, `'vi-VN': 'HH [giờ] mm [phút], [ngày] DD/MM/YYYY'`, `'en-VN': 'MMMM Do YYYY, HH:mm'`. |
-| `mapTileSource`       | `String`  | `'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'` | Map tile source. |
+| `mapTileSource`       | `String`  | `''` | Map tile source. See examples from here: https://leaflet-extras.github.io/leaflet-providers/preview/ |
 | `zoom`                | `Number`  | `7`             | Default map zoom level. |
 | `attribution`         | `String`  | `null`          | Attribution text/link. |
 | `polygonOptions.fillOpaity`    | `Number` | `0.2`   | Warning polygon fill opacity in pixels. |
