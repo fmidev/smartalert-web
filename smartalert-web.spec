@@ -1,7 +1,7 @@
 %define smartmetroot /smartmet
 
 Name:           smartalert-web
-Version:        21.9.16
+Version:        21.10.18
 Release:        1%{?dist}.fmi
 Summary:        SmartMet SmartAlert Website
 Group:          System Environment/Base
@@ -50,6 +50,8 @@ rm -rf $RPM_BUILD_ROOT
 %{smartmetroot}/www/smartalert/*
 
 %changelog
+* Mon Oct 18 2021 Ville Oravilkka <ville.oravilkka@fmi.fi> 21.10.18-1.el7.fmi
+- Add an option to use multiple subdirectories as a data source
 * Thu Sep 16 2021 Ville Oravilkka <ville.oravilkka@fmi.fi> 21.9.16-1.el7.fmi
 - Small changes to vietnamese translations
 * Thu Sep 2 2021 Ville Oravilkka <ville.oravilkka@fmi.fi> 21.9.2-1.el7.fmi
