@@ -51,6 +51,10 @@ Fill in these values at initial se up
 | `mapTileSource`       | `String`  | `''` | Map tile source. See examples from here: https://leaflet-extras.github.io/leaflet-providers/preview/ |
 | `zoom`                | `Number`  | `7`             | Default map zoom level. |
 | `attribution`         | `String`  | `null`          | Attribution text/link. |
+| `displayWMS`          | `Boolean` | `null`          | Display additional content (country borders, regions etc.) as a WMS layer. |
+| `displayOptions`      | `Object`  | `null`          | Settings passed to Tilelayer.WMS. Documentation: https://leafletjs.com/reference.html#tilelayer-wms-l-tilelayer-wms
+| `displayOptions.endpoint`   | `Object`  | `null`    | WMS server endpoint. E.g.: https://openwms.fmi.fi/geoserver/wms
+| `displayOptions.params`     | `String`  | `null`    | Required query parameters. If any custom options not documented here are used, they will be sent to the WMS server as extra parameters in each request URL. This can be useful for non-standard vendor WMS parameters. E.g. {layers:'nexrad-n0r-900913', format:'image/png', transparent:true} 
 | `polygonOptions.fillOpaity`    | `Number` | `0.2`   | Warning polygon fill opacity in pixels. |
 | `polygonOptions.strokeOpacity` | `Number` | `1`     | Warning polygon stroke opacity in pixels.  |
 | `polygonOptions.strokeWeight`  | `Number` | `3`     | Warning polygon stroke wight in pixels. |

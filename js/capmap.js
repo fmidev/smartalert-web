@@ -115,6 +115,10 @@ function initialize () {
     opacity: 1,
   }).addTo(map)
 
+  if(alertOptions.displayWMS) {
+    var wmsLayer = L.tileLayer.wms('http://smartmet.fmi.fi/wms', alertOptions.displayOptions.params).addTo(map);
+  }
+
 	map.createPane('labels');
 	// This pane is above markers but below popups
 	map.getPane('labels').style.zIndex = 590;
