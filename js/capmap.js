@@ -116,7 +116,7 @@ function initialize () {
   }).addTo(map)
 
   if(alertOptions.displayWMS) {
-    var wmsLayer = L.tileLayer.wms('http://smartmet.fmi.fi/wms', alertOptions.displayOptions.params).addTo(map);
+    var wmsLayer = L.tileLayer.wms(alertOptions.displayOptions.endpoint, alertOptions.displayOptions.params).addTo(map);
   }
 
 	map.createPane('labels');
