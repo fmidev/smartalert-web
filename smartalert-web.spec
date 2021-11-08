@@ -1,7 +1,7 @@
 %define smartmetroot /smartmet
 
 Name:           smartalert-web
-Version:        21.11.5
+Version:        21.11.8
 Release:        1%{?dist}.fmi
 Summary:        SmartMet SmartAlert Website
 Group:          System Environment/Base
@@ -50,6 +50,8 @@ rm -rf $RPM_BUILD_ROOT
 %{smartmetroot}/www/smartalert/*
 
 %changelog
+* Mon Nov 8 2021 Ville Oravilkka <ville.oravilkka@fmi.fi> 21.11.8-1.el7.fmi
+- Fix incorrect WMS endpoint
 * Fri Nov 5 2021 Ville Oravilkka <ville.oravilkka@fmi.fi> 21.11.5-1.el7.fmi
 - Add an option to display additional content as a WMS layer
 * Mon Oct 18 2021 Ville Oravilkka <ville.oravilkka@fmi.fi> 21.10.18-1.el7.fmi
