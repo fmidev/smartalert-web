@@ -1,6 +1,6 @@
 # SmartAlert CAP Web
 
-All customizations are to be done to capmap-config.js and index.html files.
+All customizations are to be done to capmap-config.js, index.html and capfeed.php files.
 
 ## Initial set up
 
@@ -22,6 +22,8 @@ All customizations are to be done to capmap-config.js and index.html files.
 
 4. make symbolic link to smartalert data directory
   * ln -s /smartmet/editor/smartalert data
+
+5. if multiple data sources are used remember to cofigure these in capfeed.php. See `subDirectories` option below.
 
 
 
