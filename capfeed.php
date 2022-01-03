@@ -18,8 +18,8 @@ foreach($SUBDIRS as $dir) {
         $content = file_get_contents($DIR."/".$file);
         $xml = new SimpleXmlElement($content);
         $senderName = $xml->info->senderName;
-        // if (time() > strtotime($xml->info->expires))
-        //   continue;
+        if (time() > strtotime($xml->info->expires))
+          continue;
         $atom .= "<entry>\n";
         $atom .= "<id>$address".$DIR."/".$file."</id>\n";
         $atom .= "<title>".$xml->info->event." for ".preg_replace("/\&/","&amp;",$xml->info->area->areaDesc)  ." issued ". date('F j \a\t g:i A T',strtotime($xml->info->onset)) ." until " . date('F j \a\t g:i A T',strtotime($xml->info->expires)) ." </title>\n";
