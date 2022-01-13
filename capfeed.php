@@ -5,7 +5,7 @@ $SUBDIRS = [""]; # if no subdirectories are needed
 $atom="";
 $updated;
 
-$address = "http://".$_SERVER['SERVER_NAME'].dirname($_SERVER['PHP_SELF']);
+$address = "http://".$_SERVER['SERVER_NAME'].dirname($_SERVER['PHP_SELF'])."/";
 $capfeed = "http://".$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF'];
 
 
