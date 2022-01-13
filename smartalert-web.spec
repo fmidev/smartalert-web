@@ -1,7 +1,7 @@
 %define smartmetroot /smartmet
 
 Name:           smartalert-web
-Version:        22.1.3
+Version:        22.1.13
 Release:        1%{?dist}.fmi
 Summary:        SmartMet SmartAlert Website
 Group:          System Environment/Base
@@ -50,6 +50,8 @@ rm -rf $RPM_BUILD_ROOT
 %{smartmetroot}/www/smartalert/*
 
 %changelog
+* Thu Jan 13 2022 Ville Oravilkka <ville.oravilkka@fmi.fi> 22.1.13-1.el7.fmi
+- Minor bug fix
 * Mon Jan 3 2022 Ville Oravilkka <ville.oravilkka@fmi.fi> 22.1.3-1.el7.fmi
 - Add an option to use multiple subdirectories as a data source for cap feed 
 * Mon Nov 8 2021 Ville Oravilkka <ville.oravilkka@fmi.fi> 21.11.8-1.el7.fmi
