@@ -108,13 +108,6 @@ function initialize () {
   // mapbox access token
   // https://www.mapbox.com/account/
 
-  var Esri_WorldTopoMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors, <a href="' + alertOptions.attributionLink + '">' + alertOptions.attribution + '</a>',
-    maxZoom: 18,
-    id: 'mapbox.streets',
-    opacity: 1,
-  }).addTo(map)
-
   if(alertOptions.displayWMS) {
     var wmsLayer = L.tileLayer.wms(alertOptions.displayOptions.endpoint, alertOptions.displayOptions.params).addTo(map);
   }
@@ -125,8 +118,9 @@ function initialize () {
 	// Layers in this pane are non-interactive and do not obscure mouse/touch events
 	map.getPane('labels').style.pointerEvents = 'none';
   nameLayer = L.tileLayer(alertOptions.mapTileSource, {
+    attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors, <a href="' + alertOptions.attributionLink + '">' + alertOptions.attribution + '</a>',
     pane: 'labels',
-    opacity: 0.45
+    opacity: 1
   }).addTo(map)
 
   var southWest = new L.LatLng(alertOptions.bounds.south, alertOptions.bounds.east)
