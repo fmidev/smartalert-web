@@ -120,6 +120,11 @@ function initialize () {
   nameLayer = L.tileLayer(alertOptions.mapTileSource, {
     attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors, <a href="' + alertOptions.attributionLink + '">' + alertOptions.attribution + '</a>',
     pane: 'labels',
+    opacity: 0.5
+  }).addTo(map)
+
+  nameLayer = L.tileLayer(alertOptions.mapTileSource, {
+    attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors, <a href="' + alertOptions.attributionLink + '">' + alertOptions.attribution + '</a>',
     opacity: 1
   }).addTo(map)
 
