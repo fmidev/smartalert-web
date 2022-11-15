@@ -1,7 +1,7 @@
 %define smartmetroot /smartmet
 
 Name:           smartalert-web
-Version:        22.4.14
+Version:        22.11.15
 Release:        1%{?dist}.fmi
 Summary:        SmartMet SmartAlert Website
 Group:          System Environment/Base
@@ -50,6 +50,8 @@ rm -rf $RPM_BUILD_ROOT
 %{smartmetroot}/www/smartalert/*
 
 %changelog
+* Tue Nov 15 2022 Ville Oravilkka <ville.oravilkka@fmi.fi> 22.11.15-1.el7.fmi
+- Fixed a bug in map panes
 * Thu Apr 14 2022 Ville Oravilkka <ville.oravilkka@fmi.fi> 22.4.14-1.el7.fmi
 - Fixed background map configuration
 * Thu Feb 15 2022 Ville Oravilkka <ville.oravilkka@fmi.fi> 22.2.15-1.el7.fmi
