@@ -1057,6 +1057,13 @@ function doCAP (dom) {
       }
 
       var lang = selectedLANGUAGE.split('-')[0]
+      if(alertOptions.customLangCode !== undefined) {
+        for (var h = 0; h<Object.keys(alertOptions.customLangCode).length; h++) {
+          if(selectedLANGUAGE === Object.keys(alertOptions.customLangCode)[h]) {
+            lang = alertOptions.customLangCode[selectedLANGUAGE]
+          }
+        }
+      }
       fromDateFormatted = moment(fromDate).locale(lang).format(formatter)
       toDateFormatted = moment(toDate).locale(lang).format(formatter)
       dFormatted = moment(d).locale(lang).format(formatter)

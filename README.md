@@ -48,6 +48,7 @@ Fill in these values at initial se up
 | `useLocation`         | `Boolaen` | `false`         | Allow user location. |
 | `useMinorThreat`      | `Boolean` | `false`         | Display minor threat level warning. |
 | `defaultLanguage`     | `String`  | `'en-US'`       | Choose the defaylt language. |
+| `customLangCode`     | `Object`  | `'null'`       | Choose a custom language code for date formatting, Moment.js doesn't always use ISO standard language codes. I.e. `customLangCode: {'ua-UA':'uk'}` |
 | `dateFormat`          | `String`  | `'ISOString'`   | Use longer date format. Available options are `long` and (default) `ISOString`. |
 | `dateFormatString`    | `String`  | `null`        | Define the date format used in warning popups if `dateFormat:long`. It's also possible to define date formats 
 | `displayIssueTimeDirrefence`    | `Boolean`  | `true`        | Display time difference to time of issue (i.e. Issued by Ukrainian Hydrometeorological Center at 29.11.2022, 13:28 (10 days 22 hours 11 minutes ago)) |
