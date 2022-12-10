@@ -1068,7 +1068,10 @@ function doCAP (dom) {
         active_str +
         '<p>' + (info.querySelector('description') ? info.querySelector('description').textContent : '') + '</p>' +
         '<p><i>' + t('Issued by') + ' ' + sender +
-        ' ' + t('at') + ' ' + dFormatted + ' (' + d.dateDiff() + ')</i></p>'
+        ' ' + t('at') + ' ' + dFormatted
+
+    if(!!alertOptions.displayIssueTimeDirrefence || alertOptions.displayIssueTimeDirrefence === undefined)
+      content = content + ' (' + d.dateDiff() + ')</i></p>'
 
     // bind markers to marker and polygon
     var popup = L.popup({
