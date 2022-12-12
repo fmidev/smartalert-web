@@ -348,13 +348,30 @@ function showMarkers (day) {
     var fromDate = new Date(markers[i].options.fromDate)
     var toDate = new Date(markers[i].options.toDate)
 
-    if (polygons[i].options.polygonArea < alertOptions.areaLimitForMarkers) {
-      markers[i].getElement().style.display = 'none'
-    } else if (day == null || day == 'undefined') {
-      if (~polygons[i].options.capEvent.indexOf(selectedEVENT) || selectedEVENT == null) { markers[i].getElement().style.display = 'inline' } else { markers[i].getElement().style.display = 'none' }
-    } else if (fromDate.isBeforeDay(day) && toDate.isAfterDay(day)) {
-      if (~polygons[i].options.capEvent.indexOf(selectedEVENT) || selectedEVENT == null) { markers[i].getElement().style.display = 'inline' } else { markers[i].getElement().style.display = 'none' }
-    } else { markers[i].getElement().style.display = 'none' }
+    if(selectedEVENT !== null)
+    var combinedEvents = selectedEVENT.split(',')
+    else
+    combinedEvents = [selectedEVENT]
+
+    for(var n = 0; n < combinedEvents.length; n++){
+      if (polygons[i].options.polygonArea < alertOptions.areaLimitForMarkers) {
+        markers[i].getElement().style.display = 'none'
+      } else if (day == null || day == 'undefined') {
+        if (~polygons[i].options.capEvent.indexOf(combinedEvents[n]) || combinedEvents[n] == null) {
+          markers[i].getElement().style.display = 'inline'
+        } else {
+          if(!combinedEvents.some(substring=>(polygons[i].options.capEvent).includes(substring)))
+          markers[i].getElement().style.display = 'none'
+        }
+      } else if (fromDate.isBeforeDay(day) && toDate.isAfterDay(day)) {
+        if (~polygons[i].options.capEvent.indexOf(combinedEvents[n]) || combinedEvents[n] == null) {
+          markers[i].getElement().style.display = 'inline'
+        } else {
+          if(!combinedEvents.some(substring=>(polygons[i].options.capEvent).includes(substring)))
+          markers[i].getElement().style.display = 'none'
+        }
+      } else { markers[i].getElement().style.display = 'none' }
+    }
   }
   debug('Number of markers: ' + markers.length)
 }
@@ -364,19 +381,28 @@ function showPolygons (day) {
     var fromDate = new Date(polygons[i].options.fromDate)
     var toDate = new Date(polygons[i].options.toDate)
 
-    if (day == null) {
-      if (~polygons[i].options.capEvent.indexOf(selectedEVENT) || selectedEVENT == null) {
-        polygons[i].getElement().style.display = 'inline'
-      } else {
-        polygons[i].getElement().style.display = 'none'
-      }
-    } else if (fromDate.isBeforeDay(day) && toDate.isAfterDay(day)) {
-      if (~polygons[i].options.capEvent.indexOf(selectedEVENT) || selectedEVENT == null) {
-        polygons[i].getElement().style.display = 'inline'
-      } else {
-        polygons[i].getElement().style.display = 'none'
-      }
-    } else { polygons[i].getElement().style.display = 'none' }
+    if(selectedEVENT !== null)
+    var combinedEvents = selectedEVENT.split(',')
+    else
+    combinedEvents = [selectedEVENT]
+
+    for(var n = 0; n < combinedEvents.length; n++){
+      if (day == null) {
+        if (~polygons[i].options.capEvent.indexOf(combinedEvents[n]) || combinedEvents[n] == null) {
+          polygons[i].getElement().style.display = 'inline'
+        } else {
+          if(!combinedEvents.some(substring=>(polygons[i].options.capEvent).includes(substring)))
+          polygons[i].getElement().style.display = 'none'
+        }
+      } else if (fromDate.isBeforeDay(day) && toDate.isAfterDay(day)) {
+        if (~polygons[i].options.capEvent.indexOf(combinedEvents[n]) || combinedEvents[n] == null) {
+          polygons[i].getElement().style.display = 'inline'
+        } else {
+          if(!combinedEvents.some(substring=>(polygons[i].options.capEvent).includes(substring)))
+          polygons[i].getElement().style.display = 'none'
+        }
+      } else { polygons[i].getElement().style.display = 'none' }
+    }
   }
   debug('Number of polygons: ' + polygons.length)
 }
