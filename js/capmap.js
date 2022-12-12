@@ -847,19 +847,17 @@ function doCAP (dom) {
         iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
         popupAnchor: [0, 0]
       })
-    }
-
+    } else if (~eventRaw.indexOf('snow')) {
+    var icon = L.icon({
+      iconUrl: symbolPath + 'snow.png',
+      iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
+      iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
+      popupAnchor: [0, 0]
+    })
     // Rainfall Icon
-    else if (~eventRaw.indexOf('rain')) {
+    } else if (~eventRaw.indexOf('rain') || ~eventRaw.indexOf('shower')) {
       var icon = L.icon({
         iconUrl: symbolPath + 'rainfall.png',
-        iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-        iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
-        popupAnchor: [0, 0]
-      })
-    } else if (~eventRaw.indexOf('snow')) {
-      var icon = L.icon({
-        iconUrl: symbolPath + 'snow.png',
         iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
         iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
         popupAnchor: [0, 0]
