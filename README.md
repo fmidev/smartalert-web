@@ -8,7 +8,7 @@ All customizations are to be done to capmap-config.js, index.html and capfeed.ph
   * set default language
   * specify initial map position and zoom level
   * specify which day buttons will be shown
-  * add event types for the dropdown menu, c
+  * add event types for the dropdown menu (events can also be combined as a comam separated list, i,e. `"rain,showers" : "Rain warnings"`)
   * add map bounds
   * add your google analytics id
 
