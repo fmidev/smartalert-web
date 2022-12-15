@@ -75,4 +75,4 @@ Fill in these values at initial se up
 | `iconWidth`           | `Number`  | `30`            | Warning icon width in pixels. |
 | `iconHeight`          | `Number`  | `30`            | Warning icon height in pixels. |
 | `transparentIcons`    | `Boolean` | `false`         | Use transparent icons. |
-| `eventTypes`          | `Object`  | `{}`            | List of used events, key is unique word appearing in event tag. |
+| `eventTypes`          | `Object`  | `{}`            | List of used events, key is unique word appearing in event tag. Use comma separated keys to combine multiple warning events to be displayed with one selection in the dropdown list, i.e.: `"shower,rain": "Rain",` |
