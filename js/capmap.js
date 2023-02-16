@@ -1,5 +1,5 @@
 
-var DEBUG = false
+var DEBUG = true
 var map
 var markers = []
 var polygons = []
@@ -592,11 +592,13 @@ function doCAP (dom) {
     .replace('High risk of', '')
     .replace('Very high risk of', '')
     .replace('Extreme risk of', '')
+    .replace('Low', '')
     .replace('High', '')
     .replace('High Seas', '')
     .replace('Severe storm force', '')
     .replace('Hurricane force', '')
     .replace('Dense', '')
+    .replace('Very', '')
     .replace('Very dense', '')
     .replace('Very heavy', '')
     .replace('Extremely heavy', '')
