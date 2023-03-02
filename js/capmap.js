@@ -615,6 +615,7 @@ function doCAP (dom) {
     .replace('Severe', '')
     .replace('Intensive', '')
     .replace('High risk of', '')
+    .replace('Poor', '')
     .trim().split(' ')[0].trim().toLowerCase()
   var eventRaw = info.querySelector('event').textContent.toLowerCase()
 
