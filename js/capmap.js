@@ -592,11 +592,13 @@ function doCAP (dom) {
     .replace('High risk of', '')
     .replace('Very high risk of', '')
     .replace('Extreme risk of', '')
+    .replace('Low', '')
     .replace('High', '')
     .replace('High Seas', '')
     .replace('Severe storm force', '')
     .replace('Hurricane force', '')
     .replace('Dense', '')
+    .replace('Very', '')
     .replace('Very dense', '')
     .replace('Very heavy', '')
     .replace('Extremely heavy', '')
@@ -613,6 +615,7 @@ function doCAP (dom) {
     .replace('Severe', '')
     .replace('Intensive', '')
     .replace('High risk of', '')
+    .replace('Poor', '')
     .trim().split(' ')[0].trim().toLowerCase()
   var eventRaw = info.querySelector('event').textContent.toLowerCase()
 
@@ -1005,6 +1008,13 @@ function doCAP (dom) {
     } else if (~eventRaw.indexOf('severe tropical storm')) {
       var icon = L.icon({
         iconUrl: symbolPath + 'severe-tropical-storm.png',
+        iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
+        iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
+        popupAnchor: [0, 0]
+      })
+    } else if (~eventRaw.indexOf('visibility')) {
+      var icon = L.icon({
+        iconUrl: symbolPath + 'fog.png',
         iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
         iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
         popupAnchor: [0, 0]
