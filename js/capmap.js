@@ -1012,6 +1012,13 @@ function doCAP (dom) {
         iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
         popupAnchor: [0, 0]
       })
+    } else if (~eventRaw.indexOf('visibility')) {
+      var icon = L.icon({
+        iconUrl: symbolPath + 'fog.png',
+        iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
+        iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
+        popupAnchor: [0, 0]
+      })
     } else if (~eventRaw.indexOf('depression')) {
       var icon = L.icon({
         iconUrl: symbolPath + 'tropical-depression.png',
