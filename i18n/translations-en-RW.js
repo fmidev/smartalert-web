@@ -13,7 +13,7 @@ translations['en-RW'] = {
     "Day after tomorrow": "Day 3",
     "Day 4": "Day 4",
     "Day 5": "Day 5",
-    "All": "All",
+    "All": "All days",
     "for": "for",
     "Valid from": "Valid from",
     "to": "to",
