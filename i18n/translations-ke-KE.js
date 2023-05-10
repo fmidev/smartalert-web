@@ -23,7 +23,7 @@ translations['ke-KE'] = {
     "minute": "minute",
     "minutes": "minutes",
     "ago": "ago",
-    "at": "Katika",
+    "at": "katika",
     "minor threat": "Minor Threat",
     "no awareness needed": "Hakuna haja ya kujulishwa",
     "potentially dangerous": "Uwezekano wa hatari",
