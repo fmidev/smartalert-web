@@ -33,5 +33,13 @@ translations['ua-UA'] = {
   "Snow": "Сніг",
   "Thunderstorm": "Гроза",
   "Fog": "Туман",
-  "Temperature": "Температура"
+  "Temperature": "Температура",
+  "Visibility": "Видимість",
+  "Wind": "Вітер",
+  "Wave": "Висота хвиль", 
+  "Harbour oscillation": "Тягун",
+  "Sea level": "Рівень моря",
+  "Ice": "Лід",
+  "Sea spraying ice": "Обледеніння суден",
+  "Sea surface temperature": "Температура поверхні моря"
 };
