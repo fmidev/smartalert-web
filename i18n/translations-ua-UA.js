@@ -37,9 +37,9 @@ translations['ua-UA'] = {
   "Visibility": "Видимість",
   "Wind": "Вітер",
   "Wave": "Висота хвиль", 
-  "Harbour oscillation": "Тягун",
+  "Harbor oscillation": "Тягун",
   "Sea level": "Рівень моря",
   "Ice": "Лід",
-  "Sea spraying ice": "Обледеніння суден",
+  "Sea spray icing": "Обледеніння суден",
   "Sea surface temperature": "Температура поверхні моря"
 };

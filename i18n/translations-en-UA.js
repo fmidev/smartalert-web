@@ -35,12 +35,12 @@ translations['en-UA'] = {
     "Thunderstorm": "Thunderstorm",
     "Fog": "Fog",
     "Temperature": "Temperature",
-    "Visibility": "Видимість",
+    "Visibility": "Visibility",
     "Wind": "Wind",
     "Wave": "Wave", 
-    "Harbour oscillation": "Harbour oscillation",
+    "Harbor oscillation": "Harbor oscillation",
     "Sea level": "Sea level",
     "Ice": "Ice",
-    "Sea spraying ice": "Sea spraying ice",
+    "Sea spray icing": "Sea spraying ice",
     "Sea surface temperature": "Sea surface temperature"
 };
