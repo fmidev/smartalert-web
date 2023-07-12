@@ -38,9 +38,9 @@ translations['en-UA'] = {
     "Visibility": "Visibility",
     "Wind": "Wind",
     "Wave": "Wave", 
-    "Harbor oscillation": "Harbor oscillation",
+    "Harbor oscillations": "Harbor oscillations",
     "Sea level": "Sea level",
     "Ice": "Ice",
-    "Sea spray icing": "Sea spraying ice",
+    "Sea spray icing": "Sea spray icing",
     "Sea surface temperature": "Sea surface temperature"
 };
