@@ -744,8 +744,12 @@ function doCAP (dom) {
     markerLocations.push(test)
 
     var symbolPath = 'img/'
-    if(alertOptions.transparentIcons == true)
+    if(alertOptions.transparentIcons === true && alertOptions.customIcons === false)
     var symbolPath = 'img/transparent/'
+    if(alertOptions.customIcons === true)
+    var symbolPath = 'img/custom/'
+    if(alertOptions.transparentIcons === true && alertOptions.customIcons === true)
+    var symbolPath = 'img/custom/transparent/'
 
     // fallback icon
     var icon = L.icon({
