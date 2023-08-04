@@ -23,7 +23,7 @@ All customizations are to be done to capmap-config.js, index.html and capfeed.ph
 4. make symbolic link to smartalert data directory
   * ln -s /smartmet/editor/smartalert data
 
-5. if multiple data sources are used remember to cofigure these in capfeed.php. See `subDirectories` option below.
+5. if multiple data sources are used remember to configure these in capfeed.php. See `subDirectories` option below.
 
 
 
@@ -75,4 +75,5 @@ Fill in these values at initial se up
 | `iconWidth`           | `Number`  | `30`            | Warning icon width in pixels. |
 | `iconHeight`          | `Number`  | `30`            | Warning icon height in pixels. |
 | `transparentIcons`    | `Boolean` | `false`         | Use transparent icons. |
+| `customIcons`         | `Boolean` | `false`         | Use custom icons. Requires copying contents of /img/ to /img/custom and /img/transparent to /img/custom/transparent. Images in custom folder can then be replaced. |
 | `eventTypes`          | `Object`  | `{}`            | List of used events, key is unique word appearing in event tag. Use comma separated keys to combine multiple warning events to be displayed with one selection in the dropdown list, i.e.: `"shower,rain": "Rain",` |
