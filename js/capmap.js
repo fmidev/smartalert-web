@@ -432,6 +432,17 @@ function processCAP (json) {
     }
   }
 }
+let prevButton = null;
+
+const setActiveButton = (selectedButton) => {
+  // Add .active CSS Class
+  selectedButton.classList.add('active')
+  if(prevButton !== null && prevButton != selectedButton) {
+    // Remove .active CSS Class
+    prevButton.classList.remove('active')
+  }
+  prevButton = selectedButton
+}
 
 function DayControl (controlDiv, map) {
   if (alertOptions.dayControl == false) { return }
@@ -460,6 +471,8 @@ function DayControl (controlDiv, map) {
       selectedDAY = 0
       showMarkers(0)
       showPolygons(0)
+      setActiveButton(setDay0UI)
+
       debug('Show events for today.')
     })
   }
@@ -481,6 +494,7 @@ function DayControl (controlDiv, map) {
       selectedDAY = 1
       showMarkers(1)
       showPolygons(1)
+      setActiveButton(setDay1UI)
       debug('Show events for tomorrow.')
     })
   } // if
@@ -502,6 +516,7 @@ function DayControl (controlDiv, map) {
       selectedDAY = 2
       showMarkers(2)
       showPolygons(2)
+      setActiveButton(setDay2UI)
       debug('Show events for the day after tomorrow.')
     })
   } // if
@@ -523,6 +538,7 @@ function DayControl (controlDiv, map) {
       selectedDAY = 3
       showMarkers(3)
       showPolygons(3)
+      setActiveButton(setDay3UI)
       debug('Show events for day 4.')
     })
   } // if
@@ -544,6 +560,7 @@ function DayControl (controlDiv, map) {
       selectedDAY = 4
       showMarkers(4)
       showPolygons(4)
+      setActiveButton(setDay4UI)
       debug('Show events for day 5.')
     })
   } // if
@@ -565,6 +582,7 @@ function DayControl (controlDiv, map) {
       selectedDAY = null
       showMarkers(null)
       showPolygons(null)
+      setActiveButton(setAllDaysUI)
       debug('Show all events.')
     })
   } // fi

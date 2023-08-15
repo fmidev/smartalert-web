@@ -38,6 +38,10 @@ html, body {
 .leaflet-verticalcenter .leaflet-control {
     margin-bottom: 15px;
 }
+.active {
+    background-color: #bba7a7 !important;
+    border: 2px solid #bba7a7 !important;
+}
 
 #setDay0UI, #setDay1UI, #setDay2UI, #setDay3UI, #setDay4UI, #setAllDaysUI {
     margin-right: 12px;
@@ -48,7 +52,16 @@ html, body {
     cursor: pointer;
     float: left;
     margin-bottom: 15px;
+    font-family: Roboto,Arial,sans-serif;
+    font-size: 15px;
+    line-height: 25px;
+    padding-left: 5px;
+    padding-right: 5px;
     text-align: center;
+    &:hover {
+        background-color: #dbcdcd;
+        border: 2px solid #dbcdcd;
+    }
 }
 
 #setDay0Text, #setDay1Text, #setDay2Text, #setDay3Text, #setDay4Text, #setAllDaysText {
