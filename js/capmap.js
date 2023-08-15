@@ -444,6 +444,16 @@ const setActiveButton = (selectedButton) => {
   prevButton = selectedButton
 }
 
+const setEventListener = (selected, number, debugMsg) => {
+  selected.addEventListener('click', function () {
+    selectedDAY = number
+    showMarkers(number)
+    showPolygons(number)
+    setActiveButton(selected)
+    debug(debugMsg)
+  })
+}
+
 function DayControl (controlDiv, map) {
   if (alertOptions.dayControl == false) { return }
   // We set up a variable for this since we're adding event listeners later.
@@ -454,138 +464,70 @@ function DayControl (controlDiv, map) {
   controlDiv.style.clear = 'both'
 
   if (alertOptions.day0Control == true) {
-    // Set CSS for the control border
+    // Set CSS
     var setDay0UI = document.createElement('div')
     setDay0UI.id = 'setDay0UI'
     setDay0UI.title = t('Click to show alerts for today')
+    setDay0UI.innerHTML = t('Today')
     controlDiv.appendChild(setDay0UI)
 
-    // Set CSS for the control interior
-    var setDay0Text = document.createElement('div')
-    setDay0Text.id = 'setDay0Text'
-    setDay0Text.innerHTML = t('Today')
-    setDay0UI.appendChild(setDay0Text)
-
-    // Set up the click event listener for day buttons on top.
-    setDay0UI.addEventListener('click', function () {
-      selectedDAY = 0
-      showMarkers(0)
-      showPolygons(0)
-      setActiveButton(setDay0UI)
-
-      debug('Show events for today.')
-    })
+    setEventListener(setDay0UI, 0)
   }
 
   if (alertOptions.day1Control == true) {
-    // Set CSS for the setDay1 control border
+    // Set CSS
     var setDay1UI = document.createElement('div')
     setDay1UI.id = 'setDay1UI'
     setDay1UI.title = t('Click to show alerts for tomorrow')
+    setDay1UI.innerHTML = t('Tomorrow')
     controlDiv.appendChild(setDay1UI)
 
-    // Set CSS for the control interior
-    var setDay1Text = document.createElement('div')
-    setDay1Text.id = 'setDay1Text'
-    setDay1Text.innerHTML = t('Tomorrow')
-    setDay1UI.appendChild(setDay1Text)
-
-    setDay1UI.addEventListener('click', function () {
-      selectedDAY = 1
-      showMarkers(1)
-      showPolygons(1)
-      setActiveButton(setDay1UI)
-      debug('Show events for tomorrow.')
-    })
-  } // if
+    setEventListener(setDay1UI, 1, 'Show events for tomorrow.')
+  }
 
   if (alertOptions.day2Control == true) {
-    // Set CSS for the setCenter control border
+    // Set CSS
     var setDay2UI = document.createElement('div')
     setDay2UI.id = 'setDay2UI'
     setDay2UI.title = t('Click to show alerts for day after tomorrow')
+    setDay2UI.innerHTML = t('Day after tomorrow')
     controlDiv.appendChild(setDay2UI)
 
-    // Set CSS for the control interior
-    var setDay2Text = document.createElement('div')
-    setDay2Text.id = 'setDay2Text'
-    setDay2Text.innerHTML = t('Day after tomorrow')
-    setDay2UI.appendChild(setDay2Text)
-
-    setDay2UI.addEventListener('click', function () {
-      selectedDAY = 2
-      showMarkers(2)
-      showPolygons(2)
-      setActiveButton(setDay2UI)
-      debug('Show events for the day after tomorrow.')
-    })
-  } // if
+    setEventListener(setDay2UI, 2, 'Show events for the day after tomorrow.')
+  }
 
   if (alertOptions.day3Control == true) {
-    // Set CSS for the setCenter control border
+    // Set CSS
     var setDay3UI = document.createElement('div')
     setDay3UI.id = 'setDay3UI'
     setDay3UI.title = t('Click to show alerts for day 4')
+    setDay3UI.innerHTML = t('Day 4')
     controlDiv.appendChild(setDay3UI)
 
-    // Set CSS for the control interior
-    var setDay3Text = document.createElement('div')
-    setDay3Text.id = 'setDay3Text'
-    setDay3Text.innerHTML = t('Day 4')
-    setDay3UI.appendChild(setDay3Text)
-
-    setDay3UI.addEventListener('click', function () {
-      selectedDAY = 3
-      showMarkers(3)
-      showPolygons(3)
-      setActiveButton(setDay3UI)
-      debug('Show events for day 4.')
-    })
-  } // if
+    setEventListener(setDay3UI, 3, 'Show events for day 4.')
+  }
 
   if (alertOptions.day4Control == true) {
-    // Set CSS for the setCenter control border
+    // Set CSS
     var setDay4UI = document.createElement('div')
     setDay4UI.id = 'setDay4UI'
     setDay4UI.title = t('Click to show alerts for day 5')
+    setDay4UI.innerHTML = t('Day 5')
     controlDiv.appendChild(setDay4UI)
 
-    // Set CSS for the control interior
-    var setDay4Text = document.createElement('div')
-    setDay4Text.id = 'setDay4Text'
-    setDay4Text.innerHTML = t('Day 5')
-    setDay4UI.appendChild(setDay4Text)
-
-    setDay4UI.addEventListener('click', function () {
-      selectedDAY = 4
-      showMarkers(4)
-      showPolygons(4)
-      setActiveButton(setDay4UI)
-      debug('Show events for day 5.')
-    })
-  } // if
+    setEventListener(setDay4UI, 4, 'Show events for day 5.')
+  }
 
   if (alertOptions.allDayControl == true) {
-    // Set CSS for the setAllDay control border
+    // Set CSS
     var setAllDaysUI = document.createElement('div')
     setAllDaysUI.id = 'setAllDaysUI'
     setAllDaysUI.title = t('Click to show all active alerts')
+    setAllDaysUI.innerHTML = t('All')
     controlDiv.appendChild(setAllDaysUI)
 
-    // Set CSS for the control interior
-    var setAllDaysText = document.createElement('div')
-    setAllDaysText.id = 'setAllDaysText'
-    setAllDaysText.innerHTML = t('All')
-    setAllDaysUI.appendChild(setAllDaysText)
-
-    setAllDaysUI.addEventListener('click', function () {
-      selectedDAY = null
-      showMarkers(null)
-      showPolygons(null)
-      setActiveButton(setAllDaysUI)
-      debug('Show all events.')
-    })
-  } // fi
+    setEventListener(setAllDaysUI, null, 'Show all events.')
+  }
 }
 
 function doCAP (dom) {
