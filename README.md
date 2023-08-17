@@ -76,4 +76,5 @@ Fill in these values at initial se up
 | `iconHeight`          | `Number`  | `30`            | Warning icon height in pixels. |
 | `transparentIcons`    | `Boolean` | `false`         | Use transparent icons. |
 | `customIcons`         | `Boolean` | `false`         | Use custom icons. Requires copying contents of /img/ to /img/custom including the transparent folder. Images in custom folder can then be replaced. |
+| `showUpdateTime`      | `Boolean` | `true`          | Display date and time of last warning message. |
 | `eventTypes`          | `Object`  | `{}`            | List of used events, key is unique word appearing in event tag. Use comma separated keys to combine multiple warning events to be displayed with one selection in the dropdown list, i.e.: `"shower,rain": "Rain",` |

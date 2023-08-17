@@ -28,6 +28,7 @@ var alertOptions = {
     iconHeight: 30,
     transparentIcons: false,
     customIcons: false,
+    showUpdateTime: true,
     eventTypes: {
         // edit: "edit capmap-config.js",
         "tropical storm": "Tropical Storm",
