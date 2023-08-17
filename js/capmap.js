@@ -10,7 +10,6 @@ var xDisplacement = 0
 var xDisplacementValue = 0
 var languages = []
 var events = []
-var selectedDAY = null
 var selectedEVENT = null
 var translations = {}
 var dayControll
@@ -19,6 +18,13 @@ var nameLayer
 // Remember previous state
 var selectedLANGUAGE = localStorage.getItem('userLanguage') ? localStorage.getItem('userLanguage') : alertOptions.defaultLanguage
 var selectedEVENT = localStorage.getItem('userEventType') ? localStorage.getItem('userEventType') : ''
+
+var selectedDAY = alertOptions.allDayControl ? null 
+: alertOptions.day0Control ? 0 
+: alertOptions.day1Control ? 1
+: alertOptions.day2Control ? 2 
+: alertOptions.day3Control ? 3 
+: 4
 
 function debug (str) {
   if (DEBUG) {
@@ -470,7 +476,7 @@ function DayControl (controlDiv, map) {
     setDay0UI.title = t('Click to show alerts for today')
     setDay0UI.innerHTML = t('Today')
     controlDiv.appendChild(setDay0UI)
-
+    selectedDAY === 0 && setActiveButton(setDay0UI)
     setEventListener(setDay0UI, 0)
   }
 
@@ -481,7 +487,7 @@ function DayControl (controlDiv, map) {
     setDay1UI.title = t('Click to show alerts for tomorrow')
     setDay1UI.innerHTML = t('Tomorrow')
     controlDiv.appendChild(setDay1UI)
-
+    selectedDAY === 1 && setActiveButton(setDay1UI)
     setEventListener(setDay1UI, 1, 'Show events for tomorrow.')
   }
 
@@ -492,7 +498,7 @@ function DayControl (controlDiv, map) {
     setDay2UI.title = t('Click to show alerts for day after tomorrow')
     setDay2UI.innerHTML = t('Day after tomorrow')
     controlDiv.appendChild(setDay2UI)
-
+    selectedDAY === 2 && setActiveButton(setDay2UI)
     setEventListener(setDay2UI, 2, 'Show events for the day after tomorrow.')
   }
 
@@ -503,7 +509,7 @@ function DayControl (controlDiv, map) {
     setDay3UI.title = t('Click to show alerts for day 4')
     setDay3UI.innerHTML = t('Day 4')
     controlDiv.appendChild(setDay3UI)
-
+    selectedDAY === 3 && setActiveButton(setDay3UI)
     setEventListener(setDay3UI, 3, 'Show events for day 4.')
   }
 
@@ -514,7 +520,7 @@ function DayControl (controlDiv, map) {
     setDay4UI.title = t('Click to show alerts for day 5')
     setDay4UI.innerHTML = t('Day 5')
     controlDiv.appendChild(setDay4UI)
-
+    selectedDAY === 4 && setActiveButton(setDay4UI)
     setEventListener(setDay4UI, 4, 'Show events for day 5.')
   }
 
@@ -525,7 +531,7 @@ function DayControl (controlDiv, map) {
     setAllDaysUI.title = t('Click to show all active alerts')
     setAllDaysUI.innerHTML = t('All')
     controlDiv.appendChild(setAllDaysUI)
-
+    selectedDAY === null && setActiveButton(setAllDaysUI)
     setEventListener(setAllDaysUI, null, 'Show all events.')
   }
 }
