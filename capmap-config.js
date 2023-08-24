@@ -6,8 +6,8 @@ var alertOptions = {
     dateFormatString: 'MMMM Do YYYY, HH:mm:ss', // https://momentjs.com/docs/#/displaying/format/
     mapTileSource: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', // https://leaflet-extras.github.io/leaflet-providers/preview/
     zoom: 7,
-    center: [FILL_YOUR_LAT, FILL_YOUR_LON],
-    bounds: {north: FILL_NORTH_BOUND, east: FILL_EAST_BOUND, south: FILL_SOUTH_BOUND, west: FILL_WEST_BOUND},
+    center: [60.192059, 24.945831],
+    bounds: {north: 44, east: 42, south: 41, west: 25},
     attribution: 'Finnish Meteorological Institute',
     polygonOptions: {
         fillOpacity: 0.2,
@@ -28,6 +28,8 @@ var alertOptions = {
     iconHeight: 30,
     transparentIcons: false,
     customIcons: false,
+    customLocations: false,
+    showUpdateTime: true,
     eventTypes: {
         // edit: "edit capmap-config.js",
         "tropical storm": "Tropical Storm",
@@ -49,3 +51,12 @@ var alertOptions = {
         craft: "Small Craft",
     }
 };
+
+// Google Analytics
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'FILL-YOUR-ID', 'auto');
+ga('send', 'pageview');
