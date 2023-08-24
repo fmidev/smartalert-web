@@ -633,3 +633,8 @@
 	margin-left: -12px;
 	border-right-color: #fff;
 	}
+.leaflet-tooltip.pointlabel {
+	background-color: transparent;
+	border: transparent;
+	box-shadow: none;
+	}
