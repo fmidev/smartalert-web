@@ -1221,9 +1221,3 @@ function getCentroid2 (arr) {
   var sixSignedArea = 3 * twoTimesSignedArea;
   return [ cxTimes6SignedArea / sixSignedArea, cyTimes6SignedArea / sixSignedArea];
 }
-
-var stepIcon = L.icon({
-  iconUrl: 'img/cyclone.png', // the background image you want
-  iconSize: [60, 60], // size of the icon
-});
-
