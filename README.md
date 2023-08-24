@@ -45,11 +45,11 @@ Fill in these values at initial se up
 | Option                | Type |  Default         | Description
 | --------------------- | ---- | ---------------- | ------------------------------------------- |
 | `subDirectories`      | `String`  | `''`  | A comma separated list of data source subdirectories. E.g. 'meteorology,hydrology'. By default data/ is used. |
-| `useLocation`         | `Boolaen` | `false`         | Allow user location. |
+| `useLocation`         | `Boolean` | `false`         | Allow user location. |
 | `useMinorThreat`      | `Boolean` | `false`         | Display minor threat level warning. |
 | `defaultLanguage`     | `String`  | `'en-US'`       | Choose the defaylt language. |
-| `customLangCode`     | `Object`  | `'null'`       | Choose a custom language code for date formatting, Moment.js doesn't always use ISO standard language codes. I.e. `customLangCode: {'ua-UA':'uk'}` |
-| `dateFormat`          | `String`  | `'ISOString'`   | Use longer date format. Available options are `long` and (default) `ISOString`. |
+| `customLangCode`      | `Object`  | `'null'`       | Choose a custom language code for date formatting, Moment.js doesn't always use ISO standard language codes. I.e. `customLangCode: {'ua-UA':'uk'}` |
+| `dateFormat`          | `String`  | `'ISOString'`   | Use longer date format. Available options are `long` and (default) `ISOString`.  |
 | `dateFormatString`    | `String`  | `null`        | Define the date format used in warning popups if `dateFormat:long`. It's also possible to define date formats 
 | `displayIssueTimeDirrefence`    | `Boolean`  | `true`        | Display time difference to time of issue (i.e. Issued by Ukrainian Hydrometeorological Center at 29.11.2022, 13:28 (10 days 22 hours 11 minutes ago)) |
 | `mapTileSource`       | `String`  | `''` | Map tile source. See examples from here: https://leaflet-extras.github.io/leaflet-providers/preview/ |
@@ -76,4 +76,5 @@ Fill in these values at initial se up
 | `iconHeight`          | `Number`  | `30`            | Warning icon height in pixels. |
 | `transparentIcons`    | `Boolean` | `false`         | Use transparent icons. |
 | `customIcons`         | `Boolean` | `false`         | Use custom icons. Requires copying contents of /img/ to /img/custom including the transparent folder. Images in custom folder can then be replaced. |
+| `customLocations`     | `Boolean` | `false`         | Use configurable custom locations. Custom locations need to be added to locations.js file.  |
 | `eventTypes`          | `Object`  | `{}`            | List of used events, key is unique word appearing in event tag. Use comma separated keys to combine multiple warning events to be displayed with one selection in the dropdown list, i.e.: `"shower,rain": "Rain",` |
