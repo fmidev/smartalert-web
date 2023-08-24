@@ -1040,15 +1040,20 @@ function doCAP (dom) {
 
     $('#senderName').html(sender)
 
+
     if (dnow.getTime() > fromDate.getTime() && alertOptions.displayActiveFor) { 
       var active_str = '<i>' + t('Active for next') + ' <b>' + toDate.dateDiff() + '</b></i>' 
     } else { 
       var active_str = '' 
     }
 
+    var sentDate = alert.querySelector('sent').textContent.toLocaleString()
     var fromDateFormatted = fromDate.toLocaleString()
     var toDateFormatted = toDate.toLocaleString()
     var dFormatted = d.toLocaleString()
+
+
+
     if (alertOptions.dateFormat === 'long') {
 
       var formatter = ''
@@ -1068,10 +1073,13 @@ function doCAP (dom) {
           }
         }
       }
+      sentDate = moment(sentDate).locale(lang).format(formatter)
       fromDateFormatted = moment(fromDate).locale(lang).format(formatter)
       toDateFormatted = moment(toDate).locale(lang).format(formatter)
       dFormatted = moment(d).locale(lang).format(formatter)
     }
+
+    alertOptions.showUpdateTime === true && $('#sentDate').html(`${t('Updated')}: ${sentDate}`)
 
     // var infowindow = new google.maps.InfoWindow({
     var content = '<h4 class="iw-title">' + info.querySelector('event').textContent + ' ' + t('for') + ' ' + info.querySelector('areaDesc').textContent + '</h4>' +
