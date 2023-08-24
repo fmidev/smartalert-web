@@ -25,7 +25,12 @@ All customizations are to be done to capmap-config.js, index.html and capfeed.ph
 
 5. if multiple data sources are used remember to configure these in capfeed.php. See `subDirectories` option below.
 
-
+## Local development
+Run application
+```
+php -S localhost:8080
+```
+and navigate to `http://localhost:8080``
 
 ## Application configuration
 capmap-config.js configuration options:
@@ -48,16 +53,16 @@ Fill in these values at initial se up
 | `useLocation`         | `Boolean` | `false`         | Allow user location. |
 | `useMinorThreat`      | `Boolean` | `false`         | Display minor threat level warning. |
 | `defaultLanguage`     | `String`  | `'en-US'`       | Choose the defaylt language. |
-| `customLangCode`      | `Object`  | `'null'`       | Choose a custom language code for date formatting, Moment.js doesn't always use ISO standard language codes. I.e. `customLangCode: {'ua-UA':'uk'}` |
-| `dateFormat`          | `String`  | `'ISOString'`   | Use longer date format. Available options are `long` and (default) `ISOString`.  |
-| `dateFormatString`    | `String`  | `null`        | Define the date format used in warning popups if `dateFormat:long`. It's also possible to define date formats 
+| `customLangCode`     | `Object`  | `'null'`       | Choose a custom language code for date formatting, Moment.js doesn't always use ISO standard language codes. I.e. `customLangCode: {'ua-UA':'uk'}` |
+| `dateFormat`          | `String`  | `'ISOString'`   | Use longer date format. Available options are `long` and (default) `ISOString`. |
+| `dateFormatString`    | `Object`  | `null`        | Define the date format used in warning popups if `dateFormat:long`. It's also possible to define date formats. For example:<pre>dateFormatString: {<br>  "default": "MMMM Do YYYY, HH:mm",<br>  'vi-VN': 'HH [giá»] mm [phÃºt], [ngÃ y] DD/MM/YYYY', <br>  "en-VN": "MMMM Do YYYY, HH:mm"<br>},</pre>
 | `displayIssueTimeDirrefence`    | `Boolean`  | `true`        | Display time difference to time of issue (i.e. Issued by Ukrainian Hydrometeorological Center at 29.11.2022, 13:28 (10 days 22 hours 11 minutes ago)) |
 | `mapTileSource`       | `String`  | `''` | Map tile source. See examples from here: https://leaflet-extras.github.io/leaflet-providers/preview/ |
 | `zoom`                | `Number`  | `7`             | Default map zoom level. |
 | `attribution`         | `String`  | `null`          | Attribution text/link. |
 | `displayWMS`          | `Boolean` | `null`          | Display additional content (country borders, regions etc.) as a WMS layer. |
 | `displayOptions`      | `Object`  | `null`          | Settings passed to Tilelayer.WMS. Documentation: https://leafletjs.com/reference.html#tilelayer-wms-l-tilelayer-wms
-| `displayOptions.endpoint`   | `Object`  | `null`    | WMS server endpoint. E.g.: https://openwms.fmi.fi/geoserver/wms
+| `displayOptions.endpoint`   | `String`  | `null`    | WMS server endpoint. E.g.: https://openwms.fmi.fi/geoserver/wms
 | `displayOptions.params`     | `String`  | `null`    | Required query parameters. If any custom options not documented here are used, they will be sent to the WMS server as extra parameters in each request URL. This can be useful for non-standard vendor WMS parameters. E.g. {layers:'nexrad-n0r-900913', format:'image/png', transparent:true} 
 | `polygonOptions.fillOpaity`    | `Number` | `0.2`   | Warning polygon fill opacity in pixels. |
 | `polygonOptions.strokeOpacity` | `Number` | `1`     | Warning polygon stroke opacity in pixels.  |
