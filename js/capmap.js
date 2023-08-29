@@ -306,7 +306,7 @@ function buildLegend() {
 
 let activeMarkerList = []
 
-const addToMapLegend = (object) => {
+const addToMapLegend = (object, day) => {
   var table = document.getElementById('legend-icon-names')
 
   var row = table.insertRow(table.rows.length)
@@ -314,8 +314,13 @@ const addToMapLegend = (object) => {
   var cell1 = row.insertCell(0)
   var cell2 = row.insertCell(1)
 
-  cell1.innerHTML = `<img src=\"${object.iconUrl}" width=\"30px\" height=\"30px\" border=\"1px solid black\">`
-  cell2.innerHTML = object.name
+  var fromDate = new Date(object.fromDate)
+  var toDate = new Date(object.toDate)
+
+  if ((fromDate.isBeforeDay(day) && toDate.isAfterDay(day)) || day === null) {
+    cell1.innerHTML = `<img src=\"${object.iconUrl}" width=\"30px\" height=\"30px\" border=\"1px solid black\">`
+    cell2.innerHTML = object.name
+  }
 }
 
 
@@ -409,9 +414,22 @@ function centerUserLocation () {
 }
 
 function showMarkers (day) {
-
-  console.log(markers)
   for (var i = 0; i < markers.length; i++) {
+
+    // also show legend for active markers
+    const activeMarker = {
+      iconUrl: markers[i].options.icon.options.iconUrl,
+      name: markers[i].options.capEvent,
+      fromDate: markers[i].options.fromDate,
+      toDate: markers[i].options.toDate
+    }
+  
+    if (activeMarkerList.findIndex(x => x.name==activeMarker.name) === -1 ) {
+      activeMarkerList.push(activeMarker)
+      addToMapLegend(activeMarker, day)
+    }
+
+
     var fromDate = new Date(markers[i].options.fromDate)
     var toDate = new Date(markers[i].options.toDate)
 
@@ -514,8 +532,9 @@ const setActiveButton = (selectedButton) => {
 const setEventListener = (selected, number, debugMsg) => {
   selected.addEventListener('click', function () {
     selectedDAY = number
-    // var Table = document.getElementById("legend-icon-names");
-    // Table.innerHTML = "";
+    var Table = document.getElementById("legend-icon-names");
+    Table.innerHTML = "";
+    activeMarkerList = []
     showMarkers(number)
     showPolygons(number)
     setActiveButton(selected)
@@ -1174,15 +1193,17 @@ function doCAP (dom) {
     markers.push(marker)
   } // for loop
 
-  const activeMarker = {
-    iconUrl: icon.options.iconUrl,
-    name: info.querySelector('event').textContent
-  }
+  // const activeMarker = {
+  //   iconUrl: icon.options.iconUrl,
+  //   name: info.querySelector('event').textContent,
+  //   startDate: fromDateFormatted,
+  //   endDate: toDateFormatted
+  // }
 
-  if (activeMarkerList.findIndex(x => x.name==activeMarker.name) === -1 ) {
-    activeMarkerList.push(activeMarker)
-    addToMapLegend(activeMarker)
-  }
+  // if (activeMarkerList.findIndex(x => x.name==activeMarker.name) === -1 ) {
+  //   activeMarkerList.push(activeMarker)
+  //   addToMapLegend(activeMarker, selectedDAY)
+  // }
   
   showMarkers(selectedDAY)
   showPolygons(selectedDAY)
