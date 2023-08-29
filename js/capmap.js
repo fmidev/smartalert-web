@@ -88,7 +88,6 @@ Date.prototype.dateDiff = function () {
 
 function initialize () {
   buildLegend()
-
   map = L.map('map-canvas', {
     zoom: alertOptions.zoom,
     fullscreenControl: true,
@@ -203,6 +202,8 @@ function initialize () {
   updateEventSelect()
   setInterval(updateData, alertOptions.refresh * 1000)
   changeLanguage()
+  
+
 }
 
 function updateEventSelect () {
@@ -303,6 +304,21 @@ function buildLegend() {
   }
 }
 
+let activeMarkerList = []
+
+const addToMapLegend = (object) => {
+  var table = document.getElementById('legend-icon-names')
+
+  var row = table.insertRow(table.rows.length)
+
+  var cell1 = row.insertCell(0)
+  var cell2 = row.insertCell(1)
+
+  cell1.innerHTML = `<img src=\"${object.iconUrl}" width=\"30px\" height=\"30px\" border=\"1px solid black\">`
+  cell2.innerHTML = object.name
+}
+
+
 // Create additional Control placeholders
 function addControlPlaceholders (mapObject) {
   var corners = mapObject._controlCorners
@@ -393,6 +409,8 @@ function centerUserLocation () {
 }
 
 function showMarkers (day) {
+
+  console.log(markers)
   for (var i = 0; i < markers.length; i++) {
     var fromDate = new Date(markers[i].options.fromDate)
     var toDate = new Date(markers[i].options.toDate)
@@ -496,6 +514,8 @@ const setActiveButton = (selectedButton) => {
 const setEventListener = (selected, number, debugMsg) => {
   selected.addEventListener('click', function () {
     selectedDAY = number
+    // var Table = document.getElementById("legend-icon-names");
+    // Table.innerHTML = "";
     showMarkers(number)
     showPolygons(number)
     setActiveButton(selected)
@@ -1095,6 +1115,7 @@ function doCAP (dom) {
     var toDateFormatted = toDate.toLocaleString()
     var dFormatted = d.toLocaleString()
 
+    
 
 
     if (alertOptions.dateFormat === 'long') {
@@ -1135,6 +1156,8 @@ function doCAP (dom) {
     if(!!alertOptions.displayIssueTimeDirrefence || alertOptions.displayIssueTimeDirrefence === undefined)
       content = content + ' (' + d.dateDiff() + ')</i></p>'
 
+      
+
     // bind markers to marker and polygon
     var popup = L.popup({
       maxWidth: 220,
@@ -1151,10 +1174,21 @@ function doCAP (dom) {
     markers.push(marker)
   } // for loop
 
+  const activeMarker = {
+    iconUrl: icon.options.iconUrl,
+    name: info.querySelector('event').textContent
+  }
+
+  if (activeMarkerList.findIndex(x => x.name==activeMarker.name) === -1 ) {
+    activeMarkerList.push(activeMarker)
+    addToMapLegend(activeMarker)
+  }
+  
   showMarkers(selectedDAY)
   showPolygons(selectedDAY)
   debug(events)
 };
+
 
 // http://www.mathopenref.com/coordpolygonarea2.html
 function polygonArea (path) {
