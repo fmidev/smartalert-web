@@ -202,7 +202,7 @@ function initialize () {
   updateEventSelect()
   setInterval(updateData, alertOptions.refresh * 1000)
   changeLanguage()
-  
+  initIconLegendButton()
 
 }
 
@@ -323,7 +323,6 @@ const addToMapLegend = (object, day) => {
   }
 }
 
-
 // Create additional Control placeholders
 function addControlPlaceholders (mapObject) {
   var corners = mapObject._controlCorners
@@ -413,13 +412,20 @@ function centerUserLocation () {
   }
 }
 
+const removeWarningLevel = (string) => {
+  let result = string
+  .replace('severe', '')
+  .replace('extreme', '')
+  return result.charAt(0).toUpperCase() + result.slice(1)
+}
+
 function showMarkers (day) {
   for (var i = 0; i < markers.length; i++) {
 
     // also show legend for active markers
     const activeMarker = {
       iconUrl: markers[i].options.icon.options.iconUrl,
-      name: markers[i].options.capEvent,
+      name: removeWarningLevel(markers[i].options.capEvent),
       fromDate: markers[i].options.fromDate,
       toDate: markers[i].options.toDate
     }
@@ -529,11 +535,12 @@ const setActiveButton = (selectedButton) => {
   prevButton = selectedButton
 }
 
+
 const setEventListener = (selected, number, debugMsg) => {
   selected.addEventListener('click', function () {
     selectedDAY = number
-    var Table = document.getElementById("legend-icon-names");
-    Table.innerHTML = "";
+    var Table = document.getElementById("legend-icon-names")
+    Table.innerHTML = ""
     activeMarkerList = []
     showMarkers(number)
     showPolygons(number)
@@ -1283,4 +1290,24 @@ function getCentroid2 (arr) {
   }
   var sixSignedArea = 3 * twoTimesSignedArea;
   return [ cxTimes6SignedArea / sixSignedArea, cyTimes6SignedArea / sixSignedArea];
+}
+
+const initIconLegendButton = () => {
+const button = document.getElementById('icon-legend-button')
+button.innerHTML = 'Minimize'
+
+let visible = true
+
+button.addEventListener('click', function () {
+  if (visible) {
+    document.getElementById('legend-icon-names').style.display = 'none'
+    button.innerHTML = 'Expand'
+    visible = false
+  }
+  else if (!visible) {
+    document.getElementById('legend-icon-names').style.display = 'inline-block'
+    button.innerHTML = 'Minimize'
+    visible = true
+  }
+})
 }
