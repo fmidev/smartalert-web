@@ -117,11 +117,13 @@ html, body {
     text-align: center;
     font-size: 26px;
     font-weight: bold;
+    user-select: none;
 }
 
 #legend-icon-names {
     margin-top: 5px;
     width: 90%;
+    user-select: none;
 }
 
 @media only screen and (max-width: 500px) {

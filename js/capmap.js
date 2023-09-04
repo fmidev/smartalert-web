@@ -319,7 +319,7 @@ const addToMapLegend = (object, day) => {
 
   if ((fromDate.isBeforeDay(day) && toDate.isAfterDay(day)) || day === null) {
     cell1.innerHTML = `<img src=\"${object.iconUrl}" width=\"30px\" height=\"30px\" border=\"1px solid black\">`
-    cell2.innerHTML = object.name
+    cell2.innerHTML = t(object.name)
   }
 }
 
@@ -414,9 +414,10 @@ function centerUserLocation () {
 
 const removeWarningLevel = (string) => {
   let result = string
-  .replace('severe', '')
-  .replace('extreme', '')
-  return result.charAt(0).toUpperCase() + result.slice(1)
+  .replace('severe ', '')
+  .replace('extreme ', '')
+  result = result.charAt(0).toUpperCase() + result.slice(1)
+  return result
 }
 
 function showMarkers (day) {
