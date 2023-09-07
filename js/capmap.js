@@ -202,7 +202,10 @@ function initialize () {
   updateEventSelect()
   setInterval(updateData, alertOptions.refresh * 1000)
   changeLanguage()
-  initIconLegendButton()
+  alertOptions.showIconLegend && initIconLegendButton()
+  if (!alertOptions.showIconLegend) {
+    document.getElementById("icon-legend-container").style.display = 'none'
+  }
 
 }
 
@@ -323,6 +326,7 @@ const addToMapLegend = (object, day) => {
   }
 }
 
+
 // Create additional Control placeholders
 function addControlPlaceholders (mapObject) {
   var corners = mapObject._controlCorners
@@ -424,6 +428,7 @@ function showMarkers (day) {
   for (var i = 0; i < markers.length; i++) {
 
     // also show legend for active markers
+    if (alertOptions.showIconLegend) {
     const activeMarker = {
       iconUrl: markers[i].options.icon.options.iconUrl,
       name: removeWarningLevel(markers[i].options.capEvent),
@@ -431,11 +436,12 @@ function showMarkers (day) {
       toDate: markers[i].options.toDate
     }
   
+  
     if (activeMarkerList.findIndex(x => x.name==activeMarker.name) === -1 ) {
       activeMarkerList.push(activeMarker)
       addToMapLegend(activeMarker, day)
     }
-
+  }
 
     var fromDate = new Date(markers[i].options.fromDate)
     var toDate = new Date(markers[i].options.toDate)
@@ -1199,20 +1205,7 @@ function doCAP (dom) {
     areapolygon.bindPopup(popup).addTo(map)
 
     markers.push(marker)
-  } // for loop
-
-  // const activeMarker = {
-  //   iconUrl: icon.options.iconUrl,
-  //   name: info.querySelector('event').textContent,
-  //   startDate: fromDateFormatted,
-  //   endDate: toDateFormatted
-  // }
-
-  // if (activeMarkerList.findIndex(x => x.name==activeMarker.name) === -1 ) {
-  //   activeMarkerList.push(activeMarker)
-  //   addToMapLegend(activeMarker, selectedDAY)
-  // }
-  
+  } 
   showMarkers(selectedDAY)
   showPolygons(selectedDAY)
   debug(events)
@@ -1293,12 +1286,12 @@ function getCentroid2 (arr) {
   return [ cxTimes6SignedArea / sixSignedArea, cyTimes6SignedArea / sixSignedArea];
 }
 
+
 const initIconLegendButton = () => {
 const button = document.getElementById('icon-legend-button')
 button.innerHTML = 'Minimize'
 
 let visible = true
-
 button.addEventListener('click', function () {
   if (visible) {
     document.getElementById('legend-icon-names').style.display = 'none'
