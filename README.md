@@ -82,4 +82,5 @@ Fill in these values at initial se up
 | `transparentIcons`    | `Boolean` | `false`         | Use transparent icons. |
 | `customIcons`         | `Boolean` | `false`         | Use custom icons. Requires copying contents of /img/ to /img/custom including the transparent folder. Images in custom folder can then be replaced. |
 | `customLocations`     | `Boolean` | `false`         | Use configurable custom locations. Custom locations need to be added to locations.js file.  |
+| `showIconLegend`      | `Boolean` | `false`         | Display legend that tells meaning of active markers. |
 | `eventTypes`          | `Object`  | `{}`            | List of used events, key is unique word appearing in event tag. Use comma separated keys to combine multiple warning events to be displayed with one selection in the dropdown list, i.e.: `"shower,rain": "Rain",` |
