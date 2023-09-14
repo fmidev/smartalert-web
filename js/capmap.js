@@ -134,6 +134,49 @@ function initialize () {
     opacity: 1
   }).addTo(map)
 
+  //make a new marker and add it to its layer
+  const addMarker = (lat, lng, name, color, markerLayer) => {
+    if (lat != null && lng != null) {
+    var marker = L.circleMarker([lat, lng] ,{
+      radius : 2,
+      color  : color,
+      weight: 6,
+      opacity: 1,
+    })
+    marker.bindTooltip(name, {
+      permanent: true,
+      direction: 'center',
+      offset: [0,12],
+      className: 'pointlabel'
+    });
+    markerLayer.addLayer(marker);
+    }
+  }
+
+  var layerList = []
+  // make a new layer with configured zoom levels and color
+  const makeLayer = ({maxZoom, minZoom, fillColor, locations}) => {
+    const layer = {
+      minZoom: minZoom,
+      maxZoom: maxZoom,
+      fillColor: fillColor,
+      markerLayer: new L.FeatureGroup()
+    }
+    locations.map((item) => addMarker(item.lat, item.lon, item.name, fillColor, layer.markerLayer))
+    layerList.push(layer)
+  }
+
+  if (alertOptions.customLocations) {
+  // refresh wanted/unwanted layers on zoom
+  map.on('zoomend', function() {
+    layerList.map((layer) => {
+    map.getZoom() < layer.minZoom || map.getZoom() > layer.maxZoom ?
+      map.removeLayer(layer.markerLayer) : map.addLayer(layer.markerLayer)
+    })
+  })
+    locations.map((item) => makeLayer(item))
+  }
+
   var southWest = new L.LatLng(alertOptions.bounds.south, alertOptions.bounds.east)
   var northEast = new L.LatLng(alertOptions.bounds.north, alertOptions.bounds.west)
   var bounds = new L.LatLngBounds(southWest, northEast)
