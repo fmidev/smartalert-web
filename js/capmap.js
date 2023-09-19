@@ -205,6 +205,8 @@ function initialize () {
   alertOptions.showIconLegend && initIconLegendButton()
   if (!alertOptions.showIconLegend) {
     document.getElementById("icon-legend-container").style.display = 'none'
+    document.getElementById("icon-legend-button").style.display = 'none'
+
   }
 
 }
@@ -1289,18 +1291,16 @@ function getCentroid2 (arr) {
 
 const initIconLegendButton = () => {
 const button = document.getElementById('icon-legend-button')
-button.innerHTML = 'Minimize'
+button.innerHTML = '&#8505'
 
 let visible = true
 button.addEventListener('click', function () {
   if (visible) {
-    document.getElementById('legend-icon-names').style.display = 'none'
-    button.innerHTML = 'Expand'
+    document.getElementById('icon-legend-container').style.display = 'none'
     visible = false
   }
   else if (!visible) {
-    document.getElementById('legend-icon-names').style.display = 'inline-block'
-    button.innerHTML = 'Minimize'
+    document.getElementById('icon-legend-container').style.display = 'inline-block'
     visible = true
   }
 })
