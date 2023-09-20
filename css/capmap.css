@@ -90,10 +90,81 @@ html, body {
     /* left: calc(50% - 130px); */
 }
 
+#icon-legend-container {
+    width: 100%;
+    /* height: 30px; */
+    max-width: 400px; 
+    margin: 0 auto;
+}
+
+#icon-legend {
+    background-color: rgba(254,254,254,0.7);
+    border: 2px solid #fff;
+    border-radius: 3px;
+    box-shadow: 0 2px 6px rgba(0,0,0,.3);
+    padding: 5px;
+    margin-top: 10px;
+    margin-right: 22px;
+    z-index: 100;
+    width: 100%;
+    max-width: 300px;
+    overflow: auto;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+#icon-legend-header {
+    text-align: center;
+    font-size: 26px;
+    font-weight: bold;
+    user-select: none;
+}
+
+#legend-icon-names {
+    margin-top: 5px;
+    width: 90%;
+    user-select: none;
+}
+
+#icon-legend-button {
+    z-index: 100;
+    width: 34px;
+    height: 34px;
+    position: absolute;
+    top: 85px;
+    left: 10px;
+    font-size: 22px;
+    cursor: pointer;
+    color: black;
+    border: 2px solid rgba(114, 114, 114, 0.4);
+    -webkit-background-clip: padding-box; 
+    background-clip: padding-box;
+    border-radius: 3px;
+    
+}
+
+@media only screen and (max-width: 960px) {
+
+    #icon-legend, #icon-legend-container {
+        margin-top: 50px;
+    }
+    
+}
+
 @media only screen and (max-width: 500px) {
     #legend, #legend-container {
         max-width: 260px;
         margin-bottom: 40px;
+        
+    }
+    #icon-legend, #icon-legend-container {
+        max-height: 265px;
+        max-width: 260px;
+        position: absolute;
+        top: 15px;
+        left: 0;
+        right: 0;
     }
     
 }

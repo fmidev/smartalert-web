@@ -88,7 +88,6 @@ Date.prototype.dateDiff = function () {
 
 function initialize () {
   buildLegend()
-
   map = L.map('map-canvas', {
     zoom: alertOptions.zoom,
     fullscreenControl: true,
@@ -203,6 +202,13 @@ function initialize () {
   updateEventSelect()
   setInterval(updateData, alertOptions.refresh * 1000)
   changeLanguage()
+  alertOptions.showIconLegend && initIconLegendButton()
+  if (!alertOptions.showIconLegend) {
+    document.getElementById("icon-legend-container").style.display = 'none'
+    document.getElementById("icon-legend-button").style.display = 'none'
+
+  }
+
 }
 
 function updateEventSelect () {
@@ -303,6 +309,26 @@ function buildLegend() {
   }
 }
 
+let activeMarkerList = []
+
+const addToMapLegend = (object, day) => {
+  var table = document.getElementById('legend-icon-names')
+
+  var row = table.insertRow(table.rows.length)
+
+  var cell1 = row.insertCell(0)
+  var cell2 = row.insertCell(1)
+
+  var fromDate = new Date(object.fromDate)
+  var toDate = new Date(object.toDate)
+
+  if ((fromDate.isBeforeDay(day) && toDate.isAfterDay(day)) || day === null) {
+    cell1.innerHTML = `<img src=\"${object.iconUrl}" width=\"30px\" height=\"30px\" border=\"1px solid black\">`
+    cell2.innerHTML = t(object.name)
+  }
+}
+
+
 // Create additional Control placeholders
 function addControlPlaceholders (mapObject) {
   var corners = mapObject._controlCorners
@@ -392,8 +418,33 @@ function centerUserLocation () {
   }
 }
 
+const removeWarningLevel = (string) => {
+  let result = string
+  .replace('severe ', '')
+  .replace('extreme ', '')
+  result = result.charAt(0).toUpperCase() + result.slice(1)
+  return result
+}
+
 function showMarkers (day) {
   for (var i = 0; i < markers.length; i++) {
+
+    // also show legend for active markers
+    if (alertOptions.showIconLegend) {
+    const activeMarker = {
+      iconUrl: markers[i].options.icon.options.iconUrl,
+      name: removeWarningLevel(markers[i].options.capEvent),
+      fromDate: markers[i].options.fromDate,
+      toDate: markers[i].options.toDate
+    }
+  
+  
+    if (activeMarkerList.findIndex(x => x.name==activeMarker.name) === -1 ) {
+      activeMarkerList.push(activeMarker)
+      addToMapLegend(activeMarker, day)
+    }
+  }
+
     var fromDate = new Date(markers[i].options.fromDate)
     var toDate = new Date(markers[i].options.toDate)
 
@@ -493,9 +544,13 @@ const setActiveButton = (selectedButton) => {
   prevButton = selectedButton
 }
 
+
 const setEventListener = (selected, number, debugMsg) => {
   selected.addEventListener('click', function () {
     selectedDAY = number
+    var Table = document.getElementById("legend-icon-names")
+    Table.innerHTML = ""
+    activeMarkerList = []
     showMarkers(number)
     showPolygons(number)
     setActiveButton(selected)
@@ -1095,6 +1150,7 @@ function doCAP (dom) {
     var toDateFormatted = toDate.toLocaleString()
     var dFormatted = d.toLocaleString()
 
+    
 
 
     if (alertOptions.dateFormat === 'long') {
@@ -1135,6 +1191,8 @@ function doCAP (dom) {
     if(!!alertOptions.displayIssueTimeDirrefence || alertOptions.displayIssueTimeDirrefence === undefined)
       content = content + ' (' + d.dateDiff() + ')</i></p>'
 
+      
+
     // bind markers to marker and polygon
     var popup = L.popup({
       maxWidth: 220,
@@ -1149,12 +1207,12 @@ function doCAP (dom) {
     areapolygon.bindPopup(popup).addTo(map)
 
     markers.push(marker)
-  } // for loop
-
+  } 
   showMarkers(selectedDAY)
   showPolygons(selectedDAY)
   debug(events)
 };
+
 
 // http://www.mathopenref.com/coordpolygonarea2.html
 function polygonArea (path) {
@@ -1228,4 +1286,22 @@ function getCentroid2 (arr) {
   }
   var sixSignedArea = 3 * twoTimesSignedArea;
   return [ cxTimes6SignedArea / sixSignedArea, cyTimes6SignedArea / sixSignedArea];
+}
+
+
+const initIconLegendButton = () => {
+const button = document.getElementById('icon-legend-button')
+button.innerHTML = '&#8505'
+
+let visible = true
+button.addEventListener('click', function () {
+  if (visible) {
+    document.getElementById('icon-legend-container').style.display = 'none'
+    visible = false
+  }
+  else if (!visible) {
+    document.getElementById('icon-legend-container').style.display = 'inline-block'
+    visible = true
+  }
+})
 }
