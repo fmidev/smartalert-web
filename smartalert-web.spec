@@ -1,7 +1,7 @@
 %define smartmetroot /smartmet
 
 Name:           smartalert-web
-Version:        22.12.15
+Version:        23.09.20
 Release:        1%{?dist}.fmi
 Summary:        SmartMet SmartAlert Website
 Group:          System Environment/Base
@@ -50,6 +50,8 @@ rm -rf $RPM_BUILD_ROOT
 %{smartmetroot}/www/smartalert/*
 
 %changelog
+* Wed Sep 20 2023 Ville Oravilkka <ville.oravilkka@fmi.fi> 23.09.20-1.el7.fmi
+- Add latest configuration options and bug fixes
 * Thu Dec 15 2022 Ville Oravilkka <ville.oravilkka@fmi.fi> 22.12.15-1.el7.fmi
 - [PAK-2625][PAK-2626][PAK-2627] Add more configuration options
 * Tue Nov 15 2022 Ville Oravilkka <ville.oravilkka@fmi.fi> 22.11.15-1.el7.fmi
