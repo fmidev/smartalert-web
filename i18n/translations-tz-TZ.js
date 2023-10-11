@@ -1,4 +1,4 @@
-translations['tz-AZ'] = {
+translations['tz-TZ'] = {
     "tz-TZ": "TZ",
     "Today": "Leo",
     "Click to show alerts for today.": "Click to show alerts for today.",
