@@ -232,6 +232,7 @@ function changeLanguage () {
   $('#levelYellowText').text(t('potentially dangerous'))
   $('#levelOrangeText').text(t('dangerous'))
   $('#levelRedText').text(t('very dangerous'))
+  $('#icon-legend-header').text(t('Map legend'))
 
   var dayControlDiv = document.createElement('div')
   var dayControl = new DayControl(dayControlDiv, map)
