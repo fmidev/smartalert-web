@@ -24,7 +24,7 @@ translations['en-ET'] = {
     "ago": "ago",
     "at": "at",
     "minor threat": "Minor Threat",
-    "no awareness needed": "no awareness needed",
+    "no awareness needed": "No awareness needed",
     "potentially dangerous": "Potentially dangerous",
     "dangerous": "Dangerous",
     "very dangerous": "Very dangerous",
