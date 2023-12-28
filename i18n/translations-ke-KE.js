@@ -31,13 +31,18 @@ translations['ke-KE'] = {
     "very dangerous": "Hatari kubwa",
     "All Hazard Types": "Aina zote za hatari",
     "Rain": "Mvua",
-    "Wind": "Upepo",
-    "Waves": "Mawimbi",
+    "Winds on sea": "Upepo",
+    "Waves on sea": "Mawimbi",
     "Visibility": "Umbali wa kuonekana",
     "Lightning": "Radi",
     "Thunder": "Ngurumo",
     "Tsunami": "Tsunami",
     "Temperature": "Joto",
     "Visibility": "Umbali wa kuonekana",
-    "Kenya Meteorological Department": "Idara ya Utabiri wa hali ya anga ya Kenya (KMD)"
+    "Kenya Meteorological Department": "Idara ya Utabiri wa hali ya anga ya Kenya (KMD)",
+    "Map legends": "Kielelezo cha Ramani",
+    "Minimize": "Fupisha",
+    "Maximize": "Kuza",
+    "Refresh": "Sasisha",
+    "Updated": "Imesasishwa"
   };

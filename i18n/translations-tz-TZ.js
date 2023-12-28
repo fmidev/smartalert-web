@@ -1,5 +1,5 @@
 translations['tz-TZ'] = {
-    "tz-TZ": "TZ",
+    "tz-TZ": "Swahili",
     "Today": "Leo",
     "Click to show alerts for today.": "Click to show alerts for today.",
     "Tomorrow": "Kesho",
@@ -34,6 +34,11 @@ translations['tz-TZ'] = {
     "Wave height": "Wave height",
     "Wind on sea": "Wind on sea",
     "Visibility on sea": "Visibility on sea",
+    "Heavy rainfall": "Mvua kubwa",
+    "Strong wind": "Upepo mkali",
+    "Large waves": "Mawimbi makubwa",
+    "Tropical Cyclone": "Kimbunga",
+    "Tsunami": "Sunami",
     "at": "saa",
     "January": "Januari",
     "February": "Februari",
