@@ -863,7 +863,7 @@ function doCAP (dom) {
         popupAnchor: [0, 0]
       })
     }
-
+    
     // Fire
     else if (~eventRaw.indexOf('fire')) {
       var icon = L.icon({
@@ -889,6 +889,16 @@ function doCAP (dom) {
         iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
         popupAnchor: [0, 0]
       })
+
+    } else if (~eventRaw.indexOf('wave height')) {
+      var icon = L.icon({
+        iconUrl: symbolPath + 'wave-height.png',
+        iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
+        iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
+        popupAnchor: [0, 0]
+      })
+      
+    
     } else if (~eventRaw.indexOf('dust')) {
       var icon = L.icon({
         iconUrl: symbolPath + 'dust.png',
