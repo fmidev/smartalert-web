@@ -890,7 +890,7 @@ function doCAP (dom) {
         popupAnchor: [0, 0]
       })
     // wave height
-    } else if (~eventRaw.indexOf('wave height')) {
+    } else if (~eventRaw.indexOf('wave')) {
       var icon = L.icon({
         iconUrl: symbolPath + 'wave-height.png',
         iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
