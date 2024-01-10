@@ -889,7 +889,7 @@ function doCAP (dom) {
         iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
         popupAnchor: [0, 0]
       })
-
+    // wave height
     } else if (~eventRaw.indexOf('wave height')) {
       var icon = L.icon({
         iconUrl: symbolPath + 'wave-height.png',
@@ -897,8 +897,6 @@ function doCAP (dom) {
         iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
         popupAnchor: [0, 0]
       })
-      
-    
     } else if (~eventRaw.indexOf('dust')) {
       var icon = L.icon({
         iconUrl: symbolPath + 'dust.png',
