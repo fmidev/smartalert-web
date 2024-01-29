@@ -824,36 +824,37 @@ function doCAP (dom) {
       popupAnchor: [0, 0]
     })
 
+    var numberIcons = alertOptions.numberIcons
+
     if (windSpeed > 0) {
       var icon = L.icon({
-        iconUrl: symbolPath + 'wind.php?speed=' + windSpeed + '&direction=' + windDirection,
+        iconUrl: !numberIcons ? symbolPath + 'wind-speed.png' : symbolPath + 'wind.php?speed=' + windSpeed + '&direction=' + windDirection,
         iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
         iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
         popupAnchor: [0, 0]
       })
     } else if (waveHeight > 0) {
       var icon = L.icon({
-        iconUrl: symbolPath + 'wave.php?height=' + waveHeight,
+        iconUrl: !numberIcons ? symbolPath + 'wave-height.png' : symbolPath + 'wave.php?height=' + waveHeight,
         iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
         iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
         popupAnchor: [0, 0]
       })
     } else if (swellHeight > 0) {
       var icon = L.icon({
-        iconUrl: symbolPath + 'wave.php?height=' + swellHeight,
+        iconUrl: !numberIcons ? symbolPath + 'swell-height.png' : symbolPath + 'wave.php?height=' + swellHeight,
         iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
         iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
         popupAnchor: [0, 0]
       })
     } else if (surfHeight > 0) {
       var icon = L.icon({
-        iconUrl: symbolPath + 'wave.php?height=' + surfHeight,
+        iconUrl: !numberIcons ? symbolPath + 'surf-height.png' : symbolPath + 'wave.php?height=' + surfHeight,
         iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
         iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
         popupAnchor: [0, 0]
       })
     }
-
     // Earthquake
     else if (~eventRaw.indexOf('earthquake')) {
       var icon = L.icon({
