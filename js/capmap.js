@@ -19,22 +19,22 @@ var nameLayer
 var selectedLANGUAGE = localStorage.getItem('userLanguage') ? localStorage.getItem('userLanguage') : alertOptions.defaultLanguage
 var selectedEVENT = localStorage.getItem('userEventType') ? localStorage.getItem('userEventType') : ''
 
-var selectedDAY = alertOptions.allDayControl ? null 
-: alertOptions.day0Control ? 0 
-: alertOptions.day1Control ? 1
-: alertOptions.day2Control ? 2 
-: alertOptions.day3Control ? 3 
-: 4
+var selectedDAY = alertOptions.allDayControl ? null
+  : alertOptions.day0Control ? 0
+    : alertOptions.day1Control ? 1
+      : alertOptions.day2Control ? 2
+        : alertOptions.day3Control ? 3
+          : 4
 
-function debug (str) {
+function debug(str) {
   if (DEBUG) {
     try {
       console.log(str)
-    } catch (e) {};
+    } catch (e) { };
   }
 }
 
-function t (key) {
+function t(key) {
   if (translations[selectedLANGUAGE][key] != null) { return translations[selectedLANGUAGE][key] } else { return key }
 }
 
@@ -86,7 +86,7 @@ Date.prototype.dateDiff = function () {
   return string
 }
 
-function initialize () {
+function initialize() {
   buildLegend()
   map = L.map('map-canvas', {
     zoom: alertOptions.zoom,
@@ -113,15 +113,15 @@ function initialize () {
   // mapbox access token
   // https://www.mapbox.com/account/
 
-  if(alertOptions.displayWMS) {
+  if (alertOptions.displayWMS) {
     var wmsLayer = L.tileLayer.wms(alertOptions.displayOptions.endpoint, alertOptions.displayOptions.params).addTo(map);
   }
 
-	map.createPane('labels');
-	// This pane is above markers but below popups
-	map.getPane('labels').style.zIndex = 590;
-	// Layers in this pane are non-interactive and do not obscure mouse/touch events
-	map.getPane('labels').style.pointerEvents = 'none';
+  map.createPane('labels');
+  // This pane is above markers but below popups
+  map.getPane('labels').style.zIndex = 590;
+  // Layers in this pane are non-interactive and do not obscure mouse/touch events
+  map.getPane('labels').style.pointerEvents = 'none';
   nameLayer = L.tileLayer(alertOptions.mapTileSource, {
     attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors, <a href="' + alertOptions.attributionLink + '">' + alertOptions.attribution + '</a>',
     pane: 'labels',
@@ -136,25 +136,25 @@ function initialize () {
   //make a new marker and add it to its layer
   const addMarker = (lat, lng, name, color, markerLayer) => {
     if (lat != null && lng != null) {
-    var marker = L.circleMarker([lat, lng] ,{
-      radius : 2,
-      color  : color,
-      weight: 6,
-      opacity: 1,
-    })
-    marker.bindTooltip(name, {
-      permanent: true,
-      direction: 'center',
-      offset: [0,12],
-      className: 'pointlabel'
-    });
-    markerLayer.addLayer(marker);
+      var marker = L.circleMarker([lat, lng], {
+        radius: 2,
+        color: color,
+        weight: 6,
+        opacity: 1,
+      })
+      marker.bindTooltip(name, {
+        permanent: true,
+        direction: 'center',
+        offset: [0, 12],
+        className: 'pointlabel'
+      });
+      markerLayer.addLayer(marker);
     }
   }
 
   var layerList = []
   // make a new layer with configured zoom levels and color
-  const makeLayer = ({maxZoom, minZoom, fillColor, locations}) => {
+  const makeLayer = ({ maxZoom, minZoom, fillColor, locations }) => {
     const layer = {
       minZoom: minZoom,
       maxZoom: maxZoom,
@@ -166,13 +166,13 @@ function initialize () {
   }
 
   if (alertOptions.customLocations) {
-  // refresh wanted/unwanted layers on zoom
-  map.on('zoomend', function() {
-    layerList.map((layer) => {
-    map.getZoom() < layer.minZoom || map.getZoom() > layer.maxZoom ?
-      map.removeLayer(layer.markerLayer) : map.addLayer(layer.markerLayer)
+    // refresh wanted/unwanted layers on zoom
+    map.on('zoomend', function () {
+      layerList.map((layer) => {
+        map.getZoom() < layer.minZoom || map.getZoom() > layer.maxZoom ?
+          map.removeLayer(layer.markerLayer) : map.addLayer(layer.markerLayer)
+      })
     })
-  })
     locations.map((item) => makeLayer(item))
   }
 
@@ -211,7 +211,7 @@ function initialize () {
 
 }
 
-function updateEventSelect () {
+function updateEventSelect() {
   $('#eventType').html('')
   $('#eventType').append($('<option>').attr('value', '').text(t('All Hazard Types')))
   $(Object.keys(alertOptions.eventTypes)).each(function (i, eventType) {
@@ -221,7 +221,7 @@ function updateEventSelect () {
   })
 }
 
-function changeLanguage () {
+function changeLanguage() {
   debug('Language selected: ' + document.getElementById('lang').value)
   selectedLANGUAGE = document.getElementById('lang').value
   localStorage.setItem('userLanguage', selectedLANGUAGE)
@@ -256,7 +256,7 @@ function changeLanguage () {
 
 function buildLegend() {
   // rebuild legend if useMinorThreat = true
-  if(alertOptions.useMinorThreat) {
+  if (alertOptions.useMinorThreat) {
     var div = document.getElementById('legend-warning-types')
     div.innerHTML = ''
 
@@ -331,14 +331,14 @@ const addToMapLegend = (object, day) => {
 
 
 // Create additional Control placeholders
-function addControlPlaceholders (mapObject) {
+function addControlPlaceholders(mapObject) {
   var corners = mapObject._controlCorners
 
   var l = 'leaflet-'
 
   var container = mapObject._controlContainer
 
-  function createCorner (vSide, hSide) {
+  function createCorner(vSide, hSide) {
     var className = l + vSide + ' ' + l + hSide
 
     corners[vSide + hSide] = L.DomUtil.create('div', className, container)
@@ -350,16 +350,16 @@ function addControlPlaceholders (mapObject) {
   createCorner('verticalcenter', 'right')
 }
 
-function updateData () {
+function updateData() {
   debug('Updating data:')
-  if(alertOptions.subDirectories) {
-    $.getJSON('list.php',{dir: alertOptions.subDirectories},processCAP)
+  if (alertOptions.subDirectories) {
+    $.getJSON('list.php', { dir: alertOptions.subDirectories }, processCAP)
   } else {
-    $.getJSON('list.php',processCAP)
+    $.getJSON('list.php', processCAP)
   }
 }
 
-function testcircle (polygon, path) {
+function testcircle(polygon, path) {
   // TODO
 
   // var bounds = polygon.getBounds();
@@ -395,7 +395,7 @@ function testcircle (polygon, path) {
   return false
 }
 
-function centerUserLocation () {
+function centerUserLocation() {
   // Try HTML5 geolocation.
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function (position) {
@@ -421,55 +421,55 @@ function centerUserLocation () {
 
 const removeWarningLevel = (string) => {
   let result = string
-  .replace('severe ', '')
-  .replace('extreme ', '')
+    .replace('severe ', '')
+    .replace('extreme ', '')
   result = result.charAt(0).toUpperCase() + result.slice(1)
   return result
 }
 
-function showMarkers (day) {
+function showMarkers(day) {
   for (var i = 0; i < markers.length; i++) {
 
     // also show legend for active markers
     if (alertOptions.showIconLegend) {
-    const activeMarker = {
-      iconUrl: markers[i].options.icon.options.iconUrl,
-      name: removeWarningLevel(markers[i].options.capEvent),
-      fromDate: markers[i].options.fromDate,
-      toDate: markers[i].options.toDate
+      const activeMarker = {
+        iconUrl: markers[i].options.icon.options.iconUrl,
+        name: removeWarningLevel(markers[i].options.capEvent),
+        fromDate: markers[i].options.fromDate,
+        toDate: markers[i].options.toDate
+      }
+
+
+      if (activeMarkerList.findIndex(x => x.name == activeMarker.name) === -1) {
+        activeMarkerList.push(activeMarker)
+        addToMapLegend(activeMarker, day)
+      }
     }
-  
-  
-    if (activeMarkerList.findIndex(x => x.name==activeMarker.name) === -1 ) {
-      activeMarkerList.push(activeMarker)
-      addToMapLegend(activeMarker, day)
-    }
-  }
 
     var fromDate = new Date(markers[i].options.fromDate)
     var toDate = new Date(markers[i].options.toDate)
 
-    if(selectedEVENT !== null)
-    var combinedEvents = selectedEVENT.split(',')
+    if (selectedEVENT !== null)
+      var combinedEvents = selectedEVENT.split(',')
     else
-    combinedEvents = [selectedEVENT]
+      combinedEvents = [selectedEVENT]
 
-    for(var n = 0; n < combinedEvents.length; n++){
+    for (var n = 0; n < combinedEvents.length; n++) {
       if (polygons[i].options.polygonArea < alertOptions.areaLimitForMarkers) {
         markers[i].getElement().style.display = 'none'
       } else if (day == null || day == 'undefined') {
         if (~polygons[i].options.capEvent.indexOf(combinedEvents[n]) || combinedEvents[n] == null) {
           markers[i].getElement().style.display = 'inline'
         } else {
-          if(!combinedEvents.some(substring=>(polygons[i].options.capEvent).includes(substring)))
-          markers[i].getElement().style.display = 'none'
+          if (!combinedEvents.some(substring => (polygons[i].options.capEvent).includes(substring)))
+            markers[i].getElement().style.display = 'none'
         }
       } else if (fromDate.isBeforeDay(day) && toDate.isAfterDay(day)) {
         if (~polygons[i].options.capEvent.indexOf(combinedEvents[n]) || combinedEvents[n] == null) {
           markers[i].getElement().style.display = 'inline'
         } else {
-          if(!combinedEvents.some(substring=>(polygons[i].options.capEvent).includes(substring)))
-          markers[i].getElement().style.display = 'none'
+          if (!combinedEvents.some(substring => (polygons[i].options.capEvent).includes(substring)))
+            markers[i].getElement().style.display = 'none'
         }
       } else { markers[i].getElement().style.display = 'none' }
     }
@@ -477,30 +477,30 @@ function showMarkers (day) {
   debug('Number of markers: ' + markers.length)
 }
 
-function showPolygons (day) {
+function showPolygons(day) {
   for (var i = 0; i < polygons.length; i++) {
     var fromDate = new Date(polygons[i].options.fromDate)
     var toDate = new Date(polygons[i].options.toDate)
 
-    if(selectedEVENT !== null)
-    var combinedEvents = selectedEVENT.split(',')
+    if (selectedEVENT !== null)
+      var combinedEvents = selectedEVENT.split(',')
     else
-    combinedEvents = [selectedEVENT]
+      combinedEvents = [selectedEVENT]
 
-    for(var n = 0; n < combinedEvents.length; n++){
+    for (var n = 0; n < combinedEvents.length; n++) {
       if (day == null) {
         if (~polygons[i].options.capEvent.indexOf(combinedEvents[n]) || combinedEvents[n] == null) {
           polygons[i].getElement().style.display = 'inline'
         } else {
-          if(!combinedEvents.some(substring=>(polygons[i].options.capEvent).includes(substring)))
-          polygons[i].getElement().style.display = 'none'
+          if (!combinedEvents.some(substring => (polygons[i].options.capEvent).includes(substring)))
+            polygons[i].getElement().style.display = 'none'
         }
       } else if (fromDate.isBeforeDay(day) && toDate.isAfterDay(day)) {
         if (~polygons[i].options.capEvent.indexOf(combinedEvents[n]) || combinedEvents[n] == null) {
           polygons[i].getElement().style.display = 'inline'
         } else {
-          if(!combinedEvents.some(substring=>(polygons[i].options.capEvent).includes(substring)))
-          polygons[i].getElement().style.display = 'none'
+          if (!combinedEvents.some(substring => (polygons[i].options.capEvent).includes(substring)))
+            polygons[i].getElement().style.display = 'none'
         }
       } else { polygons[i].getElement().style.display = 'none' }
     }
@@ -508,7 +508,7 @@ function showPolygons (day) {
   debug('Number of polygons: ' + polygons.length)
 }
 
-function processCAP (json) {
+function processCAP(json) {
   debug('Loaded JSON: ' + json)
 
   // Clear all markers
@@ -538,7 +538,7 @@ let prevButton = null;
 const setActiveButton = (selectedButton) => {
   // Add .active CSS Class
   selectedButton.classList.add('active')
-  if(prevButton !== null && prevButton != selectedButton) {
+  if (prevButton !== null && prevButton != selectedButton) {
     // Remove .active CSS Class
     prevButton.classList.remove('active')
   }
@@ -559,7 +559,7 @@ const setEventListener = (selected, number, debugMsg) => {
   })
 }
 
-function DayControl (controlDiv, map) {
+function DayControl(controlDiv, map) {
   if (alertOptions.dayControl == false) { return }
   // We set up a variable for this since we're adding event listeners later.
   var control = this
@@ -635,14 +635,14 @@ function DayControl (controlDiv, map) {
   }
 }
 
-function doCAP (dom) {
+function doCAP(dom) {
   xDisplacement = 0
   xDisplacementValue = 0
   debug('Loaded CAP:\n' +
-      '- Identifier: ' + dom.querySelector('identifier').textContent + '\n' +
-      // "- Web:     " + (dom.querySelector('web').textContent || "") + "\n"+
-      '- Sent by: ' + dom.querySelector('sender').textContent + '\n' +
-      '- Sent at: ' + dom.querySelector('sent').textContent)
+    '- Identifier: ' + dom.querySelector('identifier').textContent + '\n' +
+    // "- Web:     " + (dom.querySelector('web').textContent || "") + "\n"+
+    '- Sent by: ' + dom.querySelector('sender').textContent + '\n' +
+    '- Sent at: ' + dom.querySelector('sent').textContent)
 
   var alert = dom.querySelector('alert')
   var info = alert.querySelector('info')
@@ -809,12 +809,12 @@ function doCAP (dom) {
     markerLocations.push(test)
 
     var symbolPath = 'img/'
-    if(alertOptions.transparentIcons === true && alertOptions.customIcons === false)
-    var symbolPath = 'img/transparent/'
-    if(alertOptions.customIcons === true)
-    var symbolPath = 'img/custom/'
-    if(alertOptions.transparentIcons === true && alertOptions.customIcons === true)
-    var symbolPath = 'img/custom/transparent/'
+    if (alertOptions.transparentIcons === true && alertOptions.customIcons === false)
+      var symbolPath = 'img/transparent/'
+    if (alertOptions.customIcons === true)
+      var symbolPath = 'img/custom/'
+    if (alertOptions.transparentIcons === true && alertOptions.customIcons === true)
+      var symbolPath = 'img/custom/transparent/'
 
     // fallback icon
     var icon = L.icon({
@@ -864,7 +864,7 @@ function doCAP (dom) {
         popupAnchor: [0, 0]
       })
     }
-    
+
     // Fire
     else if (~eventRaw.indexOf('fire')) {
       var icon = L.icon({
@@ -890,7 +890,7 @@ function doCAP (dom) {
         iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
         popupAnchor: [0, 0]
       })
-    // wave height
+      // wave height
     } else if (~eventRaw.indexOf('wave')) {
       var icon = L.icon({
         iconUrl: symbolPath + 'wave-height.png',
@@ -955,13 +955,13 @@ function doCAP (dom) {
         popupAnchor: [0, 0]
       })
     } else if (~eventRaw.indexOf('snow')) {
-    var icon = L.icon({
-      iconUrl: symbolPath + 'snow.png',
-      iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-      iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
-      popupAnchor: [0, 0]
-    })
-    // Rainfall Icon
+      var icon = L.icon({
+        iconUrl: symbolPath + 'snow.png',
+        iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
+        iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
+        popupAnchor: [0, 0]
+      })
+      // Rainfall Icon
     } else if (~eventRaw.indexOf('rain') || ~eventRaw.indexOf('shower')) {
       var icon = L.icon({
         iconUrl: symbolPath + 'rainfall.png',
@@ -1149,10 +1149,10 @@ function doCAP (dom) {
     $('#senderName').html(sender)
 
 
-    if (dnow.getTime() > fromDate.getTime() && alertOptions.displayActiveFor) { 
-      var active_str = '<i>' + t('Active for next') + ' <b>' + toDate.dateDiff() + '</b></i>' 
-    } else { 
-      var active_str = '' 
+    if (dnow.getTime() > fromDate.getTime() && alertOptions.displayActiveFor) {
+      var active_str = '<i>' + t('Active for next') + ' <b>' + toDate.dateDiff() + '</b></i>'
+    } else {
+      var active_str = ''
     }
 
     var sentDate = alert.querySelector('sent').textContent.toLocaleString()
@@ -1160,48 +1160,53 @@ function doCAP (dom) {
     var toDateFormatted = toDate.toLocaleString()
     var dFormatted = d.toLocaleString()
 
-    
-
-
     if (alertOptions.dateFormat === 'long') {
 
       var formatter = ''
-      if(alertOptions.dateFormatString[selectedLANGUAGE] !== undefined){
+      if (alertOptions.dateFormatString[selectedLANGUAGE] !== undefined) {
         formatter = alertOptions.dateFormatString[selectedLANGUAGE]
-      } else if(alertOptions.dateFormatString['default'] !== undefined){
+      } else if (alertOptions.dateFormatString['default'] !== undefined) {
         formatter = alertOptions.dateFormatString['default']
       } else {
         formatter = alertOptions.dateFormatString
       }
 
       var lang = selectedLANGUAGE.split('-')[0]
-      if(alertOptions.customLangCode !== undefined) {
-        for (var h = 0; h<Object.keys(alertOptions.customLangCode).length; h++) {
-          if(selectedLANGUAGE === Object.keys(alertOptions.customLangCode)[h]) {
+      if (alertOptions.customLangCode !== undefined) {
+        for (var h = 0; h < Object.keys(alertOptions.customLangCode).length; h++) {
+          if (selectedLANGUAGE === Object.keys(alertOptions.customLangCode)[h]) {
             lang = alertOptions.customLangCode[selectedLANGUAGE]
           }
         }
       }
-      sentDate = moment(sentDate).locale(lang).format(formatter)
-      fromDateFormatted = moment(fromDate).locale(lang).format(formatter)
-      toDateFormatted = moment(toDate).locale(lang).format(formatter)
-      dFormatted = moment(d).locale(lang).format(formatter)
+      if (lang === 'om' || lang === 'am') {
+        sentDate = toEthiopianCalendar(sentDate)
+        fromDateFormatted = toEthiopianCalendar(fromDateFormatted)
+        toDateFormatted = toEthiopianCalendar(toDateFormatted)
+        dFormatted = toEthiopianCalendar(dFormatted)
+
+      } else {
+        sentDate = dayjs(sentDate).locale(lang).format(formatter)
+        fromDateFormatted = dayjs(fromDate).locale(lang).format(formatter)
+        toDateFormatted = dayjs(toDate).locale(lang).format(formatter)
+        dFormatted = dayjs(d).locale(lang).format(formatter)
+      }
     }
 
     alertOptions.showUpdateTime === true && $('#sentDate').html(`${t('Updated')}: ${sentDate}`)
 
     // var infowindow = new google.maps.InfoWindow({
     var content = '<h4 class="iw-title">' + info.querySelector('event').textContent + ' ' + t('for') + ' ' + info.querySelector('areaDesc').textContent + '</h4>' +
-        '<i>' + t('Valid from') + ' <b>' + fromDateFormatted + '</b> ' + t('to') + ' <b>' + toDateFormatted + '</b></i>' +
-        active_str +
-        '<p>' + (info.querySelector('description') ? info.querySelector('description').textContent : '') + '</p>' +
-        '<p><i>' + t('Issued by') + ' ' + sender +
-        ' ' + t('at') + ' ' + dFormatted
+      '<i>' + t('Valid from') + ' <b>' + fromDateFormatted + '</b> ' + t('to') + ' <b>' + toDateFormatted + '</b></i>' +
+      active_str +
+      '<p>' + (info.querySelector('description') ? info.querySelector('description').textContent : '') + '</p>' +
+      '<p><i>' + t('Issued by') + ' ' + sender +
+      ' ' + t('at') + ' ' + dFormatted
 
-    if(!!alertOptions.displayIssueTimeDirrefence || alertOptions.displayIssueTimeDirrefence === undefined)
+    if (!!alertOptions.displayIssueTimeDirrefence || alertOptions.displayIssueTimeDirrefence === undefined)
       content = content + ' (' + d.dateDiff() + ')</i></p>'
 
-      
+
 
     // bind markers to marker and polygon
     var popup = L.popup({
@@ -1209,7 +1214,7 @@ function doCAP (dom) {
       minWidth: 220,
       maxHeight: alertOptions.popUpMaxHeight,
       autoPan: true,
-      autoPanPadding: [2,2]
+      autoPanPadding: [2, 2]
     });
 
     popup.setContent(content)
@@ -1217,7 +1222,7 @@ function doCAP (dom) {
     areapolygon.bindPopup(popup).addTo(map)
 
     markers.push(marker)
-  } 
+  }
   showMarkers(selectedDAY)
   showPolygons(selectedDAY)
   debug(events)
@@ -1225,7 +1230,7 @@ function doCAP (dom) {
 
 
 // http://www.mathopenref.com/coordpolygonarea2.html
-function polygonArea (path) {
+function polygonArea(path) {
   var numPoints = path.length
   var X = []
   var Y = []
@@ -1243,7 +1248,7 @@ function polygonArea (path) {
   return Math.abs(area / 2)
 }
 
-function coordinatesExist (array, value) {
+function coordinatesExist(array, value) {
   var k = 0
   for (var i = 0; i < array.length; i++) {
     if (array[i] === value) {
@@ -1259,12 +1264,12 @@ function isMarkerInsidePolygon(point, poly) {
 
   var inside = false;
   for (var i = 0, j = polyPoints.length - 1; i < polyPoints.length; j = i++) {
-      var xi = polyPoints[i].lat, yi = polyPoints[i].lng;
-      var xj = polyPoints[j].lat, yj = polyPoints[j].lng;
+    var xi = polyPoints[i].lat, yi = polyPoints[i].lng;
+    var xj = polyPoints[j].lat, yj = polyPoints[j].lng;
 
-      var intersect = ((yi > y) != (yj > y))
-          && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
-      if (intersect) inside = !inside;
+    var intersect = ((yi > y) != (yj > y))
+      && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+    if (intersect) inside = !inside;
   }
   return inside;
 };
@@ -1272,7 +1277,7 @@ function isMarkerInsidePolygon(point, poly) {
 // centroid of a non-self-intersecting closed polygon
 // https://en.wikipedia.org/wiki/Centroid#Centroid_of_polygon
 // https://stackoverflow.com/questions/22796520/finding-the-center-of-leaflet-polygon
-function getCentroid2 (arr) {
+function getCentroid2(arr) {
 
   arr = arr[0]
 
@@ -1288,30 +1293,38 @@ function getCentroid2 (arr) {
   var x = function (i) { return arr[i % length].lat };
   var y = function (i) { return arr[i % length].lng };
 
-  for ( var i = 0; i < arr.length; i++) {
-      var twoSA = x(i)*y(i+1) - x(i+1)*y(i);
-      twoTimesSignedArea += twoSA;
-      cxTimes6SignedArea += (x(i) + x(i+1)) * twoSA;
-      cyTimes6SignedArea += (y(i) + y(i+1)) * twoSA;
+  for (var i = 0; i < arr.length; i++) {
+    var twoSA = x(i) * y(i + 1) - x(i + 1) * y(i);
+    twoTimesSignedArea += twoSA;
+    cxTimes6SignedArea += (x(i) + x(i + 1)) * twoSA;
+    cyTimes6SignedArea += (y(i) + y(i + 1)) * twoSA;
   }
   var sixSignedArea = 3 * twoTimesSignedArea;
-  return [ cxTimes6SignedArea / sixSignedArea, cyTimes6SignedArea / sixSignedArea];
+  return [cxTimes6SignedArea / sixSignedArea, cyTimes6SignedArea / sixSignedArea];
 }
 
 
 const initIconLegendButton = () => {
-const button = document.getElementById('icon-legend-button')
-button.innerHTML = '&#8505'
+  const button = document.getElementById('icon-legend-button')
+  button.innerHTML = '&#8505'
 
-let visible = true
-button.addEventListener('click', function () {
-  if (visible) {
-    document.getElementById('icon-legend-container').style.display = 'none'
-    visible = false
-  }
-  else if (!visible) {
-    document.getElementById('icon-legend-container').style.display = 'inline-block'
-    visible = true
-  }
-})
+  let visible = true
+  button.addEventListener('click', function () {
+    if (visible) {
+      document.getElementById('icon-legend-container').style.display = 'none'
+      visible = false
+    }
+    else if (!visible) {
+      document.getElementById('icon-legend-container').style.display = 'inline-block'
+      visible = true
+    }
+  })
+}
+
+const toEthiopianCalendar = (date) => {
+  const time = (dayjs(date).format("hh:mm"))
+  date = dayjs(date).locale(lang).format("YYYY/MM/DD").split('/')
+  const ethiopianDate = toEthiopian(date)
+  const result = ethiopianDate[2] + '/' + ethiopianDate[1] + '/' + ethiopianDate[0] + ', ' + time
+  return result
 }
