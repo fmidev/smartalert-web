@@ -197,6 +197,7 @@ function initialize() {
 
   $('#lang').on('change', changeLanguage)
 
+
   if (Object.keys(translations).length < 2) { $('#lang').css('display', 'none') }
 
   updateEventSelect()
@@ -222,6 +223,8 @@ function updateEventSelect() {
 }
 
 function changeLanguage() {
+  console.log("changing lang")
+  
   debug('Language selected: ' + document.getElementById('lang').value)
   selectedLANGUAGE = document.getElementById('lang').value
   localStorage.setItem('userLanguage', selectedLANGUAGE)
@@ -313,8 +316,9 @@ function buildLegend() {
 let activeMarkerList = []
 
 const addToMapLegend = (object, day) => {
+  
   var table = document.getElementById('legend-icon-names')
-
+  
   var row = table.insertRow(table.rows.length)
 
   var cell1 = row.insertCell(0)
@@ -327,6 +331,11 @@ const addToMapLegend = (object, day) => {
     cell1.innerHTML = `<img src=\"${object.iconUrl}" width=\"30px\" height=\"30px\" border=\"1px solid black\">`
     cell2.innerHTML = t(object.name)
   }
+}
+
+const emptyTable = () => {
+  var legendTable = document.getElementById('legend-icon-names')
+  legendTable.innerHTML = ''
 }
 
 
@@ -419,12 +428,13 @@ function centerUserLocation() {
   }
 }
 
-const removeWarningLevel = (string) => {
-  let result = string
-    .replace('severe ', '')
-    .replace('extreme ', '')
-  result = result.charAt(0).toUpperCase() + result.slice(1)
-  return result
+function findMatchingName(name) {
+  for (let key in alertOptions.eventTypes) {
+    if (name.includes(key)) {
+      return alertOptions.eventTypes[key];
+    }
+  }
+  return "No key/value pair found";
 }
 
 function showMarkers(day) {
@@ -434,12 +444,11 @@ function showMarkers(day) {
     if (alertOptions.showIconLegend) {
       const activeMarker = {
         iconUrl: markers[i].options.icon.options.iconUrl,
-        name: removeWarningLevel(markers[i].options.capEvent),
+        name: findMatchingName(markers[i].options.capEvent),
         fromDate: markers[i].options.fromDate,
         toDate: markers[i].options.toDate
       }
-
-
+    
       if (activeMarkerList.findIndex(x => x.name == activeMarker.name) === -1) {
         activeMarkerList.push(activeMarker)
         addToMapLegend(activeMarker, day)
@@ -448,12 +457,11 @@ function showMarkers(day) {
 
     var fromDate = new Date(markers[i].options.fromDate)
     var toDate = new Date(markers[i].options.toDate)
-
+    
     if (selectedEVENT !== null)
       var combinedEvents = selectedEVENT.split(',')
     else
       combinedEvents = [selectedEVENT]
-
     for (var n = 0; n < combinedEvents.length; n++) {
       if (polygons[i].options.polygonArea < alertOptions.areaLimitForMarkers) {
         markers[i].getElement().style.display = 'none'
@@ -683,6 +691,7 @@ function doCAP(dom) {
     .replace('Poor', '')
     .trim().split(' ')[0].trim().toLowerCase()
   var eventRaw = info.querySelector('event').textContent.toLowerCase()
+
 
   // Check available languages
   languages = []
