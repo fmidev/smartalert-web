@@ -322,14 +322,14 @@ let activeMarkerList = []
 
 const addToMapLegend = (object, day) => {
   var table = document.getElementById('legend-icon-names')
-  var row = table.insertRow(table.rows.length)
-  var cell1 = row.insertCell(0)
-  var cell2 = row.insertCell(1)
-
+  
   var fromDate = new Date(object.fromDate)
   var toDate = new Date(object.toDate)
 
   if ((fromDate.isBeforeDay(day) && toDate.isAfterDay(day)) || day === null) {
+    var row = table.insertRow(table.rows.length)
+    var cell1 = row.insertCell(0)
+    var cell2 = row.insertCell(1)
     cell1.innerHTML = `<img src=\"${object.iconUrl}" width=\"30px\" height=\"30px\" border=\"1px solid black\">`
     cell2.innerHTML = object.name
     cell1.style.width = '45px';
@@ -446,8 +446,8 @@ function showMarkers(day) {
         fromDate: markers[i].options.fromDate,
         toDate: markers[i].options.toDate
       }
-      if (activeMarkerList.findIndex(x => x.name == activeMarker.name) === -1 ||
-       activeMarkerList.findIndex(x => x.iconUrl == activeMarker.iconUrl) === -1) {
+      if ((activeMarkerList.findIndex(x => x.name == activeMarker.name) === -1 ||
+       activeMarkerList.findIndex(x => x.iconUrl == activeMarker.iconUrl) === -1)) {
         activeMarkerList.push(activeMarker)
         addToMapLegend(activeMarker, day)
       }
