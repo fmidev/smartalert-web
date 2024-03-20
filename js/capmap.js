@@ -195,20 +195,29 @@ function initialize() {
     if (lang === selectedLANGUAGE) { $('#lang').val(lang).change() }
   })
 
-  $('#lang').on('change', changeLanguage)
+  $('#lang').on('change', function () {
+    // Call the changeLanguage function
+    changeLanguage();
+
+    var Table = document.getElementById("legend-icon-names")
+    Table.innerHTML = ""
+    activeMarkerList = []
+    showMarkers(selectedDAY)
+    showPolygons(selectedDAY)
+
+  });
 
   if (Object.keys(translations).length < 2) { $('#lang').css('display', 'none') }
 
   updateEventSelect()
   setInterval(updateData, alertOptions.refresh * 1000)
   changeLanguage()
+
   alertOptions.showIconLegend && initIconLegendButton()
   if (!alertOptions.showIconLegend) {
     document.getElementById("icon-legend-container").style.display = 'none'
     document.getElementById("icon-legend-button").style.display = 'none'
-
   }
-
 }
 
 function updateEventSelect() {
@@ -222,6 +231,7 @@ function updateEventSelect() {
 }
 
 function changeLanguage() {
+
   debug('Language selected: ' + document.getElementById('lang').value)
   selectedLANGUAGE = document.getElementById('lang').value
   localStorage.setItem('userLanguage', selectedLANGUAGE)
@@ -245,9 +255,7 @@ function changeLanguage() {
 
   addControlPlaceholders(map)
   dayControll = new L.Control.Zoom({ position: 'horizontalcentertop' }).addTo(map)
-
   dayControll._container.style['border'] = 'none'
-
   $(dayControll._container).html(dayControlDiv)
 
   updateEventSelect()
@@ -314,21 +322,19 @@ let activeMarkerList = []
 
 const addToMapLegend = (object, day) => {
   var table = document.getElementById('legend-icon-names')
-
-  var row = table.insertRow(table.rows.length)
-
-  var cell1 = row.insertCell(0)
-  var cell2 = row.insertCell(1)
-
+  
   var fromDate = new Date(object.fromDate)
   var toDate = new Date(object.toDate)
 
   if ((fromDate.isBeforeDay(day) && toDate.isAfterDay(day)) || day === null) {
+    var row = table.insertRow(table.rows.length)
+    var cell1 = row.insertCell(0)
+    var cell2 = row.insertCell(1)
     cell1.innerHTML = `<img src=\"${object.iconUrl}" width=\"30px\" height=\"30px\" border=\"1px solid black\">`
-    cell2.innerHTML = t(object.name)
+    cell2.innerHTML = object.name
+    cell1.style.width = '45px';
   }
 }
-
 
 // Create additional Control placeholders
 function addControlPlaceholders(mapObject) {
@@ -419,28 +425,29 @@ function centerUserLocation() {
   }
 }
 
-const removeWarningLevel = (string) => {
-  let result = string
-    .replace('severe ', '')
-    .replace('extreme ', '')
-  result = result.charAt(0).toUpperCase() + result.slice(1)
-  return result
+function findMatchingName(name) {
+  for (let key in alertOptions.eventTypes) {
+    if (name.includes(key)) {
+      return t(alertOptions.eventTypes[key]);
+    }
+  }
+  return "No key/value pair found";
 }
 
 function showMarkers(day) {
+
   for (var i = 0; i < markers.length; i++) {
 
     // also show legend for active markers
     if (alertOptions.showIconLegend) {
       const activeMarker = {
         iconUrl: markers[i].options.icon.options.iconUrl,
-        name: removeWarningLevel(markers[i].options.capEvent),
+        name: findMatchingName(markers[i].options.capEvent),
         fromDate: markers[i].options.fromDate,
         toDate: markers[i].options.toDate
       }
-
-
-      if (activeMarkerList.findIndex(x => x.name == activeMarker.name) === -1) {
+      if ((activeMarkerList.findIndex(x => x.name == activeMarker.name) === -1 ||
+       activeMarkerList.findIndex(x => x.iconUrl == activeMarker.iconUrl) === -1)) {
         activeMarkerList.push(activeMarker)
         addToMapLegend(activeMarker, day)
       }
@@ -453,7 +460,6 @@ function showMarkers(day) {
       var combinedEvents = selectedEVENT.split(',')
     else
       combinedEvents = [selectedEVENT]
-
     for (var n = 0; n < combinedEvents.length; n++) {
       if (polygons[i].options.polygonArea < alertOptions.areaLimitForMarkers) {
         markers[i].getElement().style.display = 'none'
@@ -683,6 +689,7 @@ function doCAP(dom) {
     .replace('Poor', '')
     .trim().split(' ')[0].trim().toLowerCase()
   var eventRaw = info.querySelector('event').textContent.toLowerCase()
+
 
   // Check available languages
   languages = []

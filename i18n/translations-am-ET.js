@@ -47,8 +47,9 @@ translations['am-ET'] = {
   "Temperature": "የሙቀት መጠን",
   "Thunderstorm": "ነጎድጓዳማ",
   "Wind": "ነፋስ",
-  "Visibility": "መታየት",
+  "Visibility": "ህይታ",
   "Forest fire": "የደን እሳት",
   "Map legend": "የካርታ መግለጫ",
   "Updated": "ማሻሻል",
+  ",": "፣"
 };
