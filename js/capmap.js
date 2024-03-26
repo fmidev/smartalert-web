@@ -14,6 +14,8 @@ var selectedEVENT = null
 var translations = {}
 var dayControll
 var nameLayer
+const squares = [];
+
 
 // Remember previous state
 var selectedLANGUAGE = localStorage.getItem('userLanguage') ? localStorage.getItem('userLanguage') : alertOptions.defaultLanguage
@@ -186,6 +188,7 @@ function initialize() {
     if (document.getElementById('eventType').value != '') { selectedEVENT = document.getElementById('eventType').value } else { selectedEVENT = null }
     showMarkers(selectedDAY)
     showPolygons(selectedDAY)
+
   })
 
   $('#lang').html('')
@@ -218,6 +221,7 @@ function initialize() {
     document.getElementById("icon-legend-container").style.display = 'none'
     document.getElementById("icon-legend-button").style.display = 'none'
   }
+
 }
 
 function updateEventSelect() {
@@ -245,7 +249,7 @@ function changeLanguage() {
   $('#icon-legend-header').text(t('Map legend'))
 
   var dayControlDiv = document.createElement('div')
-  var dayControl = new DayControl(dayControlDiv, map)
+  DayControl(dayControlDiv, map)
 
   dayControlDiv.index = 1
   // dayControlDiv.style['padding-top'] = '10px';
@@ -322,7 +326,7 @@ let activeMarkerList = []
 
 const addToMapLegend = (object, day) => {
   var table = document.getElementById('legend-icon-names')
-  
+
   var fromDate = new Date(object.fromDate)
   var toDate = new Date(object.toDate)
 
@@ -447,7 +451,7 @@ function showMarkers(day) {
         toDate: markers[i].options.toDate
       }
       if ((activeMarkerList.findIndex(x => x.name == activeMarker.name) === -1 ||
-       activeMarkerList.findIndex(x => x.iconUrl == activeMarker.iconUrl) === -1)) {
+        activeMarkerList.findIndex(x => x.iconUrl == activeMarker.iconUrl) === -1)) {
         activeMarkerList.push(activeMarker)
         addToMapLegend(activeMarker, day)
       }
@@ -481,6 +485,14 @@ function showMarkers(day) {
     }
   }
   debug('Number of markers: ' + markers.length)
+  if (alertOptions.extendedDayControl) {
+    square0.style.backgroundColor = checkButtonColor(0, polygons)
+    square1.style.backgroundColor = checkButtonColor(1, polygons)
+    square2.style.backgroundColor = checkButtonColor(2, polygons)
+    square3.style.backgroundColor = checkButtonColor(3, polygons)
+    square4.style.backgroundColor = checkButtonColor(4, polygons)
+    square5.style.backgroundColor = checkButtonColor(5, polygons)
+  }
 }
 
 function showPolygons(day) {
@@ -513,7 +525,7 @@ function showPolygons(day) {
   }
   debug('Number of polygons: ' + polygons.length)
 }
-
+var data
 function processCAP(json) {
   debug('Loaded JSON: ' + json)
 
@@ -539,18 +551,77 @@ function processCAP(json) {
     }
   }
 }
+
+
+let highestWarningLevel = 'green'
+
+const checkButtonColor = (dayIndex, layersArray) => {
+
+  const warnings = {
+    red: false,
+    orange: false,
+    yellow: false
+  }
+
+  for (const layer of layersArray) {
+    if (layer.options.fromDate && layer.options.toDate) {
+      const fromDate = new Date(layer.options.fromDate)
+      const toDate = new Date(layer.options.toDate)
+
+      if (fromDate.isBeforeDay(dayIndex) && toDate.isAfterDay(dayIndex)) {
+        if (layer.options.fillColor === '#FF0000') {
+          highestWarningLevel = 'red'
+          warnings.red = true
+        } else if (layer.options.fillColor === '#FFA500') {
+          if (highestWarningLevel !== 'red') {
+            highestWarningLevel = 'orange'
+          }
+          warnings.orange = true
+        } else if (layer.options.fillColor === '#FFFF00') {
+          if (highestWarningLevel !== 'red' && highestWarningLevel !== 'orange') {
+            highestWarningLevel = 'yellow'
+          }
+          warnings.yellow = true
+        }
+      }
+    }
+  }
+  if (dayIndex === 5) {
+    return highestWarningLevel
+  }
+
+  if (warnings.red) {
+    return 'red'
+  } else if (warnings.orange) {
+    return 'orange'
+  } else if (warnings.yellow) {
+    return 'yellow'
+  } else {
+    return 'green'
+  }
+}
+
 let prevButton = null;
 
 const setActiveButton = (selectedButton) => {
-  // Add .active CSS Class
+
   selectedButton.classList.add('active')
   if (prevButton !== null && prevButton != selectedButton) {
-    // Remove .active CSS Class
+
     prevButton.classList.remove('active')
+
+    var prevSquare = prevButton.querySelector('.color-square')
+    if (prevSquare) {
+      prevSquare.innerHTML = ''
+    }
+  }
+
+  var square = selectedButton.querySelector('.color-square')
+  if (square) {
+    square.innerHTML = '&#10003;'
   }
   prevButton = selectedButton
 }
-
 
 const setEventListener = (selected, number, debugMsg) => {
   selected.addEventListener('click', function () {
@@ -565,76 +636,146 @@ const setEventListener = (selected, number, debugMsg) => {
   })
 }
 
-function DayControl(controlDiv, map) {
-  if (alertOptions.dayControl == false) { return }
-  // We set up a variable for this since we're adding event listeners later.
-  var control = this
+const generateDayText = (day) => {
+  var days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+  const index = day % 7
+  let dayText = days[index]
+  return t(dayText)
+}
 
+function generateDate(offset) {
+  const date = new Date()
+  date.setDate(date.getDate() + offset)
+  const result = dayjs(date).format(alertOptions.dayDateFormat)
+  return result;
+}
+
+
+function DayControl(controlDiv) {
+  // Make the colored squares for day buttons if needed.
+  if (alertOptions.extendedDayControl) {
+    for (let i = 0; i < 6; i++) {
+      window['square' + i] = document.createElement('div')
+      window['square' + i].className = 'color-square'
+      squares.push(window['square' + i])
+    }
+  }
+  if (alertOptions.dayControl == false) { return }
+
+  var today = new Date()
+  var day = today.getDay()
   // Set the center property upon construction
   //    control.center_ = center;
   controlDiv.style.clear = 'both'
 
-  if (alertOptions.day0Control == true) {
-    // Set CSS
-    var setDay0UI = document.createElement('div')
+  const isExtended = alertOptions.extendedDayControl
+
+  if (alertOptions.day0Control) {
+    const setDay0UI = document.createElement('div')
     setDay0UI.id = 'setDay0UI'
     setDay0UI.title = t('Click to show alerts for today')
-    setDay0UI.innerHTML = t('Today')
+    const dayTextElement = document.createElement('div')
+    const dayText = isExtended ? generateDayText(day) + '<br>' + generateDate(0) : t('Today')
+
+    dayTextElement.innerHTML = dayText
+    if (isExtended) {
+      setDay0UI.appendChild(square0)
+      dayTextElement.style.marginLeft = '30px'
+    }
+    setDay0UI.appendChild(dayTextElement)
     controlDiv.appendChild(setDay0UI)
-    selectedDAY === 0 && setActiveButton(setDay0UI)
     setEventListener(setDay0UI, 0)
   }
 
-  if (alertOptions.day1Control == true) {
-    // Set CSS
-    var setDay1UI = document.createElement('div')
+  if (alertOptions.day1Control) {
+    const setDay1UI = document.createElement('div')
     setDay1UI.id = 'setDay1UI'
     setDay1UI.title = t('Click to show alerts for tomorrow')
-    setDay1UI.innerHTML = t('Tomorrow')
+    const dayTextElement = document.createElement('div')
+    const dayText = isExtended ? generateDayText(day + 1) + '<br>' + generateDate(1) : t('Tomorrow')
+
+    dayTextElement.innerHTML = dayText
+    if (isExtended) {
+      setDay1UI.appendChild(square1)
+      dayTextElement.style.marginLeft = '30px'
+    }
+
+    setDay1UI.appendChild(dayTextElement)
     controlDiv.appendChild(setDay1UI)
-    selectedDAY === 1 && setActiveButton(setDay1UI)
     setEventListener(setDay1UI, 1, 'Show events for tomorrow.')
   }
 
-  if (alertOptions.day2Control == true) {
-    // Set CSS
-    var setDay2UI = document.createElement('div')
+  if (alertOptions.day2Control) {
+    const setDay2UI = document.createElement('div')
     setDay2UI.id = 'setDay2UI'
     setDay2UI.title = t('Click to show alerts for day after tomorrow')
-    setDay2UI.innerHTML = t('Day after tomorrow')
+    const dayTextElement = document.createElement('div')
+    const dayText = isExtended ? generateDayText(day + 2) + '<br>' + generateDate(2) : t('Day after tomorrow')
+
+    dayTextElement.innerHTML = dayText
+    if (isExtended) {
+      setDay2UI.appendChild(square2)
+      dayTextElement.style.marginLeft = '30px'
+    }
+    setDay2UI.appendChild(dayTextElement)
     controlDiv.appendChild(setDay2UI)
-    selectedDAY === 2 && setActiveButton(setDay2UI)
-    setEventListener(setDay2UI, 2, 'Show events for the day after tomorrow.')
+    setEventListener(setDay2UI, 2, 'Show events for day after tomorrow.')
   }
 
-  if (alertOptions.day3Control == true) {
-    // Set CSS
-    var setDay3UI = document.createElement('div')
+  if (alertOptions.day3Control) {
+    const setDay3UI = document.createElement('div')
     setDay3UI.id = 'setDay3UI'
     setDay3UI.title = t('Click to show alerts for day 4')
-    setDay3UI.innerHTML = t('Day 4')
+
+    const dayTextElement = document.createElement('div')
+    const dayText = isExtended ? generateDayText(day + 3) + '<br>' + generateDate(3) : t('Day 4')
+
+    dayTextElement.innerHTML = dayText
+    if (isExtended) {
+      setDay3UI.appendChild(square3)
+      dayTextElement.style.marginLeft = '30px'
+    }
+
+    setDay3UI.appendChild(dayTextElement)
     controlDiv.appendChild(setDay3UI)
-    selectedDAY === 3 && setActiveButton(setDay3UI)
     setEventListener(setDay3UI, 3, 'Show events for day 4.')
   }
 
-  if (alertOptions.day4Control == true) {
-    // Set CSS
-    var setDay4UI = document.createElement('div')
+  if (alertOptions.day4Control) {
+    const setDay4UI = document.createElement('div')
     setDay4UI.id = 'setDay4UI'
     setDay4UI.title = t('Click to show alerts for day 5')
-    setDay4UI.innerHTML = t('Day 5')
+
+    const dayTextElement = document.createElement('div')
+    const dayText = isExtended ? generateDayText(day + 4) + '<br>' + generateDate(4) : t('Day 5')
+
+    dayTextElement.innerHTML = dayText
+    if (isExtended) {
+      const square = document.createElement('div')
+      setDay4UI.appendChild(square4)
+      dayTextElement.style.marginLeft = '30px'
+    }
+
+    setDay4UI.appendChild(dayTextElement)
     controlDiv.appendChild(setDay4UI)
-    selectedDAY === 4 && setActiveButton(setDay4UI)
     setEventListener(setDay4UI, 4, 'Show events for day 5.')
   }
 
-  if (alertOptions.allDayControl == true) {
-    // Set CSS
-    var setAllDaysUI = document.createElement('div')
+  if (alertOptions.allDayControl) {
+    const setAllDaysUI = document.createElement('div')
     setAllDaysUI.id = 'setAllDaysUI'
     setAllDaysUI.title = t('Click to show all active alerts')
-    setAllDaysUI.innerHTML = t('All')
+
+    const dayTextElement = document.createElement('div')
+    const dayText = isExtended ? t('All <br> days') : t('All')
+
+    dayTextElement.innerHTML = dayText
+    if (isExtended) {
+      setAllDaysUI.appendChild(square5)
+      dayTextElement.style.marginLeft = '30px'
+    }
+
+    setAllDaysUI.appendChild(dayTextElement)
     controlDiv.appendChild(setAllDaysUI)
     selectedDAY === null && setActiveButton(setAllDaysUI)
     setEventListener(setAllDaysUI, null, 'Show all events.')
@@ -803,7 +944,6 @@ function doCAP(dom) {
 
     polygons.push(areapolygon)
     var bounds = areapolygon.getBounds()
-
     // TODO
     // if (polygonArea(path) > 1)
     // var markerLocation = testcircle(areapolygon);
