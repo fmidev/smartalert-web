@@ -767,7 +767,7 @@ function DayControl(controlDiv) {
     setAllDaysUI.title = t('Click to show all active alerts')
 
     const dayTextElement = document.createElement('div')
-    const dayText = isExtended ? t('All <br> days') : t('All')
+    const dayText = isExtended ? `${t('All')} <br> ${t('days')}` : t('All')
 
     dayTextElement.innerHTML = dayText
     if (isExtended) {
