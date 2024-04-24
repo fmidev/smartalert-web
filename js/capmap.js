@@ -360,12 +360,18 @@ function addControlPlaceholders(mapObject) {
   createCorner('verticalcenter', 'right')
 }
 
+let updateDate
 function updateData() {
   debug('Updating data:')
   if (alertOptions.subDirectories) {
     $.getJSON('list.php', { dir: alertOptions.subDirectories }, processCAP)
   } else {
     $.getJSON('list.php', processCAP)
+    $.getJSON('lastUpdated.php', function(data) {
+      const lastUpdated = dayjs(data)
+      updateDate = lastUpdated
+  });
+    
   }
 }
 
@@ -1340,7 +1346,7 @@ function doCAP(dom) {
       }
     }
 
-    alertOptions.showUpdateTime === true && $('#sentDate').html(`${t('Updated')}: ${sentDate}`)
+    alertOptions.showUpdateTime === true && $('#sentDate').html(`${t('Updated')}: ${updateDate.format(formatter)}`)
 
     // var infowindow = new google.maps.InfoWindow({
     var content = '<h4 class="iw-title">' + info.querySelector('event').textContent + ' ' + t('for') + ' ' + info.querySelector('areaDesc').textContent + '</h4>' +
