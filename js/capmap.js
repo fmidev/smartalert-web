@@ -360,18 +360,16 @@ function addControlPlaceholders(mapObject) {
   createCorner('verticalcenter', 'right')
 }
 
-let updateDate
 function updateData() {
   debug('Updating data:')
   if (alertOptions.subDirectories) {
     $.getJSON('list.php', { dir: alertOptions.subDirectories }, processCAP)
   } else {
     $.getJSON('list.php', processCAP)
-    $.getJSON('lastUpdated.php', function(data) {
-      const lastUpdated = dayjs(data)
-      updateDate = lastUpdated
-  });
-    
+    $.getJSON('lastUpdated.php', function (data) {
+      alertOptions.showUpdateTime === true && $('#sentDate').html(`${t('Updated')}: ${dayjs(data).format(        formatter = alertOptions.dateFormatString[selectedLANGUAGE]
+        )}`)
+    });
   }
 }
 
@@ -559,7 +557,7 @@ function processCAP(json) {
 }
 
 
-let highestWarningLevel = 'green'
+let highestWarningLevel = '#00FF00'
 
 const checkButtonColor = (dayIndex, layersArray) => {
 
@@ -603,7 +601,7 @@ const checkButtonColor = (dayIndex, layersArray) => {
   } else if (warnings.yellow) {
     return 'yellow'
   } else {
-    return 'green'
+    return '#00FF00'
   }
 }
 
@@ -1346,7 +1344,6 @@ function doCAP(dom) {
       }
     }
 
-    alertOptions.showUpdateTime === true && $('#sentDate').html(`${t('Updated')}: ${updateDate.format(formatter)}`)
 
     // var infowindow = new google.maps.InfoWindow({
     var content = '<h4 class="iw-title">' + info.querySelector('event').textContent + ' ' + t('for') + ' ' + info.querySelector('areaDesc').textContent + '</h4>' +
