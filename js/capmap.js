@@ -670,7 +670,7 @@ function DayControl(controlDiv) {
   var day = today.getDay()
   // Set the center property upon construction
   //    control.center_ = center;
-  controlDiv.style.clear = 'both'
+  controlDiv.classList.add('controlDiv');
 
   const isExtended = alertOptions.extendedDayControl
 

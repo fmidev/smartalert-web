@@ -2,6 +2,7 @@ html, body {
     height: 100%;
     margin: 0;
     padding: 0;
+    font-family: 'Times New Roman', sans-serif !important;
 }
 
 #map-canvas{
@@ -10,16 +11,18 @@ html, body {
 }
 
 .leaflet-horizontalcenter {
-    position: absolute;
-    z-index: 1000;
+    position: fixed;
     pointer-events: none;
-    left: calc(50% - 200px); 
+    left: 50%;
+    transform: translateX(-50%);
 }
 
-@media only screen and (max-width: 510px) {
-  .leaflet-horizontalcenter {
-      left: calc(50% - 150px); 
-  } 
+.controlDiv {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
 }
 
 .leaflet-horizontallcenter .leaflet-control {
@@ -44,28 +47,20 @@ html, body {
 }
 
 #setDay0UI, #setDay1UI, #setDay2UI, #setDay3UI, #setDay4UI, #setAllDaysUI {
-    margin-right: 12px;
+    margin: 6px;
+    padding-right: 6px;
     background-color: #fff;
     border: 2px solid #fff;
     border-radius: 3px;
     box-shadow: 0 2px 6px rgba(0,0,0,.3);
     cursor: pointer;
-    float: left;
     margin-bottom: 15px;
-    font-family: Roboto,Arial,sans-serif;
-    font-size: 15px;
-    line-height: 25px;
-    padding-left: 5px;
-    padding-right: 5px;
+    font-size: 16px;
     text-align: center;
     &:hover {
         background-color: #dbcdcd;
         border: 2px solid #dbcdcd;
     }
-}
-
-#setDay1UI, #setDay2UI, #setDay3UI, #setDay4UI, #setAllDaysUI {
-    margin-right: 12px;
 }
 
 #legend-container {
@@ -103,11 +98,11 @@ html, body {
     border-radius: 3px;
     box-shadow: 0 2px 6px rgba(0,0,0,.3);
     padding: 5px;
-    margin-top: 10px;
+    margin-top: 15px;
     margin-right: 22px;
     z-index: 100;
     width: 100%;
-    max-width: 300px;
+    max-width: 220px;
     overflow: auto;
     position: absolute;
     top: 0;
@@ -116,7 +111,7 @@ html, body {
 
 #icon-legend-header {
     text-align: center;
-    font-size: 26px;
+    font-size: 16px;
     font-weight: bold;
     user-select: none;
 }
@@ -144,44 +139,26 @@ html, body {
     
 }
 
-@media only screen and (max-width: 960px) {
-
+@media only screen and (max-width: 930px) {
     #icon-legend, #icon-legend-container {
-        margin-top: 50px;
+        margin-top: 80px;
     }
-    
+}
+@media only screen and (max-width: 720px) {
+    #icon-legend, #icon-legend-container {
+        margin-top: 160px;
+    }
 }
 
-@media only screen and (max-width: 500px) {
-    #legend, #legend-container {
-        max-width: 260px;
-        margin-bottom: 40px;
-        
-    }
+@media only screen and (max-width: 538px) {
     #icon-legend, #icon-legend-container {
         max-height: 265px;
-        max-width: 260px;
+        max-width: 220px;
         position: absolute;
-        top: 15px;
+        top: -40px;
         left: 0;
         right: 0;
     }
-    
-}
-
-@media only screen and (max-width: 420px) {
-    .leaflet-horizontalcenter {
-        max-width: 320px;
-        margin-left: 30px; 
-    }
-}
-
-@media only screen and (max-width: 370px) {
-    .leaflet-horizontalcenter {
-        max-width: 320px;
-        margin-left: 50px; 
-    }
-    
 }
 
 .colorLegend {
