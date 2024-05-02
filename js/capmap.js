@@ -367,8 +367,13 @@ function updateData() {
   } else {
     $.getJSON('list.php', processCAP)
     $.getJSON('lastUpdated.php', function (data) {
-      alertOptions.showUpdateTime === true && $('#sentDate').html(`${t('Updated')}: ${dayjs(data).format(        formatter = alertOptions.dateFormatString[selectedLANGUAGE]
-        )}`)
+      if (alertOptions.showUpdateTime === true) {
+        if (data) {
+          $('#sentDate').html(`${t('Updated')}: ${dayjs(data).format(formatter = getFormatter())}`);
+          return
+        }
+        $('#sentDate').html(`${t('Updated')}: ${t('Unknown')}`);
+      }
     });
   }
 }
@@ -1313,14 +1318,7 @@ function doCAP(dom) {
 
     if (alertOptions.dateFormat === 'long') {
 
-      var formatter = ''
-      if (alertOptions.dateFormatString[selectedLANGUAGE] !== undefined) {
-        formatter = alertOptions.dateFormatString[selectedLANGUAGE]
-      } else if (alertOptions.dateFormatString['default'] !== undefined) {
-        formatter = alertOptions.dateFormatString['default']
-      } else {
-        formatter = alertOptions.dateFormatString
-      }
+      var formatter = getFormatter()
 
       var lang = selectedLANGUAGE.split('-')[0]
       if (alertOptions.customLangCode !== undefined) {
@@ -1377,6 +1375,16 @@ function doCAP(dom) {
   showPolygons(selectedDAY)
   debug(events)
 };
+
+const getFormatter = () => {
+  if (alertOptions.dateFormatString[selectedLANGUAGE] !== undefined) {
+      return alertOptions.dateFormatString[selectedLANGUAGE];
+  } else if (alertOptions.dateFormatString['default'] !== undefined) {
+      return alertOptions.dateFormatString['default'];
+  } else {
+      return alertOptions.dateFormatString;
+  }
+}
 
 
 // http://www.mathopenref.com/coordpolygonarea2.html
@@ -1461,11 +1469,11 @@ const initIconLegendButton = () => {
   let visible = true
   button.addEventListener('click', function () {
     if (visible) {
-      document.getElementById('icon-legend-container').style.display = 'none'
+      document.getElementById('icon-legend-container').style.visibility = 'hidden'
       visible = false
     }
     else if (!visible) {
-      document.getElementById('icon-legend-container').style.display = 'inline-block'
+      document.getElementById('icon-legend-container').style.visibility = 'visible'
       visible = true
     }
   })
