@@ -326,18 +326,12 @@ let activeMarkerList = []
 
 const addToMapLegend = (object, day) => {
   var table = document.getElementById('legend-icon-names')
-
-  var fromDate = new Date(object.fromDate)
-  var toDate = new Date(object.toDate)
-
-  if ((fromDate.isBeforeDay(day) && toDate.isAfterDay(day)) || day === null) {
-    var row = table.insertRow(table.rows.length)
-    var cell1 = row.insertCell(0)
-    var cell2 = row.insertCell(1)
-    cell1.innerHTML = `<img src=\"${object.iconUrl}" width=\"30px\" height=\"30px\" border=\"1px solid black\">`
-    cell2.innerHTML = object.name
-    cell1.style.width = '45px';
-  }
+  var row = table.insertRow(table.rows.length)
+  var cell1 = row.insertCell(0)
+  var cell2 = row.insertCell(1)
+  cell1.innerHTML = `<img src=\"${object.iconUrl}" width=\"30px\" height=\"30px\" border=\"1px solid black\">`
+  cell2.innerHTML = object.name
+  cell1.style.width = '45px';
 }
 
 // Create additional Control placeholders
@@ -448,7 +442,6 @@ function findMatchingName(name) {
 }
 
 function showMarkers(day) {
-
   for (var i = 0; i < markers.length; i++) {
 
     // also show legend for active markers
@@ -459,8 +452,16 @@ function showMarkers(day) {
         fromDate: markers[i].options.fromDate,
         toDate: markers[i].options.toDate
       }
-      if ((activeMarkerList.findIndex(x => x.name == activeMarker.name) === -1 ||
-        activeMarkerList.findIndex(x => x.iconUrl == activeMarker.iconUrl) === -1)) {
+      fromDate = new Date(activeMarker.fromDate)
+
+      toDate = new Date(activeMarker.toDate)
+
+      const isNewMarker = activeMarkerList.every(marker => marker.name !== activeMarker.name 
+        || marker.iconUrl !== activeMarker.iconUrl)
+
+      const isDateInRange = (day === null) || (fromDate.isBeforeDay(day) && toDate.isAfterDay(day))
+
+      if (isNewMarker && isDateInRange) {
         activeMarkerList.push(activeMarker)
         addToMapLegend(activeMarker, day)
       }
@@ -1378,11 +1379,11 @@ function doCAP(dom) {
 
 const getFormatter = () => {
   if (alertOptions.dateFormatString[selectedLANGUAGE] !== undefined) {
-      return alertOptions.dateFormatString[selectedLANGUAGE];
+    return alertOptions.dateFormatString[selectedLANGUAGE];
   } else if (alertOptions.dateFormatString['default'] !== undefined) {
-      return alertOptions.dateFormatString['default'];
+    return alertOptions.dateFormatString['default'];
   } else {
-      return alertOptions.dateFormatString;
+    return alertOptions.dateFormatString;
   }
 }
 
