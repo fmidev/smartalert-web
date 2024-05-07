@@ -563,7 +563,7 @@ function processCAP(json) {
 }
 
 
-let highestWarningLevel = '#00FF00'
+let highestWarningLevel = 'white'
 
 const checkButtonColor = (dayIndex, layersArray) => {
 
@@ -607,7 +607,7 @@ const checkButtonColor = (dayIndex, layersArray) => {
   } else if (warnings.yellow) {
     return 'yellow'
   } else {
-    return '#00FF00'
+    return 'white'
   }
 }
 
