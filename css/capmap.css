@@ -63,6 +63,15 @@ html, body {
         border: 2px solid #dbcdcd;
     }
 }
+@media (max-width: 600px) {
+    #setDay0UI, #setDay1UI, #setDay2UI, #setDay3UI, #setDay4UI, #setAllDaysUI {
+      font-size: 14px;  
+    }
+    .controlDiv {
+        width: 170%;
+        margin-left: -25%;
+    }
+  }
 
 #legend-container {
     width: 100%;
@@ -151,12 +160,12 @@ html, body {
     }
 }
 
-@media only screen and (max-width: 538px) {
+@media only screen and (max-width: 600px) {
     #icon-legend, #icon-legend-container {
         max-height: 265px;
         max-width: 220px;
         position: absolute;
-        top: -40px;
+        top: -80px;
         left: 0;
         right: 0;
     }
@@ -213,7 +222,13 @@ html, body {
     width: 20px;
     height: 46px;
     float: left;
+    border-radius: 3px;
     margin-top: 2px;
     border: 0.5px solid #000;
     background-color: white;
 }
+@media (max-width: 600px) {
+    .color-square {
+      height: 37px; 
+    }
+  }

@@ -363,12 +363,19 @@ function updateData() {
     $.getJSON('lastUpdated.php', function (data) {
       if (alertOptions.showUpdateTime === true) {
         if (data) {
-          $('#sentDate').html(`${t('Updated')}: ${dayjs(data).format(formatter = getFormatter())}`);
+
+          // const utcDate = dayjs.utc(data, 'YYYYMMDDHHmmss')
+          // const localDate = utcDate.tz(alertOptions.timeZone)
+          // const localTimeString = localDate.format(alertOptions.dateFormatString)
+          // const utcOffset = localDate.format('Z')
+          const formattedLocalTimeWithOffset = convertUtcToLocal(data)
+
+          $('#sentDate').html(`${t('Updated')}: ${formattedLocalTimeWithOffset}`)
           return
         }
-        $('#sentDate').html(`${t('Updated')}: ${t('Unknown')}`);
+        $('#sentDate').html(`${t('Updated')}: ${t('Unknown')}`)
       }
-    });
+    })
   }
 }
 
@@ -456,7 +463,7 @@ function showMarkers(day) {
 
       toDate = new Date(activeMarker.toDate)
 
-      const isNewMarker = activeMarkerList.every(marker => marker.name !== activeMarker.name 
+      const isNewMarker = activeMarkerList.every(marker => marker.name !== activeMarker.name
         || marker.iconUrl !== activeMarker.iconUrl)
 
       const isDateInRange = (day === null) || (fromDate.isBeforeDay(day) && toDate.isAfterDay(day))
@@ -1486,4 +1493,30 @@ const toEthiopianCalendar = (date) => {
   const ethiopianDate = toEthiopian(date)
   const result = ethiopianDate[2] + '/' + ethiopianDate[1] + '/' + ethiopianDate[0] + ', ' + time
   return result
+}
+
+function convertUtcToLocal(utcTimeString) {
+  // Create a Dayjs object in UTC from the string
+  const utcDate = dayjs.utc(utcTimeString, 'YYYYMMDDHHmmss')
+
+  // Get today's date in the specified time zone
+  const today = dayjs().tz(alertOptions.timeZone)
+  const todayOffset = today.utcOffset() // Today's offset in minutes
+
+  // Convert the given date to local time using dayjs with the specified time zone
+  const localDate = utcDate.tz(alertOptions.timeZone)
+  const localTimeOffset = localDate.utcOffset() // Local date offset in minutes
+
+  // Adjust the local date time and offset to match today's offset
+  const offsetDifference = todayOffset - localTimeOffset
+  const adjustedLocalDate = localDate.add(offsetDifference, 'minute')
+  const adjustedLocalTimeString = adjustedLocalDate.format(alertOptions.dateFormatString)
+
+  // Get the new UTC offset for the adjusted date in hours and minutes
+  const offsetHours = Math.floor(todayOffset / 60)
+  const offsetMinutes = todayOffset % 60
+  const utcOffset = `UTC${offsetHours >= 0 ? '+' : ''}${offsetHours}:${offsetMinutes.toString().padStart(2, '0')}`
+
+  // Format the final string with the new UTC offset
+  return `${adjustedLocalTimeString} (${utcOffset})`
 }

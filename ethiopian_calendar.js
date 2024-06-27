@@ -9,9 +9,10 @@ var startDayOfEthiopian = function startDayOfEthiopian(year) {
     var inputs = dateArray.constructor === Array ? dateArray : [].slice.call(arguments);
   
     // prevent incorect input
-    if (inputs.indexOf(0) !== -1 || inputs.indexOf(null) !== -1 || inputs.indexOf(undefined) !== -1 || inputs.length !== 3) {
-      throw new Exception("Malformed input can't be converted.");
+    if (inputs.includes(0) || inputs.includes(null) || inputs.includes(undefined) || inputs.length !== 3) {
+      throw new Error("Malformed input can't be converted.");
     }
+    
   
     var _inputs2 = _slicedToArray(inputs, 3),
         year = Number(_inputs2[0]),
