@@ -53,7 +53,7 @@ Fill in these values at initial se up
 | `useLocation`         | `Boolean` | `false`         | Allow user location. |
 | `useMinorThreat`      | `Boolean` | `false`         | Display minor threat level warning. |
 | `defaultLanguage`     | `String`  | `'en-US'`       | Choose the defaylt language. |
-| `customLangCode`     | `Object`  | `'null'`       | Choose a custom language code for date formatting, Moment.js doesn't always use ISO standard language codes. I.e. `customLangCode: {'ua-UA':'uk'}` |
+| `customLangCode`     | `Object`  | `'null'`       | Choose a custom language code for date formatting, day.js doesn't always use ISO standard language codes. I.e. `customLangCode: {'ua-UA':'uk'}` |
 | `dateFormat`          | `String`  | `'ISOString'`   | Use longer date format. Available options are `long` and (default) `ISOString`. |
 | `dateFormatString`    | `Object`  | `null`        | Define the date format used in warning popups if `dateFormat:long`. It's also possible to define date formats. For example:<pre>dateFormatString: {<br>  "default": "MMMM Do YYYY, HH:mm",<br>  'vi-VN': 'HH [giá»] mm [phÃºt], [ngÃ y] DD/MM/YYYY', <br>  "en-VN": "MMMM Do YYYY, HH:mm"<br>},</pre>
 | `displayIssueTimeDirrefence`    | `Boolean`  | `true`        | Display time difference to time of issue (i.e. Issued by Ukrainian Hydrometeorological Center at 29.11.2022, 13:28 (10 days 22 hours 11 minutes ago)) |
@@ -73,7 +73,9 @@ Fill in these values at initial se up
 | `day2Control`         | `Boolean` | `true`          | Display Day 3 button.  |
 | `day4Control`         | `Boolean` | `true`          | Display Day 4 button.  |
 | `day4Control`         | `Boolean` | `true`          | Display Day 5 button.  |
-| `allDayControl`       | `Boolean` | `true`          | Display All days butto.  |
+| `allDayControl`       | `Boolean` | `true`          | Display All days button.  |
+| `extendedDayControl`  | `Boolean` | `false`         | Display extended day selection buttons that include weekday, date and color of the highest warning of the that day. |
+| `dayDateFormat`       | `String`  | `DD.MM`         | Date displayed on day selection buttons if extendedDayControl is true |
 | `popUpMaxHeight`      | `Number`  | `false`         | Warning popup maximum height in pixels. |
 | `refresh`             | `Number`  | `300`           | Warning refresh interval in seconds. |
 | `areaLimitForMarkers` | `Number`  | `0.005`         | Minmum area for warning symbols to be displayed. |

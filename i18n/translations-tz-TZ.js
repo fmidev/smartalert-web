@@ -25,8 +25,6 @@ translations['tz-TZ'] = {
   "Rain": "Rain",
   "Snow": "Snow",
   "Flooding": "Flooding",
-  "Low temperature": "Low temperature",
-  "High temperature": "High temperature",
   "Avalanches": "Avalanches",
   "Visibility": "Uono",
   "Blizzard": "Blizzard",
