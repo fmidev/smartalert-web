@@ -1518,5 +1518,7 @@ function convertUtcToLocal(utcTimeString) {
   const utcOffset = `UTC${offsetHours >= 0 ? '+' : ''}${offsetHours}:${offsetMinutes.toString().padStart(2, '0')}`
 
   // Format the final string with the new UTC offset
-  return `${adjustedLocalTimeString} (${utcOffset})`
+  const result = alertOptions.hideOffset ? `${adjustedLocalTimeString}` : `${adjustedLocalTimeString} (${utcOffset})`;
+
+  return result
 }
