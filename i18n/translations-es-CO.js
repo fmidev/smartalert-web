@@ -44,7 +44,7 @@ translations['es-CO'] = {
   "All Hazard Types": "Todas las alertas",
   "Rain": "Lluvia",
   "Wind and wave": "Viento y oleaje",
-  "High tide": "Altura del oleaje ",
+  "High tide": "Pleamar",
   "Tropical cyclones": "Ciclones tropicales",
   "Landslides": "Deslizamientos",
   "Forest fire": "Incendio forestal",
@@ -66,5 +66,7 @@ translations['es-CO'] = {
   "Thu": "Jue",
   "Fri": "Vie",
   "Sat": "Sáb",
-  "Sun": "Dom"
+  "Sun": "Dom",
+  "Zoom in": "Acercar",
+  "Zoom out": "Alejar",
 };

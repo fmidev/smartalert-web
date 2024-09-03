@@ -248,6 +248,8 @@ function changeLanguage() {
   $('#levelRedText').text(t('very dangerous'))
   $('#icon-legend-header').text(t('Map legend'))
 
+  document.querySelector('.leaflet-control-zoom-in').title = t('Zoom in');
+  document.querySelector('.leaflet-control-zoom-out').title = t('Zoom out');
   var dayControlDiv = document.createElement('div')
   DayControl(dayControlDiv, map)
 
@@ -1352,7 +1354,7 @@ function doCAP(dom) {
 
 
     // var infowindow = new google.maps.InfoWindow({
-    var content = '<h4 class="iw-title">' + info.querySelector('event').textContent + ' ' + t('for') + ' ' + info.querySelector('areaDesc').textContent + '</h4>' +
+    var content = '<h4 class="iw-title">' + info.querySelector('event').textContent +  '</h4>' +
       '<i>' + t('Valid from') + ' <b>' + fromDateFormatted + '</b> ' + t('to') + ' <b>' + toDateFormatted + '</b></i>' +
       active_str +
       '<p>' + (info.querySelector('description') ? info.querySelector('description').textContent : '') + '</p>' +
