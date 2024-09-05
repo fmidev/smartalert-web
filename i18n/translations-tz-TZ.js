@@ -1,13 +1,13 @@
 translations['tz-TZ'] = {
   "tz-TZ": "Kiswahili",
   "Today": "Leo",
-  "Click to show alerts for today.": "Click to show alerts for today.",
+  "Click to show alerts for today.": "Bonyeza kuona tahadhari kwa siku ya leo.",
   "Tomorrow": "Kesho",
-  "Click to show alerts for tomorrow.": "Click to show alerts for tomorrow.",
+  "Click to show alerts for tomorrow.": "Bonyeza kuona tahadhari kwa siku ya kesho.",
   "Day after tomorrow": "Keshokutwa",
-  "Click to show alerts for day after tomorrow.": "Click to show alerts for day after tomorrow.",
+  "Click to show alerts for day after tomorrow.": "Bonyeza kuona tahadhari kwa siku ya keshokutwa.",
   "All": "Siku zote",
-  "Click to show all active alerts": "Click to show all active alerts",
+  "Click to show all active alerts": "Bonyeza kuona tahadhari zote.",
   "for": "kwa",
   "Valid from": "Kuanzia",
   "to": "hadi",
@@ -69,7 +69,9 @@ translations['tz-TZ'] = {
   "Minimize": "Fupisha",
   "Expand": "Refusha",
   "and" : "na",
-  "on" : "tahere",
+  "on" : "tarehe",
   "Updated": "Imehuishwa",
+  "Zoom in": "Kupunguza",
+  "Zoom out": "Kukuza",
 };
   
