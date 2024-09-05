@@ -1284,6 +1284,13 @@ function doCAP(dom) {
         iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
         popupAnchor: [0, 0]
       })
+    } else if (~eventRaw.indexOf('landslide')) {
+      var icon = L.icon({
+        iconUrl: symbolPath + 'landslide.png',
+        iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
+        iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
+        popupAnchor: [0, 0]
+      })
     }
 
     var marker
