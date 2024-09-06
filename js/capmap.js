@@ -1361,7 +1361,7 @@ function doCAP(dom) {
 
 
     // var infowindow = new google.maps.InfoWindow({
-    var content = '<h4 class="iw-title">' + info.querySelector('event').textContent +  '</h4>' +
+    var content = '<h4 class="iw-title">' + info.querySelector('event').textContent + '</h4>' +
       '<i>' + t('Valid from') + ' <b>' + fromDateFormatted + '</b> ' + t('to') + ' <b>' + toDateFormatted + '</b></i>' +
       active_str +
       '<p>' + (info.querySelector('description') ? info.querySelector('description').textContent : '') + '</p>' +
@@ -1519,7 +1519,15 @@ function convertUtcToLocal(utcTimeString) {
   // Adjust the local date time and offset to match today's offset
   const offsetDifference = todayOffset - localTimeOffset
   const adjustedLocalDate = localDate.add(offsetDifference, 'minute')
-  const adjustedLocalTimeString = adjustedLocalDate.format(alertOptions.dateFormatString)
+
+  let adjustedLocalTimeString
+
+  // Check if dateFormatString is an object with different formats for different languages
+  const dateFormat = typeof alertOptions.dateFormatString === 'object'
+    ? alertOptions.dateFormatString[selectedLANGUAGE]
+    : alertOptions.dateFormatString;
+
+  adjustedLocalTimeString = adjustedLocalDate.format(dateFormat);
 
   // Get the new UTC offset for the adjusted date in hours and minutes
   const offsetHours = Math.floor(todayOffset / 60)
