@@ -269,60 +269,47 @@ function changeLanguage() {
 }
 
 function buildLegend() {
-  // rebuild legend if useMinorThreat = true
+  // Rebuild legend if useMinorThreat is true
   if (alertOptions.useMinorThreat) {
-    var div = document.getElementById('legend-warning-types')
-    div.innerHTML = ''
+    var div = document.getElementById('legend-warning-types');
+    div.innerHTML = ''; // Clear existing content
 
-    var tr = document.createElement('tr')
+    // Legend data
+    var levels = [
+      { id: 'levelGreen', textId: 'levelGreenText', text: 'minor threat' },
+      { id: 'levelOrange', textId: 'levelOrangeText', text: 'dangerous' },
+      { id: 'levelYellow', textId: 'levelYellowText', text: 'potentially dangerous' },
+      { id: 'levelRed', textId: 'levelRedText', text: 'very dangerous' }
+    ];
 
-    var td = document.createElement('td')
-    td.className = 'colorLegend'
-    td.id = 'levelGreen'
-    tr.appendChild(td)
+    // Create table rows for the legend
+    for (let i = 0; i < levels.length; i += 2) {
+      var tr = document.createElement('tr');
 
-    td = document.createElement('td')
-    td.id = 'levelGreenText'
-    td.innerHTML = "minor thread";
-    tr.appendChild(td)
+      // Create and append first column (color and text)
+      appendLegendCell(tr, levels[i].id, 'colorLegend');
+      appendLegendCell(tr, levels[i].textId, '', levels[i].text);
 
-    td = document.createElement('td')
-    td.className = 'colorLegend'
-    td.id = 'levelOrange'
-    tr.appendChild(td)
+      // Create and append second column (color and text)
+      if (levels[i + 1]) {
+        appendLegendCell(tr, levels[i + 1].id, 'colorLegend');
+        appendLegendCell(tr, levels[i + 1].textId, '', levels[i + 1].text);
+      }
 
-    td = document.createElement('td')
-    td.id = 'levelOrangeText'
-    td.innerHTML = "dangerous";
-    tr.appendChild(td)
-
-    div.appendChild(tr)
-
-    tr = document.createElement('tr')
-
-    var td = document.createElement('td')
-    td.className = 'colorLegend'
-    td.id = 'levelYellow'
-    tr.appendChild(td)
-
-    td = document.createElement('td')
-    td.id = 'levelYellowText'
-    td.innerHTML = "potentially dangerous";
-    tr.appendChild(td)
-
-    td = document.createElement('td')
-    td.className = 'colorLegend'
-    td.id = 'levelRed'
-    tr.appendChild(td)
-
-    td = document.createElement('td')
-    td.id = 'levelRedText'
-    td.innerHTML = "very dangerous";
-    tr.appendChild(td)
-
-    div.appendChild(tr)
+      div.appendChild(tr);
+    }
   }
 }
+
+// Helper function to append a cell to a row
+function appendLegendCell(row, id, className = '', innerHTML = '') {
+  var td = document.createElement('td');
+  td.id = id;
+  if (className) td.className = className;
+  td.innerHTML = innerHTML;
+  row.appendChild(td);
+}
+
 
 let activeMarkerList = []
 
@@ -366,10 +353,6 @@ function updateData() {
       if (alertOptions.showUpdateTime === true) {
         if (data) {
 
-          // const utcDate = dayjs.utc(data, 'YYYYMMDDHHmmss')
-          // const localDate = utcDate.tz(alertOptions.timeZone)
-          // const localTimeString = localDate.format(alertOptions.dateFormatString)
-          // const utcOffset = localDate.format('Z')
           const formattedLocalTimeWithOffset = convertUtcToLocal(data)
 
           $('#sentDate').html(`${t('Updated')}: ${formattedLocalTimeWithOffset}`)
@@ -379,42 +362,6 @@ function updateData() {
       }
     })
   }
-}
-
-function testcircle(polygon, path) {
-  // TODO
-
-  // var bounds = polygon.getBounds();
-  // var r1 = bounds.getSouthWest();
-  // var r2 = bounds.getNorthEast();
-  // var vertices = polygon.getPath();
-  // var mindistance = 100000000000000;
-  // var centerpoint;
-
-  // for (i=1; i <= 40; i++) {
-  // var step = (1/40);
-  // var interpolated = google.maps.geometry.spherical.interpolate(r1, r2, step * i);
-
-  // // Drop points that are not inside polygon
-  // if (google.maps.geometry.poly.containsLocation(interpolated, polygon) == false)
-  // 	continue;
-
-  // var distance = 0;
-  // for (var j =0; j < vertices.getLength(); j++) {
-  //     var xy = vertices.getAt(j);
-  //     distance = distance + google.maps.geometry.spherical.computeDistanceBetween(xy, interpolated);
-
-  // } // for
-
-  // if (distance < mindistance)
-  //     {
-  // 	mindistance = distance;
-  // 	centerpoint = interpolated;
-  //     } // fi
-  // } // for
-
-  // return centerpoint;
-  return false
 }
 
 function centerUserLocation() {
@@ -483,25 +430,47 @@ function showMarkers(day) {
       var combinedEvents = selectedEVENT.split(',')
     else
       combinedEvents = [selectedEVENT]
-    for (var n = 0; n < combinedEvents.length; n++) {
-      if (polygons[i].options.polygonArea < alertOptions.areaLimitForMarkers) {
-        markers[i].getElement().style.display = 'none'
-      } else if (day == null || day == 'undefined') {
-        if (~polygons[i].options.capEvent.indexOf(combinedEvents[n]) || combinedEvents[n] == null) {
-          markers[i].getElement().style.display = 'inline'
-        } else {
-          if (!combinedEvents.some(substring => (polygons[i].options.capEvent).includes(substring)))
-            markers[i].getElement().style.display = 'none'
-        }
-      } else if (fromDate.isBeforeDay(day) && toDate.isAfterDay(day)) {
-        if (~polygons[i].options.capEvent.indexOf(combinedEvents[n]) || combinedEvents[n] == null) {
-          markers[i].getElement().style.display = 'inline'
-        } else {
-          if (!combinedEvents.some(substring => (polygons[i].options.capEvent).includes(substring)))
-            markers[i].getElement().style.display = 'none'
-        }
-      } else { markers[i].getElement().style.display = 'none' }
+
+    function shouldDisplayMarker(polygon, event, combinedEvents) {
+      return (
+        polygon.options.capEvent.includes(event) ||
+        event === null ||
+        combinedEvents.some(substring => polygon.options.capEvent.includes(substring))
+      );
     }
+
+    for (let n = 0; n < combinedEvents.length; n++) {
+      const polygon = polygons[i];
+      const marker = markers[i].getElement();
+
+      // Hide marker if area is less than the limit
+      if (polygon.options.polygonArea < alertOptions.areaLimitForMarkers) {
+        marker.style.display = 'none';
+        continue;
+      }
+
+      // Handle cases where day is not defined
+      if (!day) {
+        if (shouldDisplayMarker(polygon, combinedEvents[n], combinedEvents)) {
+          marker.style.display = 'inline'; // Show marker
+        } else {
+          marker.style.display = 'none';   // Hide marker
+        }
+        continue;
+      }
+
+      // Handle cases where the day is within range
+      if (fromDate.isBeforeDay(day) && toDate.isAfterDay(day)) {
+        if (shouldDisplayMarker(polygon, combinedEvents[n], combinedEvents)) {
+          marker.style.display = 'inline'; // Show marker
+        } else {
+          marker.style.display = 'none';   // Hide marker
+        }
+      } else {
+        marker.style.display = 'none'; // Hide marker if day is not in range
+      }
+    }
+
   }
   debug('Number of markers: ' + markers.length)
   if (alertOptions.extendedDayControl) {
@@ -668,7 +637,6 @@ function generateDate(offset) {
   const result = dayjs(date).format(alertOptions.dayDateFormat)
   return result;
 }
-
 
 function DayControl(controlDiv) {
   // Make the colored squares for day buttons if needed.
@@ -963,15 +931,16 @@ function doCAP(dom) {
 
     polygons.push(areapolygon)
     var bounds = areapolygon.getBounds()
-    // TODO
-    // if (polygonArea(path) > 1)
-    // var markerLocation = testcircle(areapolygon);
-    // else
+
     var markerLocation = bounds.getCenter()
     var test = parseFloat(markerLocation['lat']).toFixed(4) + ' ' + parseFloat(markerLocation['lng']).toFixed(4)
 
     var value = coordinatesExist(markerLocations, test)
-    if (alertOptions.polygonOptions.preventSymbolOverlapping === true) { xDisplacement = (alertOptions.iconWidth + 5) * value } else { xDisplacement = 0 }
+    if (alertOptions.polygonOptions.preventSymbolOverlapping === true) {
+      xDisplacement = (alertOptions.iconWidth + 5) * value
+    } else {
+      xDisplacement = 0
+    }
     markerLocations.push(test)
 
     var symbolPath = 'img/'
@@ -982,316 +951,99 @@ function doCAP(dom) {
     if (alertOptions.transparentIcons === true && alertOptions.customIcons === true)
       var symbolPath = 'img/custom/transparent/'
 
-    // fallback icon
-    var icon = L.icon({
-      iconUrl: symbolPath + 'gale.png',
-      iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-      iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
-      popupAnchor: [0, 0]
-    })
+    function createIcon(symbolPath, alertOptions, eventRaw, windSpeed, windDirection, waveHeight, swellHeight, surfHeight, eventSelector) {
+      // Set default icon
+      let iconUrl = symbolPath + 'gale.png';  // Fallback icon
+      let iconSize = [alertOptions.iconWidth, alertOptions.iconHeight];
+      let iconAnchor = [alertOptions.iconWidth / 2 + alertOptions.xDisplacement || 0, alertOptions.iconWidth / 2];
+      let popupAnchor = [0, 0];
 
-    var numberIcons = alertOptions.numberIcons
+      // Determine icon URL based on conditions
+      if (windSpeed > 0) {
+        iconUrl = alertOptions.numberIcons
+          ? `${symbolPath}wind.php?speed=${windSpeed}&direction=${windDirection}`
+          : symbolPath + 'wind-speed.png';
+      } else if (waveHeight > 0) {
+        iconUrl = alertOptions.numberIcons
+          ? `${symbolPath}wave.php?height=${waveHeight}`
+          : symbolPath + 'wave-height.png';
+      } else if (swellHeight > 0) {
+        iconUrl = alertOptions.numberIcons
+          ? `${symbolPath}wave.php?height=${swellHeight}`
+          : symbolPath + 'swell-height.png';
+      } else if (surfHeight > 0) {
+        iconUrl = alertOptions.numberIcons
+          ? `${symbolPath}wave.php?height=${surfHeight}`
+          : symbolPath + 'surf-height.png';
+      } else {
+        // Handle events based on eventRaw or eventSelector
+        let eventMapping = [
+          { match: 'earthquake', icon: 'earthquake.png' },
+          { match: 'fire', icon: 'fire.png' },
+          { match: 'drought', icon: 'drought.png' },
+          { match: 'craft', icon: 'smallcraft.png' },
+          { match: 'wave', icon: 'wave-height.png' },
+          { match: 'dust', icon: 'dust.png' },
+          { match: 'gale', icon: 'gale.png' },
+          { match: 'fog', icon: 'fog.png' },
+          { match: 'frost', icon: 'frost.png' },
+          { match: 'heat', icon: 'temperature.png' },
+          { match: 'cold', icon: 'cold.png' },
+          { match: 'snow', icon: 'snow.png' },
+          { match: 'rain', icon: 'rainfall.png' },
+          { match: 'shower', icon: 'rainfall.png' },
+          { match: 'icing', icon: 'snow.png' },
+          { match: 'sleet', icon: 'sleet.png' },
+          { match: 'wet snow', icon: 'snow.png' },
+          { match: 'wind', icon: 'wind.png' },
+          { match: 'tsunami', icon: 'tsunami.png' },
+          { match: 'tornado', icon: 'tornado.png' },
+          { match: 'waterspout', icon: 'waterspout.png' },
+          { match: 'volcanic', icon: 'volcano.png' },
+          { match: 'thunderstorm', icon: 'thunderstorm.png' },
+          { match: 'lightning', icon: 'thunderstorm.png' },
+          { match: 'hail', icon: 'hail.png' },
+          { match: 'hurricane', icon: 'tropical-hurricane.png' },
+          { match: 'super', icon: 'supertyphoon.png' },
+          { match: 'typhoon', icon: 'typhoon.png' },
+          { match: 'tropical storm', icon: 'tropical-storm.png' },
+          { match: 'severe tropical storm', icon: 'severe-tropical-storm.png' },
+          { match: 'visibility', icon: 'fog.png' },
+          { match: 'depression', icon: 'tropical-depression.png' },
+          { match: 'tropical', icon: 'cyclone.png' },
+          { match: 'landslide', icon: 'landslide.png' },
+          { match: 'high temperature', icon: 'low-temperature.png' },
+          { match: 'low temperature', icon: 'high-temperature.png' },
+          { match: 'storm surge', icon: 'flood.png' },
+          { match: 'high river level', icon: 'high-river-level.png' },
+          { match: 'low river level', icon: 'low-river-level.png' },
+          { match: 'river flood', icon: 'river-flood.png' },
+          { match: 'flash flood reservoir', icon: 'flash-flood-reservoir.png' },
+          { match: 'flash flood probability', icon: 'flash-flood-probability.png' },
+          { match: 'flash flood', icon: 'flash-flood.png' },
+          { match: 'flood', icon: 'flood.png' },
+          { match: 'disturbance', icon: 'disturbance.png' },
+          { match: 'high tide', icon: 'high-tide.png' },
+        ];
 
-    if (windSpeed > 0) {
-      var icon = L.icon({
-        iconUrl: !numberIcons ? symbolPath + 'wind-speed.png' : symbolPath + 'wind.php?speed=' + windSpeed + '&direction=' + windDirection,
-        iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-        iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
-        popupAnchor: [0, 0]
-      })
-    } else if (waveHeight > 0) {
-      var icon = L.icon({
-        iconUrl: !numberIcons ? symbolPath + 'wave-height.png' : symbolPath + 'wave.php?height=' + waveHeight,
-        iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-        iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
-        popupAnchor: [0, 0]
-      })
-    } else if (swellHeight > 0) {
-      var icon = L.icon({
-        iconUrl: !numberIcons ? symbolPath + 'swell-height.png' : symbolPath + 'wave.php?height=' + swellHeight,
-        iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-        iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
-        popupAnchor: [0, 0]
-      })
-    } else if (surfHeight > 0) {
-      var icon = L.icon({
-        iconUrl: !numberIcons ? symbolPath + 'surf-height.png' : symbolPath + 'wave.php?height=' + surfHeight,
-        iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-        iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
-        popupAnchor: [0, 0]
-      })
-    }
-    // Earthquake
-    else if (~eventRaw.indexOf('earthquake')) {
-      var icon = L.icon({
-        iconUrl: symbolPath + 'earthquake.png',
-        iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-        iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
-        popupAnchor: [0, 0]
-      })
-    }
+        for (let event of eventMapping) {
+          if (eventRaw.includes(event.match)) {
+            iconUrl = symbolPath + event.icon;
+            break;
+          }
+        }
+      }
 
-    // Fire
-    else if (~eventRaw.indexOf('fire')) {
-      var icon = L.icon({
-        iconUrl: symbolPath + 'fire.png',
-        iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-        iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
-        popupAnchor: [0, 0]
-      })
-    }
-
-    // Drought
-    else if (~eventRaw.indexOf('drought')) {
-      var icon = L.icon({
-        iconUrl: symbolPath + 'drought.png',
-        iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-        iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
-        popupAnchor: [0, 0]
-      })
-    } else if (~eventRaw.indexOf('craft')) {
-      var icon = L.icon({
-        iconUrl: symbolPath + 'smallcraft.png',
-        iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-        iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
-        popupAnchor: [0, 0]
-      })
-      // wave height
-    } else if (~eventRaw.indexOf('wave')) {
-      var icon = L.icon({
-        iconUrl: symbolPath + 'wave-height.png',
-        iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-        iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
-        popupAnchor: [0, 0]
-      })
-    } else if (~eventRaw.indexOf('dust')) {
-      var icon = L.icon({
-        iconUrl: symbolPath + 'dust.png',
-        iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-        iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
-        popupAnchor: [0, 0]
-      })
-    } else if (~eventRaw.indexOf('gale')) {
-      var icon = L.icon({
-        iconUrl: symbolPath + 'gale.png',
-        iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-        iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
-        popupAnchor: [0, 0]
-      })
-    } else if (~eventRaw.indexOf('fog')) {
-      var icon = L.icon({
-        iconUrl: symbolPath + 'fog.png',
-        iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-        iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
-        popupAnchor: [0, 0]
-      })
-    } else if (~eventRaw.indexOf('flood')) {
-      var icon = L.icon({
-        iconUrl: symbolPath + 'flood.png',
-        iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-        iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
-        popupAnchor: [0, 0]
-      })
-    } else if (~eventRaw.indexOf('frost')) {
-      var icon = L.icon({
-        iconUrl: symbolPath + 'frost.png',
-        iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-        iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
-        popupAnchor: [0, 0]
-      })
-    } else if (~eventRaw.indexOf('heat')) {
-      var icon = L.icon({
-        iconUrl: symbolPath + 'temperature.png',
-        iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-        iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
-        popupAnchor: [0, 0]
-      })
-    } else if (~eventRaw.indexOf('cold')) {
-      var icon = L.icon({
-        iconUrl: symbolPath + 'cold.png',
-        iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-        iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
-        popupAnchor: [0, 0]
-      })
-    } else if (~eventRaw.indexOf('temperature')) {
-      var icon = L.icon({
-        iconUrl: symbolPath + 'temperature.png',
-        iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-        iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
-        popupAnchor: [0, 0]
-      })
-    } else if (~eventRaw.indexOf('snow')) {
-      var icon = L.icon({
-        iconUrl: symbolPath + 'snow.png',
-        iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-        iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
-        popupAnchor: [0, 0]
-      })
-      // Rainfall Icon
-    } else if (~eventRaw.indexOf('rain') || ~eventRaw.indexOf('shower')) {
-      var icon = L.icon({
-        iconUrl: symbolPath + 'rainfall.png',
-        iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-        iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
-        popupAnchor: [0, 0]
-      })
-    } else if (~eventRaw.indexOf('icing')) {
-      var icon = L.icon({
-        iconUrl: symbolPath + 'snow.png',
-        iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-        iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
-        popupAnchor: [0, 0]
-      })
+      // Create the icon using Leaflet's L.icon
+      return L.icon({
+        iconUrl: iconUrl,
+        iconSize: iconSize,
+        iconAnchor: iconAnchor,
+        popupAnchor: popupAnchor
+      });
     }
 
-    // Placeholder for sleet
-    else if (~eventRaw.indexOf('sleet')) {
-      var icon = L.icon({
-        iconUrl: symbolPath + 'sleet.png',
-        iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-        iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
-        popupAnchor: [0, 0]
-      })
-    }
-
-    // Placeholder for snowfall
-    else if (~eventRaw.indexOf('wet snow')) {
-      var icon = L.icon({
-        iconUrl: symbolPath + 'snow.png',
-        iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-        iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
-        popupAnchor: [0, 0]
-      })
-    } else if (~eventRaw.indexOf('wind')) {
-      var icon = L.icon({
-        iconUrl: symbolPath + 'gale.png',
-        iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-        iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
-        popupAnchor: [0, 0]
-      })
-    }
-
-    // Tsunami Icon
-    else if (~eventRaw.indexOf('tsunami')) {
-      var icon = L.icon({
-        iconUrl: symbolPath + 'tsunami.png',
-        iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-        iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
-        popupAnchor: [0, 0]
-      })
-    } else if (~eventRaw.indexOf('tornado')) {
-      var icon = L.icon({
-        iconUrl: symbolPath + 'tornado.png',
-        iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-        iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
-        popupAnchor: [0, 0]
-      })
-    } else if (~eventRaw.indexOf('waterspout')) {
-      var icon = L.icon({
-        iconUrl: symbolPath + 'waterspout.png',
-        iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-        iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
-        popupAnchor: [0, 0]
-      })
-    } else if (eventSelector == 'volcanic') {
-      var icon = L.icon({
-        iconUrl: symbolPath + 'volcano.png',
-        iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-        iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
-        popupAnchor: [0, 0]
-      })
-    } else if (~eventRaw.indexOf('thunderstorm')) {
-      var icon = L.icon({
-        iconUrl: symbolPath + 'thunderstorm.png',
-        iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-        iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
-        popupAnchor: [0, 0]
-      })
-    } else if (~eventRaw.indexOf('lightning')) {
-      var icon = L.icon({
-        iconUrl: symbolPath + 'thunderstorm.png',
-        iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-        iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
-        popupAnchor: [0, 0]
-      })
-    } else if (~eventRaw.indexOf('hail')) {
-      var icon = L.icon({
-        iconUrl: symbolPath + 'hail.png',
-        iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-        iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
-        popupAnchor: [0, 0]
-      })
-    } else if (~eventRaw.indexOf('hurricane')) {
-      var icon = L.icon({
-        iconUrl: symbolPath + 'tropical-hurricane.png',
-        iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-        iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
-        popupAnchor: [0, 0]
-      })
-    } else if (~eventRaw.indexOf('super')) {
-      var icon = L.icon({
-        iconUrl: symbolPath + 'supertyphoon.png',
-        iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-        iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
-        popupAnchor: [0, 0]
-      })
-    } else if (~eventRaw.indexOf('typhoon')) {
-      var icon = L.icon({
-        iconUrl: symbolPath + 'typhoon.png',
-        iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-        iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
-        popupAnchor: [0, 0]
-      })
-    } else if (~eventRaw.indexOf('tropical storm')) {
-      var icon = L.icon({
-        iconUrl: symbolPath + 'tropical-storm.png',
-        iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-        iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
-        popupAnchor: [0, 0]
-      })
-    } else if (~eventRaw.indexOf('severe tropical storm')) {
-      var icon = L.icon({
-        iconUrl: symbolPath + 'severe-tropical-storm.png',
-        iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-        iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
-        popupAnchor: [0, 0]
-      })
-    } else if (~eventRaw.indexOf('visibility')) {
-      var icon = L.icon({
-        iconUrl: symbolPath + 'fog.png',
-        iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-        iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
-        popupAnchor: [0, 0]
-      })
-    } else if (~eventRaw.indexOf('depression')) {
-      var icon = L.icon({
-        iconUrl: symbolPath + 'tropical-depression.png',
-        iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-        iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
-        popupAnchor: [0, 0]
-      })
-    } else if (~eventRaw.indexOf('tropical')) {
-      var icon = L.icon({
-        iconUrl: symbolPath + 'cyclone.png',
-        iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-        iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
-        popupAnchor: [0, 0]
-      })
-    } else if (~eventRaw.indexOf('storm')) {
-      var icon = L.icon({
-        iconUrl: symbolPath + 'gale.png',
-        iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-        iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
-        popupAnchor: [0, 0]
-      })
-    } else if (~eventRaw.indexOf('landslide')) {
-      var icon = L.icon({
-        iconUrl: symbolPath + 'landslide.png',
-        iconSize: [alertOptions.iconWidth, alertOptions.iconHeight],
-        iconAnchor: [alertOptions.iconWidth / 2 + xDisplacement, alertOptions.iconWidth / 2],
-        popupAnchor: [0, 0]
-      })
-    }
+    const icon = createIcon(symbolPath, alertOptions, eventRaw, windSpeed, windDirection, waveHeight, swellHeight, surfHeight, eventSelector);
 
     var marker
     if (icon != null) {
@@ -1385,7 +1137,6 @@ function doCAP(dom) {
     popup.setContent(content)
     marker.bindPopup(popup).addTo(map)
     areapolygon.bindPopup(popup).addTo(map)
-
     markers.push(marker)
   }
   showMarkers(selectedDAY)
@@ -1402,7 +1153,6 @@ const getFormatter = () => {
     return alertOptions.dateFormatString;
   }
 }
-
 
 // http://www.mathopenref.com/coordpolygonarea2.html
 function polygonArea(path) {
