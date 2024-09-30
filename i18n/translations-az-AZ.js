@@ -1,8 +1,8 @@
 translations['az-AZ'] = {
   "az-AZ": "AZ",
-  "Click to show alerts for today.": "Click to show alerts for today.",
-  "Click to show alerts for tomorrow.": "Click to show alerts for tomorrow.",
-  "Click to show alerts for day after tomorrow.": "Click to show alerts for day after tomorrow.",
+  "Click to show alerts for today": "Click to show alerts for today.",
+  "Click to show alerts for tomorrow": "Click to show alerts for tomorrow.",
+  "Click to show alerts for day after tomorrow": "Click to show alerts for day after tomorrow.",
   "Click to show all active alerts": "Click to show all active alerts",
   "for": "üçün",
   "Valid from": "Etibarlılıq müddəti",
