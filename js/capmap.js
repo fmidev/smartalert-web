@@ -398,38 +398,40 @@ function findMatchingName(name) {
 }
 
 function showMarkers(day) {
+  // Clear previous marker locations tracking
+  markerLocations = [];
+
   for (var i = 0; i < markers.length; i++) {
 
-    // also show legend for active markers
     if (alertOptions.showIconLegend) {
       const activeMarker = {
         iconUrl: markers[i].options.icon.options.iconUrl,
         name: findMatchingName(markers[i].options.capEvent),
         fromDate: markers[i].options.fromDate,
         toDate: markers[i].options.toDate
-      }
-      fromDate = new Date(activeMarker.fromDate)
+      };
 
-      toDate = new Date(activeMarker.toDate)
+      const fromDate = new Date(activeMarker.fromDate);
+      const toDate = new Date(activeMarker.toDate);
 
-      const isNewMarker = activeMarkerList.every(marker => marker.name !== activeMarker.name
-        || marker.iconUrl !== activeMarker.iconUrl)
+      const isNewMarker = activeMarkerList.every(marker =>
+        marker.name !== activeMarker.name && marker.iconUrl !== activeMarker.iconUrl);
 
-      const isDateInRange = (day === null) || (fromDate.isBeforeDay(day) && toDate.isAfterDay(day))
+      const isDateInRange = (day === null) || (fromDate.isBeforeDay(day) && toDate.isAfterDay(day));
 
       if (isNewMarker && isDateInRange) {
-        activeMarkerList.push(activeMarker)
-        addToMapLegend(activeMarker, day)
+        activeMarkerList.push(activeMarker);
+        addToMapLegend(activeMarker, day);
       }
     }
 
-    var fromDate = new Date(markers[i].options.fromDate)
-    var toDate = new Date(markers[i].options.toDate)
+    var fromDate = new Date(markers[i].options.fromDate);
+    var toDate = new Date(markers[i].options.toDate);
 
     if (selectedEVENT !== null)
-      var combinedEvents = selectedEVENT.split(',')
+      var combinedEvents = selectedEVENT.split(',');
     else
-      combinedEvents = [selectedEVENT]
+      combinedEvents = [selectedEVENT];
 
     function shouldDisplayMarker(polygon, event, combinedEvents) {
       return (
@@ -449,12 +451,27 @@ function showMarkers(day) {
         continue;
       }
 
-      // Handle cases where day is not defined
+      // Calculate the centroid of the polygon to use as the marker position
+      const centroid = polygon.getBounds().getCenter();
+      const markerLocationKey = `${centroid.lat},${centroid.lng}`;
+      const locationCount = markerLocations.filter(loc => loc === markerLocationKey).length;
+
       if (!day) {
         if (shouldDisplayMarker(polygon, combinedEvents[n], combinedEvents)) {
           marker.style.display = 'inline'; // Show marker
+
+          if (locationCount > 0) {
+            // Apply displacement based on how many markers are already in this location
+            xDisplacement = (alertOptions.iconWidth + 5) * locationCount;
+            marker.style.marginLeft = `${xDisplacement}px`;
+          } else {
+            marker.style.marginLeft = '0px'; // No displacement for the first marker
+          }
+
+          // Track the marker location
+          markerLocations.push(markerLocationKey);
         } else {
-          marker.style.display = 'none';   // Hide marker
+          marker.style.display = 'none'; // Hide marker
         }
         continue;
       }
@@ -463,25 +480,39 @@ function showMarkers(day) {
       if (fromDate.isBeforeDay(day) && toDate.isAfterDay(day)) {
         if (shouldDisplayMarker(polygon, combinedEvents[n], combinedEvents)) {
           marker.style.display = 'inline'; // Show marker
+
+          if (locationCount > 0) {
+            // Apply displacement for markers that are in the same location
+            xDisplacement = (alertOptions.iconWidth + 5) * locationCount;
+            marker.style.marginLeft = `${xDisplacement}px`;
+          } else {
+            marker.style.marginLeft = '0px'; // No displacement for the first marker
+          }
+
+          // Track the marker location
+          markerLocations.push(markerLocationKey);
         } else {
-          marker.style.display = 'none';   // Hide marker
+          marker.style.display = 'none'; // Hide marker
         }
       } else {
         marker.style.display = 'none'; // Hide marker if day is not in range
       }
     }
-
   }
-  debug('Number of markers: ' + markers.length)
+
+  debug('Number of markers ' + markers.length);
+
+  // Update the color of the day control squares if extendedDayControl is enabled
   if (alertOptions.extendedDayControl) {
-    square0.style.backgroundColor = checkButtonColor(0, polygons)
-    square1.style.backgroundColor = checkButtonColor(1, polygons)
-    square2.style.backgroundColor = checkButtonColor(2, polygons)
-    square3.style.backgroundColor = checkButtonColor(3, polygons)
-    square4.style.backgroundColor = checkButtonColor(4, polygons)
-    square5.style.backgroundColor = checkButtonColor(5, polygons)
+    square0.style.backgroundColor = checkButtonColor(0, polygons);
+    square1.style.backgroundColor = checkButtonColor(1, polygons);
+    square2.style.backgroundColor = checkButtonColor(2, polygons);
+    square3.style.backgroundColor = checkButtonColor(3, polygons);
+    square4.style.backgroundColor = checkButtonColor(4, polygons);
+    square5.style.backgroundColor = checkButtonColor(5, polygons);
   }
 }
+
 
 function showPolygons(day) {
   for (var i = 0; i < polygons.length; i++) {
