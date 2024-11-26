@@ -671,6 +671,7 @@ function DayControl(controlDiv) {
     }
     setDay0UI.appendChild(dayTextElement)
     controlDiv.appendChild(setDay0UI)
+    selectedDAY === 0 && setActiveButton(setDay0UI)
     setEventListener(setDay0UI, 0)
   }
 
@@ -689,7 +690,6 @@ function DayControl(controlDiv) {
 
     setDay1UI.appendChild(dayTextElement)
     controlDiv.appendChild(setDay1UI)
-    selectedDAY === 0 && setActiveButton(setDay1UI)
     setEventListener(setDay1UI, 1, 'Show events for tomorrow.')
   }
 
