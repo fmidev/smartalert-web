@@ -34,10 +34,10 @@ translations['ru-TJ'] = {
   "October": "Октябрь",
   "November": "Ноябрь",
   "December": "Декабрь",
-  "No warnings": "Предупреждений нет",
-  "Potentially dangerous": "Потенциально опасно",
-  "Dangerous": "Опасно",
-  "Very dangerous": "Очень опасно",
+  "no warnings": "Предупреждений нет",
+  "potentially dangerous": "Потенциально опасно",
+  "dangerous": "Опасно",
+  "very dangerous": "Очень опасно",
   "All": "Все",
   "Mon": "Пн",
   "Tue": "Вт",
@@ -47,7 +47,7 @@ translations['ru-TJ'] = {
   "Sat": "Сб",
   "Sun": "Вс",
   "and": "и",
-  "Minor threat": "Малая угроза",
+  "minor threat": "Малая угроза",
   "Map legend": "Легенда карты",
   "Updated": "Обновлено"
 };
