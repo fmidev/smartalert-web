@@ -1,0 +1,60 @@
+translations['ru-TJ'] = {
+  "All warnings": "Все предупреждения",
+  "Rain": "Дождь",
+  "Snow": "Снег",
+  "Flood": "Наводнение",
+  "Avalanche": "Лавина",
+  "Mudflow": "Сель",
+  "Landslide": "Оползень",
+  "Thunderstorm": "Гроза",
+  "Wind": "Ветер",
+  "High temperature": "Высокая температура",
+  "Heat wave": "Жара",
+  "Low temperature": "Низкая температура",
+  "Frost": "Мороз",
+  "Icing on roads": "Гололед на дорогах",
+  "Air quality": "Качество воздуха",
+  "Visibility": "Видимость",
+  "for": "для",
+  "Valid from": "Действителен с",
+  "to": "до",
+  "Issued by": "Выпущено",
+  "Agency for Hydrometeorology of the Committee of Environmental Protection under the Government of the Republic of Tajikistan": "Агентством по гидрометеорологии Комитета по охране окружающей среды при Правительстве Республики Таджикистан",
+  "at": "от",
+  "January": "Январь",
+  "February": "Февраль",
+  "March": "Март",
+  "April": "Апрель",
+  "May": "Май",
+  "June": "Июнь",
+  "July": "Июль",
+  "August": "Август",
+  "September": "Сентябрь",
+  "October": "Октябрь",
+  "November": "Ноябрь",
+  "December": "Декабрь",
+  "No warnings": "Предупреждений нет",
+  "Potentially dangerous": "Потенциально опасно",
+  "Dangerous": "Опасно",
+  "Very dangerous": "Очень опасно",
+  "All": "Все",
+  "Mon": "Пн",
+  "Tue": "Вт",
+  "Wed": "Ср",
+  "Thu": "Чт",
+  "Fri": "Пт",
+  "Sat": "Сб",
+  "Sun": "Вс",
+  "and": "и",
+  "Minor threat": "Малая угроза",
+  "Map legend": "Легенда карты",
+  "Updated": "Обновлено"
+};
+
+
+
+
+
+
+
+
