@@ -1,8 +1,6 @@
 translations['tj-TJ'] = {
-  "en-TJ": "EN-gb",
-  "ru-TJ": "RU",
   "tj-TJ": "TJ",
-  "All warnings": "Ҳама намуди омилҳои табиӣ",
+  "All Hazard Types": "Ҳама намуди омилҳои табиӣ",
   "Rain": "Борон",
   "Snow": "Барф",
   "Flood": "Обхези",

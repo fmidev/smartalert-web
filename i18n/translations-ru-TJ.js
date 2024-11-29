@@ -1,5 +1,6 @@
 translations['ru-TJ'] = {
-  "All warnings": "Все предупреждения",
+  "ru-TJ": "RU",
+  "All Hazard Types": "Все предупреждения",
   "Rain": "Дождь",
   "Snow": "Снег",
   "Flood": "Наводнение",

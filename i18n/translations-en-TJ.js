@@ -1,7 +1,5 @@
 translations['en-TJ'] = {
   "en-TJ": "EN-gb",
-  "ru-TJ": "RU",
-  "tj-TJ": "TJ",
   "Today": "Today",
   "Click to show alerts for today.": "Click to show alerts for today.",
   "Tomorrow": "Tomorrow",
