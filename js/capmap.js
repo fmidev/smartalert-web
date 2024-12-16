@@ -702,6 +702,7 @@ function DayControl(controlDiv) {
     }
     setDay0UI.appendChild(dayTextElement)
     controlDiv.appendChild(setDay0UI)
+    selectedDAY === 0 && setActiveButton(setDay0UI)
     setEventListener(setDay0UI, 0)
   }
 

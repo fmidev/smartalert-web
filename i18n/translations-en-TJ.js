@@ -1,5 +1,5 @@
-translations['en-UZ'] = {
-  "en-UZ": "English",
+translations['en-TJ'] = {
+  "en-TJ": "EN-gb",
   "Today": "Today",
   "Click to show alerts for today.": "Click to show alerts for today.",
   "Tomorrow": "Tomorrow",
@@ -26,6 +26,6 @@ translations['en-UZ'] = {
   "potentially dangerous": "Potentially dangerous",
   "dangerous": "Dangerous",
   "very dangerous": "Very dangerous",
-  "All Hazard Types": "All Hazard Types",
+  "All Hazard Types": "All warnings",
   "Updated" : "Updated"
 };

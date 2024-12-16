@@ -22,9 +22,9 @@ translations['en-JM'] = {
     "ago": "ago",
     "at": "at",
     "minor threat": "Minor Threat",
-    "no awareness needed": "no awareness needed",
-    "potentially dangerous": "potentially dangerous",
-    "dangerous": "dangerous",
-    "very dangerous": "very dangerous",
+    "no awareness needed": "No awareness needed",
+    "potentially dangerous": "Potentially dangerous",
+    "dangerous": "Dangerous",
+    "very dangerous": "Very dangerous",
     "All Hazard Types": "All Hazard Types"
 };
