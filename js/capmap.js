@@ -531,6 +531,7 @@ function showMarkers(day) {
   }
 }
 
+
 function showPolygons(day) {
   for (var i = 0; i < polygons.length; i++) {
     var fromDate = new Date(polygons[i].options.fromDate)

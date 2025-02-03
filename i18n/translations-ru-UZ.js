@@ -30,7 +30,7 @@ translations['ru-UZ'] = {
   "October": "Октябрь",
   "November": "Ноябрь",
   "December": "Декабрь",
-  "All Hazard Types": "Все предупреждения",
+  "All Hazard Types": "Все виды бедствий",
   "no awareness needed": "Оповещение не требуется",
   "potentially dangerous": "Потенциально опасно",
   "dangerous": "Опасно",
