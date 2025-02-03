@@ -1,5 +1,5 @@
-translations['tj-TJ'] = {
-  "tj-TJ": "TJ",
+translations['tg-TJ'] = {
+  "tg-TJ": "TJ",
   "All Hazard Types": "Ҳама намуди омилҳои табиӣ",
   "Rain": "Борон",
   "Snow": "Барф",
@@ -34,7 +34,7 @@ translations['tj-TJ'] = {
   "October": "Октябр",
   "November": "Ноябр",
   "December": "Декабр",
-  "no warnings": "Огоҳӣ нест",
+  "no awareness needed": "Огоҳӣ нест",
   "potentially dangerous": "Эҳтимолан хатарнок",
   "dangerous": "Хатарнок",
   "very dangerous": "Хеле хатарнок",

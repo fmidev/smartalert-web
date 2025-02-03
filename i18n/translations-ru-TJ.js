@@ -34,7 +34,7 @@ translations['ru-TJ'] = {
   "October": "Октябрь",
   "November": "Ноябрь",
   "December": "Декабрь",
-  "no warnings": "Предупреждений нет",
+  "no awareness needed": "Предупреждений нет",
   "potentially dangerous": "Потенциально опасно",
   "dangerous": "Опасно",
   "very dangerous": "Очень опасно",

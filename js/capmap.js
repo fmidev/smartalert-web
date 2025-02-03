@@ -344,23 +344,41 @@ function addControlPlaceholders(mapObject) {
 }
 
 function updateData() {
-  debug('Updating data:')
+  debug('Updating data:');
+
   if (alertOptions.subDirectories) {
-    $.getJSON('list.php', { dir: alertOptions.subDirectories }, processCAP)
+    // Handle subdirectories
+    $.getJSON('list.php', { dir: alertOptions.subDirectories }, function (data) {
+      if (data) {
+        processCAP(data); // Process the fetched data
+      }
+
+      if (alertOptions.showUpdateTime === true) {
+        // Fetch the last updated time for the subdirectories
+        $.getJSON('lastUpdated.php', { dir: alertOptions.subDirectories }, function (lastUpdatedData) {
+          if (lastUpdatedData) {
+            const formattedLocalTimeWithOffset = convertUtcToLocal(lastUpdatedData);
+            $('#sentDate').html(`${t('Updated')}: ${formattedLocalTimeWithOffset}`);
+          } else {
+            $('#sentDate').html(`${t('Updated')}: ${t('Unknown')}`);
+          }
+        });
+      }
+    });
   } else {
-    $.getJSON('list.php', processCAP)
+    // Default case without subdirectories
+    $.getJSON('list.php', processCAP);
+
     $.getJSON('lastUpdated.php', function (data) {
       if (alertOptions.showUpdateTime === true) {
         if (data) {
-
-          const formattedLocalTimeWithOffset = convertUtcToLocal(data)
-
-          $('#sentDate').html(`${t('Updated')}: ${formattedLocalTimeWithOffset}`)
-          return
+          const formattedLocalTimeWithOffset = convertUtcToLocal(data);
+          $('#sentDate').html(`${t('Updated')}: ${formattedLocalTimeWithOffset}`);
+        } else {
+          $('#sentDate').html(`${t('Updated')}: ${t('Unknown')}`);
         }
-        $('#sentDate').html(`${t('Updated')}: ${t('Unknown')}`)
       }
-    })
+    });
   }
 }
 
@@ -398,38 +416,40 @@ function findMatchingName(name) {
 }
 
 function showMarkers(day) {
+  // Clear previous marker locations tracking
+  markerLocations = [];
+
   for (var i = 0; i < markers.length; i++) {
 
-    // also show legend for active markers
     if (alertOptions.showIconLegend) {
       const activeMarker = {
         iconUrl: markers[i].options.icon.options.iconUrl,
         name: findMatchingName(markers[i].options.capEvent),
         fromDate: markers[i].options.fromDate,
         toDate: markers[i].options.toDate
-      }
-      fromDate = new Date(activeMarker.fromDate)
+      };
 
-      toDate = new Date(activeMarker.toDate)
+      const fromDate = new Date(activeMarker.fromDate);
+      const toDate = new Date(activeMarker.toDate);
 
-      const isNewMarker = activeMarkerList.every(marker => marker.name !== activeMarker.name
-        || marker.iconUrl !== activeMarker.iconUrl)
+      const isNewMarker = activeMarkerList.every(marker =>
+        marker.name !== activeMarker.name && marker.iconUrl !== activeMarker.iconUrl);
 
-      const isDateInRange = (day === null) || (fromDate.isBeforeDay(day) && toDate.isAfterDay(day))
+      const isDateInRange = (day === null) || (fromDate.isBeforeDay(day) && toDate.isAfterDay(day));
 
       if (isNewMarker && isDateInRange) {
-        activeMarkerList.push(activeMarker)
-        addToMapLegend(activeMarker, day)
+        activeMarkerList.push(activeMarker);
+        addToMapLegend(activeMarker, day);
       }
     }
 
-    var fromDate = new Date(markers[i].options.fromDate)
-    var toDate = new Date(markers[i].options.toDate)
+    var fromDate = new Date(markers[i].options.fromDate);
+    var toDate = new Date(markers[i].options.toDate);
 
     if (selectedEVENT !== null)
-      var combinedEvents = selectedEVENT.split(',')
+      var combinedEvents = selectedEVENT.split(',');
     else
-      combinedEvents = [selectedEVENT]
+      combinedEvents = [selectedEVENT];
 
     function shouldDisplayMarker(polygon, event, combinedEvents) {
       return (
@@ -449,12 +469,27 @@ function showMarkers(day) {
         continue;
       }
 
-      // Handle cases where day is not defined
+      // Calculate the centroid of the polygon to use as the marker position
+      const centroid = polygon.getBounds().getCenter();
+      const markerLocationKey = `${centroid.lat},${centroid.lng}`;
+      const locationCount = markerLocations.filter(loc => loc === markerLocationKey).length;
+
       if (!day) {
         if (shouldDisplayMarker(polygon, combinedEvents[n], combinedEvents)) {
           marker.style.display = 'inline'; // Show marker
+
+          if (locationCount > 0) {
+            // Apply displacement based on how many markers are already in this location
+            xDisplacement = (alertOptions.iconWidth + 5) * locationCount;
+            marker.style.marginLeft = `${xDisplacement}px`;
+          } else {
+            marker.style.marginLeft = '0px'; // No displacement for the first marker
+          }
+
+          // Track the marker location
+          markerLocations.push(markerLocationKey);
         } else {
-          marker.style.display = 'none';   // Hide marker
+          marker.style.display = 'none'; // Hide marker
         }
         continue;
       }
@@ -463,23 +498,36 @@ function showMarkers(day) {
       if (fromDate.isBeforeDay(day) && toDate.isAfterDay(day)) {
         if (shouldDisplayMarker(polygon, combinedEvents[n], combinedEvents)) {
           marker.style.display = 'inline'; // Show marker
+
+          if (locationCount > 0) {
+            // Apply displacement for markers that are in the same location
+            xDisplacement = (alertOptions.iconWidth + 5) * locationCount;
+            marker.style.marginLeft = `${xDisplacement}px`;
+          } else {
+            marker.style.marginLeft = '0px'; // No displacement for the first marker
+          }
+
+          // Track the marker location
+          markerLocations.push(markerLocationKey);
         } else {
-          marker.style.display = 'none';   // Hide marker
+          marker.style.display = 'none'; // Hide marker
         }
       } else {
         marker.style.display = 'none'; // Hide marker if day is not in range
       }
     }
-
   }
-  debug('Number of markers: ' + markers.length)
+
+  debug('Number of markers ' + markers.length);
+
+  // Update the color of the day control squares if extendedDayControl is enabled
   if (alertOptions.extendedDayControl) {
-    square0.style.backgroundColor = checkButtonColor(0, polygons)
-    square1.style.backgroundColor = checkButtonColor(1, polygons)
-    square2.style.backgroundColor = checkButtonColor(2, polygons)
-    square3.style.backgroundColor = checkButtonColor(3, polygons)
-    square4.style.backgroundColor = checkButtonColor(4, polygons)
-    square5.style.backgroundColor = checkButtonColor(5, polygons)
+    square0.style.backgroundColor = checkButtonColor(0, polygons);
+    square1.style.backgroundColor = checkButtonColor(1, polygons);
+    square2.style.backgroundColor = checkButtonColor(2, polygons);
+    square3.style.backgroundColor = checkButtonColor(3, polygons);
+    square4.style.backgroundColor = checkButtonColor(4, polygons);
+    square5.style.backgroundColor = checkButtonColor(5, polygons);
   }
 }
 
@@ -1112,19 +1160,19 @@ function doCAP(dom) {
       }
     }
 
+    const description = info.querySelector('description') ? info.querySelector('description').textContent : '';
+    const linkifiedDescription = description.replace(
+      /(https?:\/\/[^\s]+)/g, // Match URLs
+      '<a href="$1" target="_blank">$1</a>' // Wrap in anchor tags
+    );
 
-    // var infowindow = new google.maps.InfoWindow({
-    var content = '<h4 class="iw-title">' + info.querySelector('event').textContent + '</h4>' +
-      '<i>' + t('Valid from') + ' <b>' + fromDateFormatted + '</b> ' + t('to') + ' <b>' + toDateFormatted + '</b></i>' +
-      active_str +
-      '<p>' + (info.querySelector('description') ? info.querySelector('description').textContent : '') + '</p>' +
-      '<p><i>' + t('Issued by') + ' ' + sender +
-      ' ' + t('at') + ' ' + dFormatted
-
-    if (!!alertOptions.displayIssueTimeDirrefence || alertOptions.displayIssueTimeDirrefence === undefined)
-      content = content + ' (' + d.dateDiff() + ')</i></p>'
-
-
+    const content = `
+        <h4 class="iw-title">${info.querySelector('event').textContent}</h4>
+        <i>${t('Valid from')} <b>${fromDateFormatted}</b> ${t('to')} <b>${toDateFormatted}</b></i>
+        ${active_str}
+        <p>${linkifiedDescription}</p>
+        <p><i>${t('Issued by')} ${sender} ${t('at')} ${dFormatted}</i></p>
+      `;
 
     // bind markers to marker and polygon
     var popup = L.popup({
@@ -1289,4 +1337,12 @@ function convertUtcToLocal(utcTimeString) {
   const result = alertOptions.hideOffset ? `${adjustedLocalTimeString}` : `${adjustedLocalTimeString} (${utcOffset})`;
 
   return result
+}
+
+function getPolygonLeft(polygon) {
+  let coordinates = polygon.getPath().getArray(); // Assuming you're using a library like Google Maps
+  let leftmostPoint = coordinates.reduce((left, point) => {
+    return point.lng() < left.lng() ? point : left;
+  }, coordinates[0]);
+  return leftmostPoint;
 }
