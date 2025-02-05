@@ -1,5 +1,5 @@
 translations['tg-TJ'] = {
-  "tg-TJ": "TJ",
+  "tg-TJ": "Тоҷики",
   "All Hazard Types": "Ҳама намуди омилҳои табиӣ",
   "Rain": "Борон",
   "Snow": "Барф",

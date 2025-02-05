@@ -1,5 +1,5 @@
 translations['ru-TJ'] = {
-  "ru-TJ": "RU",
+  "ru-TJ": "Русский",
   "All Hazard Types": "Все предупреждения",
   "Rain": "Дождь",
   "Snow": "Снег",
