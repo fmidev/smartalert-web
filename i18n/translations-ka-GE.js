@@ -27,7 +27,7 @@ translations['ka-GE'] = {
     "Ending:": "დამთავრება:",
     "Issued by": "გავრცელებულია (ვის) მიერ",
     "no awareness needed": "არ არის გაფრთხილება",
-    "notentially dangerous": "პოტენციურად საშიში",
+    "potentially dangerous": "პოტენციურად საშიში",
     "dangerous": "საშიში",
     "very dangerous": "ძალიან საშიში",
     "Today": "დღეს",
