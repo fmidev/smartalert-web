@@ -589,7 +589,6 @@ function processCAP(json) {
   }
 }
 
-
 let highestWarningLevel = 'white'
 
 const checkButtonColor = (dayIndex, layersArray) => {
@@ -705,7 +704,7 @@ function DayControl(controlDiv) {
   controlDiv.classList.add('controlDiv');
 
   const isExtended = alertOptions.extendedDayControl
-
+  
   if (alertOptions.day0Control) {
     const setDay0UI = document.createElement('div')
     setDay0UI.id = 'setDay0UI'
@@ -1039,6 +1038,7 @@ function doCAP(dom) {
           { match: 'frost', icon: 'frost.png' },
           { match: 'heat', icon: 'temperature.png' },
           { match: 'cold', icon: 'cold.png' },
+          { match: 'avalanche', icon: 'avalanche.png' },
           { match: 'snow', icon: 'snow.png' },
           { match: 'rain', icon: 'rainfall.png' },
           { match: 'shower', icon: 'rainfall.png' },
