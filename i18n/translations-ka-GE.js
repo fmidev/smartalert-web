@@ -1,6 +1,6 @@
 translations['ka-GE'] = {
     "ka-GE": "ქართული",
-    "all warnings": "ყველა გაფრთხილება",
+    "All Hazard Types": "ყველა გაფრთხილება",
     "Wind": "ქარი",
     "Rain": "ნალექი",
     "Thunderstorm": "ელჭექი",
@@ -16,16 +16,16 @@ translations['ka-GE'] = {
     "Flash flood": "მოულოდნელი წყალდიდობა",
     "Mudflow": "ღვარცოფი",
     "Landslide": "მეწყერი",
-    "Heavy snowfall": "ძლიერი თოვა",
+    "Snowfall": "ძლიერი თოვა",
     "Visibility": "ხილვადობა",
     "Fog": "ნისლი",
     "Air quality": "ჰაერის ხარისხი",
     "Sea storm": "შტორმული",
-    "Valid from": "ძალაშია (დან)",
-    "to": "ძალაშია (მდე)",
+    "Valid from": "ძალაშია",
+    "to": "-",
     "Starting:": "დაწყება:",
     "Ending:": "დამთავრება:",
-    "Issued by": "გავრცელებულია (ვის) მიერ",
+    "Issued by": "გავრცელებულია",
     "no awareness needed": "არ არის გაფრთხილება",
     "potentially dangerous": "პოტენციურად საშიში",
     "dangerous": "საშიში",
@@ -71,6 +71,7 @@ translations['ka-GE'] = {
     "September": "სექტემბერი",
     "October": "ოქტომბერი",
     "November": "ნოემბერი",
-    "December": "დეკემბერი"
+    "December": "დეკემბერი",
+    "at": ""
 }
 

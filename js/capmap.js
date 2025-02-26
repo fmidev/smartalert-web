@@ -474,7 +474,7 @@ function showMarkers(day) {
       const markerLocationKey = `${centroid.lat},${centroid.lng}`;
       const locationCount = markerLocations.filter(loc => loc === markerLocationKey).length;
 
-      if (!day) {
+      if (!day && day !== 0) {
         if (shouldDisplayMarker(polygon, combinedEvents[n], combinedEvents)) {
           marker.style.display = 'inline'; // Show marker
 
@@ -1057,6 +1057,7 @@ function doCAP(dom) {
           { match: 'super', icon: 'supertyphoon.png' },
           { match: 'typhoon', icon: 'typhoon.png' },
           { match: 'tropical storm', icon: 'tropical-storm.png' },
+          { match: 'sea storm', icon: 'wave.png' },
           { match: 'severe tropical storm', icon: 'severe-tropical-storm.png' },
           { match: 'visibility', icon: 'fog.png' },
           { match: 'depression', icon: 'tropical-depression.png' },
@@ -1074,6 +1075,7 @@ function doCAP(dom) {
           { match: 'flood', icon: 'flood.png' },
           { match: 'disturbance', icon: 'disturbance.png' },
           { match: 'high tide', icon: 'high-tide.png' },
+          { match: 'mudflow', icon: 'mudflow.png' },
         ];
 
         for (let event of eventMapping) {
