@@ -75,6 +75,7 @@ Fill in these values at initial se up
 | `day4Control`         | `Boolean` | `true`          | Display Day 5 button.  |
 | `allDayControl`       | `Boolean` | `true`          | Display All days button.  |
 | `extendedDayControl`  | `Boolean` | `false`         | Display extended day selection buttons that include weekday, date and color of the highest warning of the that day. |
+| `showDayNames`  | `Boolean` | `false`         | Displays weekdays as "Today," "Tomorrow," etc., instead of standard names like "Tuesday" or "Wednesday." |
 | `dayDateFormat`       | `String`  | `DD.MM`         | Date displayed on day selection buttons if extendedDayControl is true |
 | `popUpMaxHeight`      | `Number`  | `false`         | Warning popup maximum height in pixels. |
 | `refresh`             | `Number`  | `300`           | Warning refresh interval in seconds. |
@@ -87,4 +88,6 @@ Fill in these values at initial se up
 | `numberIcons`         | `Boolean` | `false`         | Display the numeric value instead of icon for wave height, wind speed, swell height and surf height.  |
 | `showIconLegend`      | `Boolean` | `false`         | Display legend that tells meaning of active markers. |
 | `ShowUpdateTime`      | `Boolean` | `false`         | Display latest update time on legend |
+| `hideOffset`      | `Boolean` | `false`         | Hides the time offset from update time. |
+| `timeZone`      | `String` | `""`         | Must be set using an IANA time zone identifier (e.g., "Region/City") to correctly display local time.  |
 | `eventTypes`          | `Object`  | `{}`            | List of used events, key is unique word appearing in event tag. Use comma separated keys to combine multiple warning events to be displayed with one selection in the dropdown list, i.e.: `"shower,rain": "Rain",` |

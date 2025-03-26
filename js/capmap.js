@@ -673,11 +673,18 @@ const setEventListener = (selected, number, debugMsg) => {
 }
 
 const generateDayText = (day) => {
-  var days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-  const index = day % 7
-  let dayText = days[index]
-  return t(dayText)
-}
+  if (!alertOptions.showDayNames ) {
+    if (day === 1) return t("Today")
+    if (day === 2) return t("Tomorrow")
+    if (day === 3) return t("Day after tomorrow")
+    return t(`Day ${day}`)
+  }
+
+  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const index = day % 7;
+  return t(days[index]);
+};
+
 
 function generateDate(offset) {
   const date = new Date()
@@ -1076,6 +1083,7 @@ function doCAP(dom) {
           { match: 'disturbance', icon: 'disturbance.png' },
           { match: 'high tide', icon: 'high-tide.png' },
           { match: 'mudflow', icon: 'mudflow.png' },
+          { match: 'UV-radiation', icon: 'uv.png' },
         ];
 
         for (let event of eventMapping) {
