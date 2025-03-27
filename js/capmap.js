@@ -673,18 +673,19 @@ const setEventListener = (selected, number, debugMsg) => {
 }
 
 const generateDayText = (day) => {
-  if (!alertOptions.showDayNames ) {
-    if (day === 1) return t("Today")
-    if (day === 2) return t("Tomorrow")
-    if (day === 3) return t("Day after tomorrow")
-    return t(`Day ${day}`)
+  const todayIndex = new Date().getDay()
+  const dayOffset = day - todayIndex
+
+  if (!alertOptions.showDayNames) {
+    if (dayOffset === 0) return t("Today")
+    if (dayOffset === 1) return t("Tomorrow")
+    if (dayOffset === 2) return t("Day after tomorrow")
+    return t(`Day ${dayOffset}`)
   }
 
-  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  const index = day % 7;
-  return t(days[index]);
-};
-
+  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+  return t(days[day % 7])
+}
 
 function generateDate(offset) {
   const date = new Date()
