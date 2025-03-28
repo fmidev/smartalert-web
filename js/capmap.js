@@ -680,7 +680,7 @@ const generateDayText = (day) => {
     if (dayOffset === 0) return t("Today")
     if (dayOffset === 1) return t("Tomorrow")
     if (dayOffset === 2) return t("Day after tomorrow")
-    return t(`Day ${dayOffset}`)
+    return t(`Day ${dayOffset + 1}`)
   }
 
   const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
