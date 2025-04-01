@@ -26,6 +26,6 @@ translations['en-UZ'] = {
   "potentially dangerous": "Potentially dangerous",
   "dangerous": "Dangerous",
   "very dangerous": "Very dangerous",
-  "All Hazard Types": "All Hazard Types",
+  "All Hazard Types": "All warnings",
   "Updated" : "Updated"
 };

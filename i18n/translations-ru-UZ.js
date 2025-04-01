@@ -11,6 +11,7 @@ translations['ru-UZ'] = {
   "Hail": "Град",
   "Thunderstorm": "Гроза",
   "Frost": "Заморозки",
+  "Snow": "Снег",
   "for": ":",
   "Valid from": "Действительно с",
   "to": "до",
