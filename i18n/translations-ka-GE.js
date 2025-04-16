@@ -50,7 +50,7 @@ translations['ka-GE'] = {
     "Updated": "განახლებულია",
     "Click to show alerts for today": "დააწკაპეთ რომ ნახოთ გაფრთხილება დღევანდელი დღისთვის",
     "Click to show alerts for tomorrow": "დააწკაპეთ რომ ნახოთ გაფრთხილება ხვალინდელი დღისთვის",
-    "Click to show alerts for the day after tomorrow": "დააწკაპეთ რომ ნახოთ გაფრთხილება ზეგინდელი დღისთვის",
+    "Click to show alerts for day after tomorrow": "დააწკაპეთ რომ ნახოთ გაფრთხილება ზეგინდელი დღისთვის",
     "Click to show all active alerts": "დააწკაპეთ ყველა აქტიური გაფრთხილების სანახავად",
     "Zoom in": "გადიდება",
     "Zoom out": "დაპატარავება",
