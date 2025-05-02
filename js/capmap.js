@@ -1084,7 +1084,7 @@ function doCAP(dom) {
           { match: 'disturbance', icon: 'disturbance.png' },
           { match: 'high tide', icon: 'high-tide.png' },
           { match: 'mudflow', icon: 'mudflow.png' },
-          { match: 'UV-radiation', icon: 'uv.png' },
+          { match: 'uv radiation', icon: 'uv.png' },
         ];
 
         for (let event of eventMapping) {
@@ -1174,7 +1174,7 @@ function doCAP(dom) {
 
     const description = info.querySelector('description') ? info.querySelector('description').textContent : '';
     const linkifiedDescription = description.replace(
-      /(https?:\/\/[^\s]+)/g, // Match URLs
+      /(https?:\/\/[^\s]+)/gi, // Match URLs
       '<a href="$1" target="_blank">$1</a>' // Wrap in anchor tags
     );
 

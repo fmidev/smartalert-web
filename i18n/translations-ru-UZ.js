@@ -17,7 +17,7 @@ translations['ru-UZ'] = {
   "to": "до",
   "Issued by": "",
   "Uzhydromet": "Узгидромет",
-  "at": "-",
+  "at": "",
   "(x hours y minutes ago)": "x часов y минут назад",
   "January": "Январь",
   "February": "Февраль",
