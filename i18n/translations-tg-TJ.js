@@ -54,7 +54,7 @@ translations['tg-TJ'] = {
   "Sun": "Яш",
   "and": "ва",
   "Map legend": "Тавзеҳоти харита",
-  "Updated": "Навгоникунонӣ "
+  "Updated": "Навгоникунонӣ"
 };
 
 

@@ -1085,6 +1085,8 @@ function doCAP(dom) {
           { match: 'high tide', icon: 'high-tide.png' },
           { match: 'mudflow', icon: 'mudflow.png' },
           { match: 'uv radiation', icon: 'uv.png' },
+          { match: 'mixed precipitation', icon: 'mixed.png' },
+          { match: 'slippery', icon: 'slippery.png' },
         ];
 
         for (let event of eventMapping) {

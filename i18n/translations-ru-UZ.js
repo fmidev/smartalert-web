@@ -10,6 +10,8 @@ translations['ru-UZ'] = {
   "Mixed precipitation": "Смешанные осадки",
   "Hail": "Град",
   "Thunderstorm": "Гроза",
+  "Dust": "Пыль",
+  "Slippery roads": "Гололедица",
   "Frost": "Заморозки",
   "Snow": "Снег",
   "for": ":",
