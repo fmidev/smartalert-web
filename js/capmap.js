@@ -221,7 +221,6 @@ function initialize() {
     document.getElementById("icon-legend-container").style.display = 'none'
     document.getElementById("icon-legend-button").style.display = 'none'
   }
-
 }
 
 function updateEventSelect() {
@@ -416,11 +415,9 @@ function findMatchingName(name) {
 }
 
 function showMarkers(day) {
-  // Clear previous marker locations tracking
   markerLocations = [];
 
   for (var i = 0; i < markers.length; i++) {
-
     if (alertOptions.showIconLegend) {
       const activeMarker = {
         iconUrl: markers[i].options.icon.options.iconUrl,
@@ -433,7 +430,8 @@ function showMarkers(day) {
       const toDate = new Date(activeMarker.toDate);
 
       const isNewMarker = activeMarkerList.every(marker =>
-        marker.name !== activeMarker.name && marker.iconUrl !== activeMarker.iconUrl);
+        marker.name !== activeMarker.name && marker.iconUrl !== activeMarker.iconUrl
+      );
 
       const isDateInRange = (day === null) || (fromDate.isBeforeDay(day) && toDate.isAfterDay(day));
 
@@ -445,11 +443,7 @@ function showMarkers(day) {
 
     var fromDate = new Date(markers[i].options.fromDate);
     var toDate = new Date(markers[i].options.toDate);
-
-    if (selectedEVENT !== null)
-      var combinedEvents = selectedEVENT.split(',');
-    else
-      combinedEvents = [selectedEVENT];
+    var combinedEvents = selectedEVENT !== null ? selectedEVENT.split(',') : [selectedEVENT];
 
     function shouldDisplayMarker(polygon, event, combinedEvents) {
       return (
@@ -461,66 +455,50 @@ function showMarkers(day) {
 
     for (let n = 0; n < combinedEvents.length; n++) {
       const polygon = polygons[i];
-      const marker = markers[i].getElement();
+      const markerObj = markers[i];
+      const marker = markerObj.getElement();
 
-      // Hide marker if area is less than the limit
       if (polygon.options.polygonArea < alertOptions.areaLimitForMarkers) {
         marker.style.display = 'none';
         continue;
       }
 
-      // Calculate the centroid of the polygon to use as the marker position
-      const centroid = polygon.getBounds().getCenter();
-      const markerLocationKey = `${centroid.lat},${centroid.lng}`;
+      const polygonGeoJSON = polygon.toGeoJSON();
+      const pointInside = turf.pointOnFeature(polygonGeoJSON);
+      const [lng, lat] = pointInside.geometry.coordinates;
+      const candidatePoint = L.latLng(lat, lng);
+
+      markerObj.setLatLng(candidatePoint);
+      const markerLocationKey = `${candidatePoint.lat},${candidatePoint.lng}`;
       const locationCount = markerLocations.filter(loc => loc === markerLocationKey).length;
 
       if (!day && day !== 0) {
         if (shouldDisplayMarker(polygon, combinedEvents[n], combinedEvents)) {
-          marker.style.display = 'inline'; // Show marker
-
-          if (locationCount > 0) {
-            // Apply displacement based on how many markers are already in this location
-            xDisplacement = (alertOptions.iconWidth + 5) * locationCount;
-            marker.style.marginLeft = `${xDisplacement}px`;
-          } else {
-            marker.style.marginLeft = '0px'; // No displacement for the first marker
-          }
-
-          // Track the marker location
+          marker.style.display = 'inline';
+          marker.style.marginLeft = (locationCount > 0) ? `${(alertOptions.iconWidth + 5) * locationCount}px` : '0px';
           markerLocations.push(markerLocationKey);
         } else {
-          marker.style.display = 'none'; // Hide marker
+          marker.style.display = 'none';
         }
         continue;
       }
 
-      // Handle cases where the day is within range
       if (fromDate.isBeforeDay(day) && toDate.isAfterDay(day)) {
         if (shouldDisplayMarker(polygon, combinedEvents[n], combinedEvents)) {
-          marker.style.display = 'inline'; // Show marker
-
-          if (locationCount > 0) {
-            // Apply displacement for markers that are in the same location
-            xDisplacement = (alertOptions.iconWidth + 5) * locationCount;
-            marker.style.marginLeft = `${xDisplacement}px`;
-          } else {
-            marker.style.marginLeft = '0px'; // No displacement for the first marker
-          }
-
-          // Track the marker location
+          marker.style.display = 'inline';
+          marker.style.marginLeft = (locationCount > 0) ? `${(alertOptions.iconWidth + 5) * locationCount}px` : '0px';
           markerLocations.push(markerLocationKey);
         } else {
-          marker.style.display = 'none'; // Hide marker
+          marker.style.display = 'none';
         }
       } else {
-        marker.style.display = 'none'; // Hide marker if day is not in range
+        marker.style.display = 'none';
       }
     }
   }
 
   debug('Number of markers ' + markers.length);
 
-  // Update the color of the day control squares if extendedDayControl is enabled
   if (alertOptions.extendedDayControl) {
     square0.style.backgroundColor = checkButtonColor(0, polygons);
     square1.style.backgroundColor = checkButtonColor(1, polygons);
@@ -530,7 +508,6 @@ function showMarkers(day) {
     square5.style.backgroundColor = checkButtonColor(5, polygons);
   }
 }
-
 
 function showPolygons(day) {
   for (var i = 0; i < polygons.length; i++) {
@@ -746,6 +723,7 @@ function DayControl(controlDiv) {
 
     setDay1UI.appendChild(dayTextElement)
     controlDiv.appendChild(setDay1UI)
+    selectedDAY === 1 && setActiveButton(setDay1UI)
     setEventListener(setDay1UI, 1, 'Show events for tomorrow.')
   }
 
@@ -763,6 +741,7 @@ function DayControl(controlDiv) {
     }
     setDay2UI.appendChild(dayTextElement)
     controlDiv.appendChild(setDay2UI)
+    selectedDAY === 2 && setActiveButton(setDay2UI)
     setEventListener(setDay2UI, 2, 'Show events for day after tomorrow.')
   }
 
@@ -782,6 +761,7 @@ function DayControl(controlDiv) {
 
     setDay3UI.appendChild(dayTextElement)
     controlDiv.appendChild(setDay3UI)
+    selectedDAY === 3 && setActiveButton(setDay3UI)
     setEventListener(setDay3UI, 3, 'Show events for day 4.')
   }
 
@@ -802,6 +782,7 @@ function DayControl(controlDiv) {
 
     setDay4UI.appendChild(dayTextElement)
     controlDiv.appendChild(setDay4UI)
+    selectedDAY === 4 && setActiveButton(setDay4UI)
     setEventListener(setDay4UI, 4, 'Show events for day 5.')
   }
 
@@ -990,15 +971,17 @@ function doCAP(dom) {
     var bounds = areapolygon.getBounds()
 
     var markerLocation = bounds.getCenter()
-    var test = parseFloat(markerLocation['lat']).toFixed(4) + ' ' + parseFloat(markerLocation['lng']).toFixed(4)
 
-    var value = coordinatesExist(markerLocations, test)
-    if (alertOptions.polygonOptions.preventSymbolOverlapping === true) {
-      xDisplacement = (alertOptions.iconWidth + 5) * value
-    } else {
-      xDisplacement = 0
-    }
-    markerLocations.push(test)
+    // comment out for now, needs cleaning.
+
+    // var test = parseFloat(markerLocation['lat']).toFixed(4) + ' ' + parseFloat(markerLocation['lng']).toFixed(4)
+    // var value = coordinatesExist(markerLocations, test)
+    // if (alertOptions.polygonOptions.preventSymbolOverlapping === true) {
+    //   xDisplacement = (alertOptions.iconWidth + 5) * value
+    // } else {
+    //   xDisplacement = 0
+    // }
+    // markerLocations.push(test)
 
     var symbolPath = 'img/'
     if (alertOptions.transparentIcons === true && alertOptions.customIcons === false)
@@ -1046,6 +1029,7 @@ function doCAP(dom) {
           { match: 'frost', icon: 'frost.png' },
           { match: 'heat', icon: 'temperature.png' },
           { match: 'cold', icon: 'cold.png' },
+          { match: 'snow avalanche', icon: 'snow-avalanche.png' },
           { match: 'avalanche', icon: 'avalanche.png' },
           { match: 'snow', icon: 'snow.png' },
           { match: 'rain', icon: 'rainfall.png' },
