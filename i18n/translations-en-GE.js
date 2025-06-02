@@ -50,6 +50,7 @@ translations['en-CO'] = {
   "Forest fire": "Forest fire",
   "Temperature": "Temperature",
   "Flood": "Flood",
+  "Snow avalanche": "Snow avalanche",
   "Map legend": "Map legend",
   "Updated": "Updated",
   "Mon": "Mon",
