@@ -1047,6 +1047,7 @@ function doCAP(dom) {
           { match: 'heat', icon: 'temperature.png' },
           { match: 'cold', icon: 'cold.png' },
           { match: 'avalanche', icon: 'avalanche.png' },
+          { match: 'slippery', icon: 'slippery.png' },
           { match: 'snow', icon: 'snow.png' },
           { match: 'rain', icon: 'rainfall.png' },
           { match: 'shower', icon: 'rainfall.png' },
@@ -1086,7 +1087,6 @@ function doCAP(dom) {
           { match: 'mudflow', icon: 'mudflow.png' },
           { match: 'uv radiation', icon: 'uv.png' },
           { match: 'mixed precipitation', icon: 'mixed.png' },
-          { match: 'slippery', icon: 'slippery.png' },
         ];
 
         for (let event of eventMapping) {
