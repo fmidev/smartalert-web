@@ -60,4 +60,6 @@ translations['uz-UZ'] = {
   "Fri": "J",
   "Sat": "Sh",
   "Sun": "Ya",
+  "Zoom in": "",
+  "Zoom out": "",
 };

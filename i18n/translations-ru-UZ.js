@@ -62,6 +62,6 @@ translations['ru-UZ'] = {
   "Fri": "Пт",
   "Sat": "Сб",
   "Sun": "Вс",
-
-
+  "Zoom in": "",
+  "Zoom out": "",
 };

@@ -29,5 +29,7 @@ translations['en-UZ'] = {
   "dangerous": "Dangerous",
   "very dangerous": "Very dangerous",
   "All Hazard Types": "All warnings",
-  "Updated" : "Updated"
+  "Updated" : "Updated",
+  "Zoom in": "",
+  "Zoom out": "",
 };
