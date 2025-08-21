@@ -6,7 +6,6 @@ $atom = "";
 $updated = "";
 $senderName = "Default Sender"; // Initialize senderName with a default value
 
-// --- FIXED HTTPS + URL HANDLING ---
 $is_https = (
     (!empty($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off')
     || (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443)
@@ -31,7 +30,6 @@ $address = $protocol . "://" . $host . ($dir ? $dir . "/" : "");
 
 // Full feed URL
 $capfeed = $protocol . "://" . $host . $script_name;
-// --- END FIX ---
 
 foreach ($SUBDIRS as $dir) {
     $DIR = trim(shell_exec("find data/$dir/publishedCap -type d|sort -n|tail -1"));
