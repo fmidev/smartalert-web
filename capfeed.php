@@ -1,14 +1,35 @@
 <?php
-$SUBDIRS = [""]; # if no subdirectories are needed
-#$SUBDIRS = ["meteorology", "hydrology"];
+$SUBDIRS = array(""); # if no subdirectories are needed
+#$SUBDIRS = array("meteorology", "hydrology");
 
 $atom = "";
 $updated = "";
 $senderName = "Default Sender"; // Initialize senderName with a default value
 
-$protocol = (isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS'])) ? 'https' : 'http';
-$address = $protocol . "://" . $_SERVER['SERVER_NAME'] . dirname($_SERVER['PHP_SELF']) . "/";
-$capfeed = $protocol . "://" . $_SERVER['SERVER_NAME'] . $_SERVER['PHP_SELF'];
+$is_https = (
+    (!empty($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off')
+    || (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443)
+    || (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https')
+);
+
+$protocol = $is_https ? 'https' : 'http';
+
+// Prefer HTTP_HOST (includes port if needed), fallback to SERVER_NAME
+if (isset($_SERVER['HTTP_HOST'])) {
+    $host = $_SERVER['HTTP_HOST'];
+} elseif (isset($_SERVER['SERVER_NAME'])) {
+    $host = $_SERVER['SERVER_NAME'];
+} else {
+    $host = 'localhost';
+}
+
+// Ensure directory path is clean
+$script_name = isset($_SERVER['PHP_SELF']) ? $_SERVER['PHP_SELF'] : '';
+$dir = rtrim(str_replace('\\', '/', dirname($script_name)), '/');
+$address = $protocol . "://" . $host . ($dir ? $dir . "/" : "");
+
+// Full feed URL
+$capfeed = $protocol . "://" . $host . $script_name;
 
 foreach ($SUBDIRS as $dir) {
     $DIR = trim(shell_exec("find data/$dir/publishedCap -type d|sort -n|tail -1"));
