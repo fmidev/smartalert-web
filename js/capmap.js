@@ -1077,6 +1077,7 @@ function doCAP(dom) {
           { match: 'storm surge', icon: 'flood.png' },
           { match: 'high river level', icon: 'high-river-level.png' },
           { match: 'low river level', icon: 'low-river-level.png' },
+          { match: 'local flood', icon: 'low-river-level.png' },
           { match: 'river flood', icon: 'river-flood.png' },
           { match: 'flash flood reservoir', icon: 'flash-flood-reservoir.png' },
           { match: 'flash flood probability', icon: 'flash-flood-probability.png' },
@@ -1086,7 +1087,8 @@ function doCAP(dom) {
           { match: 'high tide', icon: 'high-tide.png' },
           { match: 'mudflow', icon: 'mudflow.png' },
           { match: 'uv radiation', icon: 'uv.png' },
-          { match: 'mixed precipitation', icon: 'mixed.png' },
+          { match: 'mixed precipitation', icon: 'mixed.png'},
+          { match: 'air quality', icon: 'air-quality.png'},
         ];
 
         for (let event of eventMapping) {
