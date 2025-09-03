@@ -46,6 +46,39 @@ Fill in these values at initial se up
 | `bounds.south`        | `Number`  | `null`          | Default southern map boundary. |
 | `bounds.west`         | `Number`  | `null`          | Default western map boundary. |
 
+
+## Using Custom Icons
+
+To use custom icons, you’ll need to copy the default icons into a new folder and then replace them with your own.
+
+
+### 1. Create the custom folder
+Example command (Linux / macOS):
+```bash
+mkdir img/custom
+```
+
+
+### 2. Copy the `/img/` folder into `/img/custom/`
+This ensures that all default icons (including the `transparent` folder) are available as a starting point.
+
+Example command (Linux / macOS):
+```bash
+rsync -av --exclude 'custom' ./img/ ./img/custom/
+
+```
+When the custom folder is set up in capmap-config set ```customIcons: true```
+
+### 3. Replace the icons in /img/custom/
+
+Open the /img/custom/ folder.
+
+Replace the existing images with your own custom icons.
+
+Important: Keep the same filenames to ensure the system recognizes them.
+
+
+
 ### Other options
 | Option                | Type |  Default         | Description
 | --------------------- | ---- | ---------------- | ------------------------------------------- |
