@@ -43,5 +43,17 @@ translations['ke-KE'] = {
     "Minimize": "Fupisha",
     "Maximize": "Kuza",
     "Refresh": "Sasisha",
-    "Updated": "Imesasishwa"
+    "Updated": "Imesasishwa",
+    "January": "Januari",
+    "February": "Februari",
+    "March": "Machi",
+    "April": "Aprili",
+    "May": "Mei",
+    "June": "Juni",
+    "July": "Julai",
+    "August": "Agosti",
+    "September": "Septemba",
+    "October": "Oktoba",
+    "November": "Novemba",
+    "December": "Desemba"
   };
