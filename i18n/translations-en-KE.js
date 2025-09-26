@@ -35,5 +35,6 @@ translations['en-KE'] = {
     "Thunder": "Thunder",
     "Tsunami": "Tsunami",
     "Temperature": "Temperature",
-    "Kenya Meteorological Department": "Kenya Meteorological Department"
+    "Kenya Meteorological Department": "Kenya Meteorological Department",
+    "Map legend": "Map legends"
 };
