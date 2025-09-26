@@ -1,34 +1,12 @@
 <?php
-$DIRS = filter_input(INPUT_GET, 'dir', FILTER_SANITIZE_STRING);
+// Auto-discover subdirectories in "data/" that contain "publishedCap"
+$SUBDIRS = [];
+$basePath = __DIR__ . "/data";
 
-if (!$DIRS) {
-    $SUBDIRS = array("");
-} else {
-    $SUBDIRS = explode(',', $DIRS);
-}
-
-$capfiles = array();
-
-foreach ($SUBDIRS as $DIR) {
-    $DIR = trim($DIR);
-
-    // Get latest publishedCap directory safely
-    $cmd = "find data/" . escapeshellarg($DIR) . "/publishedCap -type d | sort -n | tail -1";
-    $latestDir = trim(shell_exec($cmd));
-
-    if (!$latestDir || !is_dir($latestDir)) {
-        continue; // skip invalid dirs
-    }
-
-    $FILES = scandir($latestDir);
-    if ($FILES === false) {
-        continue;
-    }
-
-    foreach ($FILES as $file) {
-        if (preg_match("/_ALERT_/", $file) || preg_match("/_UPDATE_/", $file)) {
-            $capfiles[] = $latestDir . "/" . $file;
-        }
+foreach (scandir($basePath) as $d) {
+    if ($d === "." || $d === "..") continue;
+    if (is_dir("$basePath/$d/publishedCap")) {
+        $SUBDIRS[] = $d;
     }
 }
 
@@ -61,7 +39,7 @@ $address = $protocol . "://" . $host . ($dir ? $dir . "/" : "");
 // Full feed URL
 $capfeed = $protocol . "://" . $host . $script_name;
 
-foreach ($DIRS as $dir) {
+foreach ($SUBDIRS as $dir) {
     $DIR = trim(shell_exec("find data/$dir/publishedCap -type d|sort -n|tail -1"));
     if (!$DIR || !is_dir($DIR)) continue; // Skip if $DIR is empty or not a directory
 
