@@ -1089,6 +1089,7 @@ function doCAP(dom) {
           { match: 'uv radiation', icon: 'uv.png' },
           { match: 'mixed precipitation', icon: 'mixed.png'},
           { match: 'air quality', icon: 'air-quality.png'},
+          { match: 'glacier lake outburst', icon: 'glacier-lake-outburst.png'},
         ];
 
         for (let event of eventMapping) {
