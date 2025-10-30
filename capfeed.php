@@ -1,12 +1,19 @@
 <?php
-// Auto-discover subdirectories in "data/" that contain "publishedCap"
+
 $SUBDIRS = [];
 $basePath = __DIR__ . "/data";
+$directCap = "$basePath/publishedCap";
 
-foreach (scandir($basePath) as $d) {
-    if ($d === "." || $d === "..") continue;
-    if (is_dir("$basePath/$d/publishedCap")) {
-        $SUBDIRS[] = $d;
+if (is_dir($directCap)) {
+    // If "data/publishedCap" exists, just use that
+    $SUBDIRS[] = "";
+} else {
+    // Otherwise, auto-discover subdirectories under "data/" containing "publishedCap"
+    foreach (scandir($basePath) as $d) {
+        if ($d === "." || $d === "..") continue;
+        if (is_dir("$basePath/$d/publishedCap")) {
+            $SUBDIRS[] = $d;
+        }
     }
 }
 
