@@ -12,6 +12,7 @@ translations['ka-GE'] = {
     "Early frost": "ადრეული წაყინვა",
     "Late frost": "გვიანი წაყინვა",
     "Avalanche": "ზვავი",
+    "Flood/flash flood": "წყალდიდობა/წყალმოვარდნა",
     "Snow avalanche": "თოვლის ზვავი",
     "Flood": "წყალდიდობა",
     "Flash flood": "წყალმოვარდნა",
