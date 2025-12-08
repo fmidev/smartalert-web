@@ -1137,7 +1137,7 @@ function doCAP(dom) {
 
     if (alert.querySelector('web')) { sender = '<a href="http://' + dom.querySelector('web').textContent + '">' + sender + '</a>' }
 
-    $('#senderName').html(sender)
+    alertOptions.hideSender ? $('#senderName').html('') : $('#senderName').html(sender)
 
 
     if (dnow.getTime() > fromDate.getTime() && alertOptions.displayActiveFor) {
