@@ -3,6 +3,7 @@ translations['ka-GE'] = {
     "All Hazard Types": "ყველა გაფრთხილება",
     "Wind": "ქარი",
     "Rain": "ნალექი",
+    "Precipitation": "ნალექი",
     "Thunderstorm": "ელჭექი",
     "Hail": "სეტყვა",
     "Temperature": "ტემპერატურა",
