@@ -35,6 +35,8 @@ var alertOptions = {
     customLocations: false,
     numberIcons: false,
     timeZone: '',
+	hideOffset: false,
+    hideSender: false,
     eventTypes: {
         // edit: "edit capmap-config.js",
         "tropical storm": "Tropical Storm",
