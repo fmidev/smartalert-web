@@ -51,6 +51,6 @@ translations['ru-KG'] = {
   "Fri": "Жу",
   "Sat": "Иш",
   "Sun": "Жек",
-  "legend": "легенда",
+  "Map legend": "легенда",
   "Updated" : "Акыркы жаңыртуу"
 };
