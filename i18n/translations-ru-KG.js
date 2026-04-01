@@ -15,7 +15,7 @@ translations['ru-KG'] = {
   "for": "в",
   "Valid from": "Действительно в период от",
   "to": "до",
-  "Active for next": "действителен для следующий",
+  "Active for next": "",
   "Issued by": "Даярдалган:",
   "day": "день",
   "days": "дни",

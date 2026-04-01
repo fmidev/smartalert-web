@@ -15,7 +15,7 @@ translations['en-KG'] = {
     "for": "for",
     "Valid from": "Valid from",
     "to": "to",
-    "Active for next": "Active for next",
+    "Active for next": "",
     "Issued by": "Issued by",
     "day": "day",
     "days": "days",
@@ -31,5 +31,8 @@ translations['en-KG'] = {
     "dangerous": "Dangerous",
     "very dangerous": "Very Dangerous",
     "All Hazard Types": "All Hazard Types",
-    "Updated" : "Updated"
+    "Updated" : "Updated",
+    "Map legend": "",
+    "Zoom in": "",
+    "Zoom out": "",
 };

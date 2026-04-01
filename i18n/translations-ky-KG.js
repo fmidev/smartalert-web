@@ -15,7 +15,7 @@ translations['ky-KG'] = {
   "for": "күтүлгөн",
   "Valid from": "Действительно с",
   "to": "по",
-  "Active for next": "күнгө чейин жарактуу ",
+  "Active for next": "",
   "Issued by": "Подготовлено:",
   "day": "күн",
   "days": "күндөр",
