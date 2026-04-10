@@ -32,7 +32,7 @@ translations['en-KG'] = {
     "very dangerous": "very dangerous",
     "All Hazard Types": "All hazard types",
     "Updated" : "Updated",
-    "Map legend": "Map legend",
+    "Map legend": "Legend",
     "Zoom in": "",
     "Zoom out": "",
 };

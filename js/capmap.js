@@ -408,7 +408,8 @@ function centerUserLocation() {
 
 function findMatchingName(name) {
   for (let key in alertOptions.eventTypes) {
-    if (name.includes(key)) {
+    const subKeys = key.split(',').map(s => s.trim());
+    if (subKeys.some(subKey => name.includes(subKey))) {
       return t(alertOptions.eventTypes[key]);
     }
   }
@@ -712,7 +713,7 @@ function DayControl(controlDiv) {
   controlDiv.classList.add('controlDiv');
 
   const isExtended = alertOptions.extendedDayControl
-  
+
   if (alertOptions.day0Control) {
     const setDay0UI = document.createElement('div')
     setDay0UI.id = 'setDay0UI'
@@ -1089,10 +1090,10 @@ function doCAP(dom) {
           { match: 'high tide', icon: 'high-tide.png' },
           { match: 'mudflow', icon: 'mudflow.png' },
           { match: 'uv radiation', icon: 'uv.png' },
-          { match: 'precipitation', icon: 'rainfall.png'},
-          { match: 'mixed precipitation', icon: 'mixed.png'},
-          { match: 'air quality', icon: 'air-quality.png'},
-          { match: 'glacier lake outburst', icon: 'glacier-lake-outburst.png'},
+          { match: 'precipitation', icon: 'rainfall.png' },
+          { match: 'mixed precipitation', icon: 'mixed.png' },
+          { match: 'air quality', icon: 'air-quality.png' },
+          { match: 'glacier lake outburst', icon: 'glacier-lake-outburst.png' },
         ];
 
         for (let event of eventMapping) {
@@ -1186,8 +1187,15 @@ function doCAP(dom) {
       '<a href="$1" target="_blank">$1</a>' // Wrap in anchor tags
     );
 
+    let areaBlock = ''
+
+    if (alertOptions.regionsUnderTitle === true && area) {
+      areaBlock = `<div class="area-name">${area}</div>`
+    }
+
     const content = `
         <h4 class="iw-title">${info.querySelector('event').textContent}</h4>
+        ${areaBlock}
         <i>${t('Valid from')} <b>${fromDateFormatted}</b> ${t('to')} <b>${toDateFormatted}</b></i>
         ${active_str}
         <p>${linkifiedDescription}</p>
