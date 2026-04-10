@@ -1088,6 +1088,8 @@ function doCAP(dom) {
           { match: 'flood', icon: 'flood.png' },
           { match: 'disturbance', icon: 'disturbance.png' },
           { match: 'high tide', icon: 'high-tide.png' },
+          { match: 'rising water level', icon: 'mudflow.png' },
+          { match: 'rise in river water', icon: 'mudflow.png' },
           { match: 'mudflow', icon: 'mudflow.png' },
           { match: 'uv radiation', icon: 'uv.png' },
           { match: 'precipitation', icon: 'rainfall.png' },
