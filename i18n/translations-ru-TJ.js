@@ -54,6 +54,12 @@ translations['ru-TJ'] = {
   "Sun": "Вс",
   "and": "и",
   "minor threat": "Малая угроза",
+  "River overflow": "Локальные наводнения",
+  "Today": "Сегодня",
+  "Tomorrow": "Завтра",
+  "Day after tomorrow": "Послезавтра",
+  "Day 4": "День 4",
+  "Day 5": "День 5",
   "Map legend": "Легенда карты",
   "Updated": "Обновлено"
 };

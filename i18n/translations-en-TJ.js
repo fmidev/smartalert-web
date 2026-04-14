@@ -27,5 +27,6 @@ translations['en-TJ'] = {
   "dangerous": "Dangerous",
   "very dangerous": "Very dangerous",
   "All Hazard Types": "All warnings",
+  "River overflow": "River overflow",
   "Updated" : "Updated"
 };
