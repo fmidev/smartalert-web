@@ -12,7 +12,7 @@ translations['tg-TJ'] = {
   "High temperature": "Ҳарорати баланд",
   "Heat wave": "Мавчи гарм",
   "Low temperature": "Ҳарорати паст",
-  "mixed precipitation": "Боришоти омехта",
+  "Mixed precipitation": "Боришоти омехта",
   "Glacier lake outburst": "Кандашавии кулҳои пиряхи",
   "Frost": "Сармо",
   "Icing on roads": "Яхбанди дар роҳҳо",
@@ -39,7 +39,7 @@ translations['tg-TJ'] = {
   "October": "Октябр",
   "November": "Ноябр",
   "December": "Декабр",
-  "Days": "рӯзҳо",
+  "days": "рӯзҳо",
   "no awareness needed": "Огоҳӣ нест",
   "potentially dangerous": "Эҳтимолан хатарнок",
   "dangerous": "Хатарнок",
@@ -60,7 +60,15 @@ translations['tg-TJ'] = {
   "Day 4": "Рузи 4",
   "Day 5": "Рузи 5",
   "Map legend": "Тавзеҳоти харита",
-  "Updated": "Навгоникунонӣ"
+  "Updated": "Навгоникунонӣ",
+  "Click to show alerts for today": "",
+  "Click to show alerts for tomorrow": "",
+  "Click to show alerts for day after tomorrow": "",
+  "Click to show alerts for day 4": "",
+  "Click to show alerts for day 5": "",
+  "Click to show all active alerts": "",
+  "Zoom in": "",
+  "Zoom out": "",
 };
 
 

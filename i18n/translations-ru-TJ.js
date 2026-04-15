@@ -39,7 +39,7 @@ translations['ru-TJ'] = {
   "October": "Октябрь",
   "November": "Ноябрь",
   "December": "Декабрь",
-  "Days": "Дни",
+  "days": "Дни",
   "no awareness needed": "Предупреждений нет",
   "potentially dangerous": "Потенциально опасно",
   "dangerous": "Опасно",
@@ -61,7 +61,15 @@ translations['ru-TJ'] = {
   "Day 4": "День 4",
   "Day 5": "День 5",
   "Map legend": "Легенда карты",
-  "Updated": "Обновлено"
+  "Updated": "Обновлено",
+  "Click to show alerts for today": "",
+  "Click to show alerts for tomorrow": "",
+  "Click to show alerts for day after tomorrow": "",
+  "Click to show alerts for day 4": "",
+  "Click to show alerts for day 5": "",
+  "Click to show all active alerts": "",
+  "Zoom in": "",
+  "Zoom out": "",
 };
 
 

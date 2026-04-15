@@ -1,13 +1,9 @@
 translations['en-TJ'] = {
   "en-TJ": "English",
   "Today": "Today",
-  "Click to show alerts for today.": "Click to show alerts for today.",
   "Tomorrow": "Tomorrow",
-  "Click to show alerts for tomorrow.": "Click to show alerts for tomorrow.",
   "Day after tomorrow": "Day after tomorrow",
-  "Click to show alerts for day after tomorrow.": "Click to show alerts for day after tomorrow.",
   "All": "All",
-  "Click to show all active alerts": "Click to show all active alerts",
   "for": "for",
   "Valid from": "Valid from",
   "to": "to",
@@ -28,5 +24,13 @@ translations['en-TJ'] = {
   "very dangerous": "Very dangerous",
   "All Hazard Types": "All warnings",
   "River overflow": "River overflow",
-  "Updated" : "Updated"
+  "Updated" : "Updated",
+  "Click to show alerts for today": "",
+  "Click to show alerts for tomorrow": "",
+  "Click to show alerts for day after tomorrow": "",
+  "Click to show alerts for day 4": "",
+  "Click to show alerts for day 5": "",
+  "Click to show all active alerts": "",
+  "Zoom in": "",
+  "Zoom out": "",
 };
