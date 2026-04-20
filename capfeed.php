@@ -41,7 +41,7 @@ if (isset($_SERVER['HTTP_HOST'])) {
 // Ensure directory path is clean
 $script_name = isset($_SERVER['PHP_SELF']) ? $_SERVER['PHP_SELF'] : '';
 $dir = rtrim(str_replace('\\', '/', dirname($script_name)), '/');
-$address = $protocol . "://" . $host . ($dir ? $dir . "/" : "");
+$address = $protocol . "://" . $host . $dir . "/";
 
 // Full feed URL
 $capfeed = $protocol . "://" . $host . $script_name;
