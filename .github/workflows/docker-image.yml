@@ -9,7 +9,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: read
+      packages: write
     steps:
     - uses: actions/checkout@v5
       with:
@@ -17,14 +19,149 @@ jobs:
         submodules: false
         clean: true
         persist-credentials: false
-    - name: Docker login
-      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
-    - name: Docker build
-      run: docker build . --file Dockerfile --tag fmidev/smartmetalert:latest
-    - name: Docker tag
+
+    - name: PHP syntax check
       run: |
-        DATE_TAG=$(date +%y.%m.%d)
-        docker image tag fmidev/smartmetalert:latest fmidev/smartmetalert:${DATE_TAG}
-        docker image tag fmidev/smartmetalert:latest fmidev/smartmetalert:${DATE_TAG}-${GITHUB_SHA::7}
-    - name: Docker push
-      run: docker push --all-tags fmidev/smartmetalert
+        docker run --rm -v "$PWD":/app -w /app php:7.2-cli \
+          sh -c 'find . -name "*.php" -print0 | xargs -0 -n1 php -l'
+
+    - name: Docker build
+      run: docker build . --file Dockerfile --tag smartalert:local
+
+    - name: Smoke tests
+      run: |
+        set -euo pipefail
+
+        start_container() {
+          docker run -d --name smoke -p 8080:80 \
+            -v "$1":/var/www/html/data:ro \
+            smartalert:local >/dev/null
+          for i in {1..15}; do
+            if curl -fs http://localhost:8080/ >/dev/null; then return 0; fi
+            sleep 1
+          done
+          echo "Apache did not start"
+          docker logs smoke
+          return 1
+        }
+
+        stop_container() {
+          docker stop smoke >/dev/null
+          docker rm smoke >/dev/null
+        }
+
+        assert_has() {
+          # $1 label, $2 haystack, $3 needle
+          if grep -q -- "$3" <<<"$2"; then
+            echo "  PASS: $1 contains '$3'"
+          else
+            echo "  FAIL: $1 missing '$3'"
+            echo "---- response ----"
+            echo "$2" | head -40
+            echo "------------------"
+            docker logs smoke || true
+            exit 1
+          fi
+        }
+
+        assert_missing() {
+          if grep -q -- "$3" <<<"$2"; then
+            echo "  FAIL: $1 unexpectedly contains '$3'"
+            echo "---- response ----"
+            echo "$2" | head -40
+            echo "------------------"
+            exit 1
+          else
+            echo "  PASS: $1 does not contain '$3'"
+          fi
+        }
+
+        # ===== Scenario 1: flat layout (data/publishedCap/...) =====
+        echo "== Flat layout =="
+        rm -rf /tmp/testdata
+        cp -r .github/fixtures/flat /tmp/testdata
+        start_container /tmp/testdata
+
+        LIST=$(curl -fs http://localhost:8080/list.php)
+        assert_has     "list.php (flat)"  "$LIST" "FlatEvent"
+        assert_missing "list.php (flat)"  "$LIST" "FlatOld"
+
+        FEED=$(curl -fs http://localhost:8080/capfeed.php)
+        assert_has     "capfeed.php (flat)" "$FEED" "FlatEvent"
+        assert_has     "capfeed.php (flat)" "$FEED" "FlatArea"
+        assert_has     "capfeed.php (flat)" "$FEED" "FlatSender"
+        assert_missing "capfeed.php (flat)" "$FEED" "FlatOld"
+
+        stop_container
+
+        # ===== Scenario 2: subdir layout (meteorology + hydrology) =====
+        echo "== Subdir layout =="
+        rm -rf /tmp/testdata
+        cp -r .github/fixtures/subdirs /tmp/testdata
+        start_container /tmp/testdata
+
+        # Auto-discovery: no ?dir= parameter
+        LIST=$(curl -fs http://localhost:8080/list.php)
+        assert_has     "list.php (auto)" "$LIST" "MeteoEvent"
+        assert_has     "list.php (auto)" "$LIST" "HydroEvent"
+        assert_missing "list.php (auto)" "$LIST" "MeteoOld"
+
+        FEED=$(curl -fs http://localhost:8080/capfeed.php)
+        assert_has     "capfeed.php (auto)" "$FEED" "MeteoEvent"
+        assert_has     "capfeed.php (auto)" "$FEED" "HydroEvent"
+        assert_missing "capfeed.php (auto)" "$FEED" "MeteoOld"
+
+        # Single dir: ?dir=meteorology
+        LIST_M=$(curl -fs "http://localhost:8080/list.php?dir=meteorology")
+        assert_has     "list.php?dir=meteorology"  "$LIST_M" "MeteoEvent"
+        assert_missing "list.php?dir=meteorology"  "$LIST_M" "HydroEvent"
+        assert_missing "list.php?dir=meteorology"  "$LIST_M" "MeteoOld"
+
+        # Multiple dirs: ?dir=meteorology,hydrology
+        LIST_B=$(curl -fs "http://localhost:8080/list.php?dir=meteorology,hydrology")
+        assert_has "list.php?dir=meteorology,hydrology" "$LIST_B" "MeteoEvent"
+        assert_has "list.php?dir=meteorology,hydrology" "$LIST_B" "HydroEvent"
+
+        # Rejected param: ?dir=../evil should be dropped by the whitelist -> empty result
+        LIST_BAD=$(curl -fs "http://localhost:8080/list.php?dir=..%2Fevil")
+        assert_missing "list.php?dir=../evil" "$LIST_BAD" "Event"
+
+        stop_container
+
+        echo "All smoke tests passed"
+
+    # Skip the registry steps on PRs from forks, where secrets are unavailable.
+    - name: Docker Hub login
+      if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_USER }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: GHCR login
+      if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Tag and push
+      if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
+      run: |
+        set -e
+        HUB=fmidev/smartmetalert
+        GHCR=ghcr.io/${GITHUB_REPOSITORY,,}
+        if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+          TAGS=("pr-${{ github.event.pull_request.number }}")
+        else
+          DATE=$(date +%y.%m.%d)
+          SHA=${GITHUB_SHA::7}
+          TAGS=("latest" "$DATE" "$DATE-$SHA")
+        fi
+        for t in "${TAGS[@]}"; do
+          docker image tag smartalert:local "$HUB:$t"
+          docker image tag smartalert:local "$GHCR:$t"
+          docker push "$HUB:$t"
+          docker push "$GHCR:$t"
+        done

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<alert xmlns="urn:oasis:names:tc:emergency:cap:1.2">
+  <identifier>ci-hydro-latest</identifier>
+  <sender>ci@test</sender>
+  <sent>2026-04-20T08:00:00+00:00</sent>
+  <status>Actual</status>
+  <msgType>Alert</msgType>
+  <scope>Public</scope>
+  <info>
+    <senderName>HydroSender</senderName>
+    <event>HydroEvent</event>
+    <urgency>Immediate</urgency>
+    <severity>Severe</severity>
+    <certainty>Observed</certainty>
+    <effective>2026-04-20T08:00:00+00:00</effective>
+    <onset>2026-04-20T08:00:00+00:00</onset>
+    <expires>2099-12-31T23:59:59+00:00</expires>
+    <description>CI fixture: hydrology latest.</description>
+    <area>
+      <areaDesc>HydroArea</areaDesc>
+    </area>
+  </info>
+</alert>

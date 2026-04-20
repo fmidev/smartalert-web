@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<alert xmlns="urn:oasis:names:tc:emergency:cap:1.2">
+  <identifier>ci-flat-older</identifier>
+  <sender>ci@test</sender>
+  <sent>2026-04-19T12:00:00+00:00</sent>
+  <status>Actual</status>
+  <msgType>Alert</msgType>
+  <scope>Public</scope>
+  <info>
+    <senderName>FlatSender</senderName>
+    <event>FlatOld</event>
+    <urgency>Immediate</urgency>
+    <severity>Severe</severity>
+    <certainty>Observed</certainty>
+    <effective>2026-04-19T12:00:00+00:00</effective>
+    <onset>2026-04-19T12:00:00+00:00</onset>
+    <expires>2099-12-31T23:59:59+00:00</expires>
+    <description>CI fixture: flat layout, older dir (should be skipped).</description>
+    <area>
+      <areaDesc>FlatOldArea</areaDesc>
+    </area>
+  </info>
+</alert>
