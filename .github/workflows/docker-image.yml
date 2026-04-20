@@ -90,7 +90,11 @@ jobs:
         assert_has     "capfeed.php (flat)" "$FEED" "FlatEvent"
         assert_has     "capfeed.php (flat)" "$FEED" "FlatArea"
         assert_has     "capfeed.php (flat)" "$FEED" "FlatSender"
+        assert_has     "capfeed.php (flat)" "$FEED" 'xml-stylesheet href="capatom.xsl"'
         assert_missing "capfeed.php (flat)" "$FEED" "FlatOld"
+
+        XSL=$(curl -fs http://localhost:8080/capatom.xsl)
+        assert_has "capatom.xsl served" "$XSL" "xsl:stylesheet"
 
         stop_container
 

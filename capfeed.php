@@ -119,7 +119,7 @@ EOT;
 header("Content-type: application/xml");
 echo <<<EOT
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<!--?xml-stylesheet href='capatom.xsl' type='text/xsl'?-->
+<?xml-stylesheet href="capatom.xsl" type="text/xsl"?>
 <!--
   This atom/xml feed is an index to active advisories, watches and warnings
   issued by the $senderNameEsc. This index file
