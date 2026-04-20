@@ -47,13 +47,17 @@ function findLatestCapDir(string $root): ?string {
 }
 
 foreach ($SUBDIRS as $DIR) {
-  $root = $DIR === "" ? "data/publishedCap" : "data/$DIR/publishedCap";
-  $latest = findLatestCapDir($root);
-  if ($latest === null) continue;
+  $relRoot = $DIR === "" ? "data/publishedCap" : "data/$DIR/publishedCap";
+  $absLatest = findLatestCapDir(__DIR__ . "/" . $relRoot);
+  if ($absLatest === null) continue;
 
-  foreach (scandir($latest) as $file) {
+  // Keep the response paths relative to the document root, but do all
+  // filesystem reads against the absolute path (independent of the PHP CWD).
+  $relLatest = substr($absLatest, strlen(__DIR__) + 1);
+
+  foreach (scandir($absLatest) as $file) {
     if (preg_match("/_ALERT_/", $file) || preg_match("/_UPDATE_/", $file)) {
-      $capfiles[] = $latest . "/" . $file;
+      $capfiles[] = $relLatest . "/" . $file;
     }
   }
 }

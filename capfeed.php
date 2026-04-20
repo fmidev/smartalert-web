@@ -63,14 +63,18 @@ function findLatestCapDir(string $root): ?string {
 }
 
 foreach ($SUBDIRS as $subdir) {
-    $root = $subdir === "" ? "data/publishedCap" : "data/$subdir/publishedCap";
-    $DIR = findLatestCapDir($root);
-    if ($DIR === null) continue;
+    $relRoot = $subdir === "" ? "data/publishedCap" : "data/$subdir/publishedCap";
+    $absDir = findLatestCapDir(__DIR__ . "/" . $relRoot);
+    if ($absDir === null) continue;
 
-    $FILES = scandir($DIR);
+    // Filesystem reads use the absolute path (independent of the PHP CWD);
+    // the relative form is what goes into the <id>/<link> URLs.
+    $relDir = substr($absDir, strlen(__DIR__) + 1);
+
+    $FILES = scandir($absDir);
     foreach ($FILES as $file) {
         if (preg_match("/_ALERT_/", $file) || preg_match("/_UPDATE_/", $file)) {
-            $content = file_get_contents($DIR . "/" . $file);
+            $content = file_get_contents($absDir . "/" . $file);
             $xml = new SimpleXmlElement($content);
             $senderName = (string) $xml->info->senderName;
 
@@ -78,23 +82,23 @@ foreach ($SUBDIRS as $subdir) {
                 continue;
             }
 
-            $entryUrl = htmlspecialchars($address . $DIR . "/" . $file, ENT_XML1, 'UTF-8');
+            $entryUrl = htmlspecialchars($address . $relDir . "/" . $file, ENT_XML1 | ENT_QUOTES, 'UTF-8');
             $atom .= "<entry>\n";
             $atom .= "<id>" . $entryUrl . "</id>\n";
-            $atom .= "<title>" . htmlspecialchars((string) $xml->info->event, ENT_XML1, 'UTF-8') . " for " . htmlspecialchars($xml->info->area->areaDesc, ENT_XML1, 'UTF-8') . " issued " . date('F j \a\t g:i A T', strtotime($xml->info->onset)) . " until " . date('F j \a\t g:i A T', strtotime($xml->info->expires)) . " </title>\n";
-            $atom .= "<summary>" . htmlspecialchars($xml->info->description, ENT_XML1, 'UTF-8') . "</summary>\n";
-            $atom .= "<cap:effective>" . htmlspecialchars((string) $xml->info->effective, ENT_XML1, 'UTF-8') . "</cap:effective>\n";
-            $atom .= "<cap:expires>" . htmlspecialchars((string) $xml->info->expires, ENT_XML1, 'UTF-8') . "</cap:expires>\n";
-            $atom .= "<updated>" . htmlspecialchars((string) $xml->sent, ENT_XML1, 'UTF-8') . "</updated>\n";
-            $updated = date("c", filemtime($DIR . "/" . $file));
+            $atom .= "<title>" . htmlspecialchars((string) $xml->info->event, ENT_XML1 | ENT_QUOTES, 'UTF-8') . " for " . htmlspecialchars($xml->info->area->areaDesc, ENT_XML1 | ENT_QUOTES, 'UTF-8') . " issued " . date('F j \a\t g:i A T', strtotime($xml->info->onset)) . " until " . date('F j \a\t g:i A T', strtotime($xml->info->expires)) . " </title>\n";
+            $atom .= "<summary>" . htmlspecialchars($xml->info->description, ENT_XML1 | ENT_QUOTES, 'UTF-8') . "</summary>\n";
+            $atom .= "<cap:effective>" . htmlspecialchars((string) $xml->info->effective, ENT_XML1 | ENT_QUOTES, 'UTF-8') . "</cap:effective>\n";
+            $atom .= "<cap:expires>" . htmlspecialchars((string) $xml->info->expires, ENT_XML1 | ENT_QUOTES, 'UTF-8') . "</cap:expires>\n";
+            $atom .= "<updated>" . htmlspecialchars((string) $xml->sent, ENT_XML1 | ENT_QUOTES, 'UTF-8') . "</updated>\n";
+            $updated = date("c", filemtime($absDir . "/" . $file));
             $atom .= '<link rel="related" type="application/cap+xml" href="' . $entryUrl . '"/>' . "\n";
             $atom .= "</entry>\n";
         }
     }
 }
 
-$senderNameEsc = htmlspecialchars($senderName, ENT_XML1, 'UTF-8');
-$capfeedEsc = htmlspecialchars($capfeed, ENT_XML1, 'UTF-8');
+$senderNameEsc = htmlspecialchars($senderName, ENT_XML1 | ENT_QUOTES, 'UTF-8');
+$capfeedEsc = htmlspecialchars($capfeed, ENT_XML1 | ENT_QUOTES, 'UTF-8');
 
 if ($atom === "") {
     $updated = date("c", time());
@@ -106,7 +110,7 @@ if ($atom === "") {
 <name>$senderNameEsc</name>
 </author>
 <title>There are no active watches, warnings or advisories</title>
-<link href='$capfeedEsc'/>
+<link href="$capfeedEsc"/>
 <summary>There are no active watches, warnings or advisories</summary>
 </entry>
 EOT;
