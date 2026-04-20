@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         fetch-depth: 1  # shallow clone
         submodules: false
@@ -22,6 +22,9 @@ jobs:
     - name: Docker build
       run: docker build . --file Dockerfile --tag fmidev/smartmetalert:latest
     - name: Docker tag
-      run: docker image tag fmidev/smartmetalert:latest fmidev/smartmetalert:$(date +%y.%m.%d)
+      run: |
+        DATE_TAG=$(date +%y.%m.%d)
+        docker image tag fmidev/smartmetalert:latest fmidev/smartmetalert:${DATE_TAG}
+        docker image tag fmidev/smartmetalert:latest fmidev/smartmetalert:${DATE_TAG}-${GITHUB_SHA::7}
     - name: Docker push
       run: docker push --all-tags fmidev/smartmetalert
