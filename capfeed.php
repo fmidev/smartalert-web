@@ -46,9 +46,26 @@ $address = $protocol . "://" . $host . $dir . "/";
 // Full feed URL
 $capfeed = $protocol . "://" . $host . $script_name;
 
-foreach ($SUBDIRS as $dir) {
-    $DIR = trim(shell_exec("find data/$dir/publishedCap -type d|sort -n|tail -1"));
-    if (!$DIR || !is_dir($DIR)) continue; // Skip if $DIR is empty or not a directory
+function findLatestCapDir(string $root): ?string {
+    if (!is_dir($root)) return null;
+    $latest = $root;
+    $it = new RecursiveIteratorIterator(
+        new RecursiveDirectoryIterator($root, FilesystemIterator::SKIP_DOTS),
+        RecursiveIteratorIterator::SELF_FIRST
+    );
+    foreach ($it as $fileInfo) {
+        if ($fileInfo->isDir()) {
+            $path = $fileInfo->getPathname();
+            if (strcmp($path, $latest) > 0) $latest = $path;
+        }
+    }
+    return $latest;
+}
+
+foreach ($SUBDIRS as $subdir) {
+    $root = $subdir === "" ? "data/publishedCap" : "data/$subdir/publishedCap";
+    $DIR = findLatestCapDir($root);
+    if ($DIR === null) continue;
 
     $FILES = scandir($DIR);
     foreach ($FILES as $file) {
@@ -61,31 +78,35 @@ foreach ($SUBDIRS as $dir) {
                 continue;
             }
 
+            $entryUrl = htmlspecialchars($address . $DIR . "/" . $file, ENT_XML1, 'UTF-8');
             $atom .= "<entry>\n";
-            $atom .= "<id>$address" . $DIR . "/" . $file . "</id>\n";
-            $atom .= "<title>" . $xml->info->event . " for " . htmlspecialchars($xml->info->area->areaDesc, ENT_XML1, 'UTF-8') . " issued " . date('F j \a\t g:i A T', strtotime($xml->info->onset)) . " until " . date('F j \a\t g:i A T', strtotime($xml->info->expires)) . " </title>\n";
+            $atom .= "<id>" . $entryUrl . "</id>\n";
+            $atom .= "<title>" . htmlspecialchars((string) $xml->info->event, ENT_XML1, 'UTF-8') . " for " . htmlspecialchars($xml->info->area->areaDesc, ENT_XML1, 'UTF-8') . " issued " . date('F j \a\t g:i A T', strtotime($xml->info->onset)) . " until " . date('F j \a\t g:i A T', strtotime($xml->info->expires)) . " </title>\n";
             $atom .= "<summary>" . htmlspecialchars($xml->info->description, ENT_XML1, 'UTF-8') . "</summary>\n";
-            $atom .= "<cap:effective>" . $xml->info->effective . "</cap:effective>\n";
-            $atom .= "<cap:expires>" . $xml->info->expires . "</cap:expires>\n";
-            $atom .= "<updated>" . $xml->sent . "</updated>\n";
+            $atom .= "<cap:effective>" . htmlspecialchars((string) $xml->info->effective, ENT_XML1, 'UTF-8') . "</cap:effective>\n";
+            $atom .= "<cap:expires>" . htmlspecialchars((string) $xml->info->expires, ENT_XML1, 'UTF-8') . "</cap:expires>\n";
+            $atom .= "<updated>" . htmlspecialchars((string) $xml->sent, ENT_XML1, 'UTF-8') . "</updated>\n";
             $updated = date("c", filemtime($DIR . "/" . $file));
-            $atom .= '<link rel="related" type="application/cap+xml" href="' . $address . $DIR . "/" . $file . '"/>' . "\n";
+            $atom .= '<link rel="related" type="application/cap+xml" href="' . $entryUrl . '"/>' . "\n";
             $atom .= "</entry>\n";
         }
     }
 }
 
+$senderNameEsc = htmlspecialchars($senderName, ENT_XML1, 'UTF-8');
+$capfeedEsc = htmlspecialchars($capfeed, ENT_XML1, 'UTF-8');
+
 if ($atom === "") {
     $updated = date("c", time());
     $atom = <<<EOT
 <entry>
-<id>$capfeed</id>
+<id>$capfeedEsc</id>
 <updated>$updated</updated>
 <author>
-<name>$senderName</name>
+<name>$senderNameEsc</name>
 </author>
 <title>There are no active watches, warnings or advisories</title>
-<link href='$capfeed'/>
+<link href='$capfeedEsc'/>
 <summary>There are no active watches, warnings or advisories</summary>
 </entry>
 EOT;
@@ -97,27 +118,27 @@ echo <<<EOT
 <!--?xml-stylesheet href='capatom.xsl' type='text/xsl'?-->
 <!--
   This atom/xml feed is an index to active advisories, watches and warnings
-  issued by the $senderName. This index file
+  issued by the $senderNameEsc. This index file
   is not the complete Common Alerting Protocol (CAP) alert message. To obtain
   the complete CAP alert, please follow the links for each entry in this index.
   Not all information in the CAP message is contained in this index of active
   alerts.
 -->
 
-<feed 
+<feed
   xmlns="http://www.w3.org/2005/Atom"
   xmlns:cap="urn:oasis:names:tc:emergency:cap:1.2"
   xmlns:ha="http://www.alerting.net/namespace/index_1.0">
 
-  <link href="$capfeed" rel="self"/>
-  <rights> Copyright, $senderName. Licensed under CC BY 4.0 </rights>
-  <id>$capfeed</id>
-  <generator>$senderName</generator>
+  <link href="$capfeedEsc" rel="self"/>
+  <rights> Copyright, $senderNameEsc. Licensed under CC BY 4.0 </rights>
+  <id>$capfeedEsc</id>
+  <generator>$senderNameEsc</generator>
   <updated>$updated</updated>
   <author>
-     <name>$senderName</name>
+     <name>$senderNameEsc</name>
   </author>
-  <title>Current Watches, Warnings and Advisories Issued by $senderName</title>
+  <title>Current Watches, Warnings and Advisories Issued by $senderNameEsc</title>
 $atom
 </feed>
 EOT;

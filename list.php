@@ -1,11 +1,11 @@
 <?php
 
 $capfiles = [];
+$basePath = __DIR__ . "/data";
 
-$DIRS = filter_input(INPUT_GET, 'dir', FILTER_SANITIZE_SPECIAL_CHARS);
+$DIRS = filter_input(INPUT_GET, 'dir');
 
 if (!$DIRS) {
-  $basePath = __DIR__ . "/data";
   $SUBDIRS = [];
   if (is_dir("$basePath/publishedCap")) {
     // If "data/publishedCap" exists, just use that
@@ -20,17 +20,40 @@ if (!$DIRS) {
     }
   }
 } else {
-  $SUBDIRS = explode(',', $DIRS);
+  // Validate user-supplied dir against a strict whitelist (prevents path traversal)
+  $SUBDIRS = [];
+  foreach (explode(',', $DIRS) as $d) {
+    $d = trim($d);
+    if ($d === "" || !preg_match('/^[A-Za-z0-9_-]+$/', $d)) continue;
+    if (!is_dir("$basePath/$d/publishedCap")) continue;
+    $SUBDIRS[] = $d;
+  }
+}
+
+function findLatestCapDir(string $root): ?string {
+  if (!is_dir($root)) return null;
+  $latest = $root;
+  $it = new RecursiveIteratorIterator(
+    new RecursiveDirectoryIterator($root, FilesystemIterator::SKIP_DOTS),
+    RecursiveIteratorIterator::SELF_FIRST
+  );
+  foreach ($it as $fileInfo) {
+    if ($fileInfo->isDir()) {
+      $path = $fileInfo->getPathname();
+      if (strcmp($path, $latest) > 0) $latest = $path;
+    }
+  }
+  return $latest;
 }
 
 foreach ($SUBDIRS as $DIR) {
-  $DIR = trim(`find data/$DIR/publishedCap -type d|sort -n|tail -1`);
-  if (!$DIR || !is_dir($DIR)) continue;
+  $root = $DIR === "" ? "data/publishedCap" : "data/$DIR/publishedCap";
+  $latest = findLatestCapDir($root);
+  if ($latest === null) continue;
 
-  $FILES = scandir($DIR);
-  foreach ($FILES as $file) {
+  foreach (scandir($latest) as $file) {
     if (preg_match("/_ALERT_/", $file) || preg_match("/_UPDATE_/", $file)) {
-      $capfiles[] = $DIR . "/" . $file;
+      $capfiles[] = $latest . "/" . $file;
     }
   }
 }
