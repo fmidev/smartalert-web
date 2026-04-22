@@ -246,7 +246,6 @@ function changeLanguage() {
   $('#levelYellowText').text(t('potentially dangerous'))
   $('#levelOrangeText').text(t('dangerous'))
   $('#levelRedText').text(t('very dangerous'))
-  $('#icon-legend-header').text(t('Map legend'))
 
   document.querySelector('.leaflet-control-zoom-in').title = t('Zoom in');
   document.querySelector('.leaflet-control-zoom-out').title = t('Zoom out');
@@ -318,9 +317,8 @@ const addToMapLegend = (object, day) => {
   var row = table.insertRow(table.rows.length)
   var cell1 = row.insertCell(0)
   var cell2 = row.insertCell(1)
-  cell1.innerHTML = `<img src=\"${object.iconUrl}" width=\"30px\" height=\"30px\" border=\"1px solid black\">`
+  cell1.innerHTML = `<img src=\"${object.iconUrl}" width=\"30px\" height=\"30px\" style=\"border-radius:3px\">`
   cell2.innerHTML = object.name
-  cell1.style.width = '45px';
 }
 
 // Create additional Control placeholders
@@ -970,7 +968,7 @@ function doCAP(dom) {
       paths: path,
       fillColor: color,
       fillOpacity: 1,
-      color: '#000000',
+      color: '#303193',
       opacity: alertOptions.polygonOptions.strokeOpacity,
       weight: alertOptions.polygonOptions.strokeWeight,
       map: map,
