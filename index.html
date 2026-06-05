@@ -25,10 +25,13 @@
   <script src="https://cdn.jsdelivr.net/npm/dayjs@1.10.7/plugin/utc.js"></script>
   <!-- Include Timezone plugin from CDN -->
   <script src="https://cdn.jsdelivr.net/npm/dayjs@1.10.7/plugin/timezone.js"></script>
+  <!-- Include CustomParseFormat plugin for parsing YYYYMMDDHHmmss timestamps -->
+  <script src="https://cdn.jsdelivr.net/npm/dayjs@1.10.7/plugin/customParseFormat.js"></script>
   <script>
     // Extend dayjs with the plugins
     dayjs.extend(dayjs_plugin_utc);
     dayjs.extend(dayjs_plugin_timezone);
+    dayjs.extend(dayjs_plugin_customParseFormat);
   </script>
   <!-- Add translation files for required languages-->
   <!--<script type="text/javascript" src="i18n/translations-en-US.js"></script-->
@@ -55,7 +58,7 @@
     <!-- Panels area (opens to the left of buttons) -->
     <div id="topright-panels">
       <!-- Filter panel (language, event type, severity legend) -->
-      <div id="filter-panel" class="topright-panel" style="display: none;">
+      <div id="filter-panel" class="topright-panel" style="display: block;">
         <button class="panel-close-btn" data-panel="filter-panel">&times;</button>
         <div id="eventSelect">
           <select id="eventType">

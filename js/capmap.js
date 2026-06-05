@@ -1146,26 +1146,99 @@ function doCAP(dom) {
       '<a href="$1" target="_blank">$1</a>' // Wrap in anchor tags
     );
 
+    let areaBlock = ''
+
+    if (alertOptions.regionsUnderTitle === true && area) {
+      areaBlock = `<hr class="popup-divider"><div class="popup-section"><div class="area-name">${area}</div></div>`
+    }
+
     const content = `
-        <h4 class="iw-title">${info.querySelector('event').textContent}</h4>
-        <i>${t('Valid from')} <b>${fromDateFormatted}</b> ${t('to')} <b>${toDateFormatted}</b></i>
-        ${active_str}
-        <p>${linkifiedDescription}</p>
-        <p><i>${t('Issued by')} ${sender} ${t('at')} ${dFormatted}</i></p>
+        <div class="popup-section"><h4 class="iw-title">${info.querySelector('event').textContent}</h4></div>
+        ${areaBlock}
+        <hr class="popup-divider">
+        <div class="popup-section"><i>${t('Valid from')} <b>${fromDateFormatted}</b> ${t('to')} <b>${toDateFormatted}</b></i>${active_str}</div>
+        <hr class="popup-divider">
+        <div class="popup-section">${linkifiedDescription}</div>
+        <hr class="popup-divider">
+        <div class="popup-section"><i>${t('Issued by')} ${sender} ${t('at')} ${dFormatted}</i></div>
       `;
 
     // bind markers to marker and polygon
     var popup = L.popup({
-      maxWidth: 220,
-      minWidth: 220,
-      maxHeight: alertOptions.popUpMaxHeight,
-      autoPan: true,
+      maxWidth: 350,
+      minWidth: 350,
+      maxHeight: alertOptions.popUpMaxHeight || 500,
+      autoPan: window.innerWidth > 500,
       autoPanPadding: [2, 2]
     });
 
     popup.setContent(content)
     marker.bindPopup(popup).addTo(map)
-    areapolygon.bindPopup(popup).addTo(map)
+    marker.on('popupopen', function () {
+      setTimeout(function () {
+        var el = popup._container
+        if (el) {
+          if (window.innerWidth <= 500) {
+            el.classList.add('popup-mobile-center')
+            // Move out of transformed parent so position:fixed works
+            popup._originalParent = el.parentNode
+            popup._originalNextSibling = el.nextSibling
+            document.body.appendChild(el)
+          } else {
+            var w = el.offsetWidth
+            var h = el.offsetHeight
+            el.style.marginLeft = -(w / 2 + 1) + 'px'
+            el.style.marginBottom = -(h - 22.2) + 'px'
+          }
+        }
+      }, 0)
+      if (window.innerWidth <= 500) {
+        var fp = document.getElementById('filter-panel')
+        var ip = document.getElementById('icon-legend-panel')
+        var fb = document.getElementById('filter-toggle-btn')
+        var ib = document.getElementById('icon-legend-btn')
+        popup._savedPanels = {
+          filter: fp && fp.style.display !== 'none',
+          iconLegend: ip && ip.style.display !== 'none'
+        }
+        if (fp) fp.style.display = 'none'
+        if (ip) ip.style.display = 'none'
+        if (fb) fb.classList.remove('btn-active')
+        if (ib) ib.classList.remove('btn-active')
+      }
+    })
+    marker.on('popupclose', function () {
+      // Restore popup to its original parent if it was moved
+      var el = popup._container
+      if (el && popup._originalParent) {
+        el.classList.remove('popup-mobile-center')
+        if (popup._originalNextSibling) {
+          popup._originalParent.insertBefore(el, popup._originalNextSibling)
+        } else {
+          popup._originalParent.appendChild(el)
+        }
+        popup._originalParent = null
+        popup._originalNextSibling = null
+      }
+      if (window.innerWidth <= 500 && popup._savedPanels) {
+        if (popup._savedPanels.filter) {
+          var fp = document.getElementById('filter-panel')
+          var fb = document.getElementById('filter-toggle-btn')
+          if (fp) fp.style.display = 'block'
+          if (fb) fb.classList.add('btn-active')
+        }
+        if (popup._savedPanels.iconLegend) {
+          var ip = document.getElementById('icon-legend-panel')
+          var ib = document.getElementById('icon-legend-btn')
+          if (ip) ip.style.display = 'block'
+          if (ib) ib.classList.add('btn-active')
+        }
+        popup._savedPanels = null
+      }
+    })
+    areapolygon.on('click', function () {
+      marker.openPopup()
+    })
     markers.push(marker)
   }
   showMarkers(selectedDAY)
@@ -1268,6 +1341,11 @@ const initTopRightToolbar = () => {
   if (!alertOptions.showIconLegend) {
     iconLegendBtn.style.display = 'none'
     iconLegendPanel.style.display = 'none'
+  }
+
+  // Mark filter button as active since filter panel is open by default
+  if (filterPanel.style.display !== 'none') {
+    filterBtn.classList.add('btn-active')
   }
 
   function togglePanel(panel, btn) {
