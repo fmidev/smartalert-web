@@ -244,6 +244,13 @@ function changeLanguage() {
 
   document.querySelector('.leaflet-control-zoom-in').title = t('Zoom in');
   document.querySelector('.leaflet-control-zoom-out').title = t('Zoom out');
+
+  // Translate top-right toolbar button tooltips on language change
+  var filterToggleBtn = document.getElementById('filter-toggle-btn')
+  if (filterToggleBtn) filterToggleBtn.title = t('Filters')
+  var iconLegendToggleBtn = document.getElementById('icon-legend-btn')
+  if (iconLegendToggleBtn) iconLegendToggleBtn.title = t('Map legend')
+
   var dayControlDiv = document.createElement('div')
   DayControl(dayControlDiv, map)
 
