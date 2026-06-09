@@ -799,7 +799,6 @@ function doCAP(dom) {
   var alert = dom.querySelector('alert')
   var info = alert.querySelector('info')
   var infos = alert.querySelectorAll('info')
-  var area = info.querySelector('areaDesc').textContent
   var severity = info.querySelector('severity').textContent
   var areapolygons = info.querySelectorAll('polygon')
   var parameters = info.querySelectorAll('parameter')
@@ -844,6 +843,20 @@ function doCAP(dom) {
     languages.push(infos[ie].querySelector('language').textContent)
   }
   debug('Languages: ' + languages)
+
+  // Collect area names from the selected-language <info> block, de-duplicated.
+  // Reading here (after the language is chosen above) makes the area names
+  // follow the selected language. Splitting on commas + de-duping avoids
+  // repeated names like "Shida Kartli, Shida Kartli, ...".
+  var areaDescs = info.querySelectorAll('areaDesc')
+  var areaParts = []
+  for (var ad = 0; ad < areaDescs.length; ad++) {
+    areaDescs[ad].textContent.split(',').forEach(function (part) {
+      var name = part.trim()
+      if (name && areaParts.indexOf(name) === -1) areaParts.push(name)
+    })
+  }
+  var area = areaParts.join(', ')
 
   // Use CAP field onset if available (f.eg. SmartAlert)
   // Otherwise use CAP field effective (f.eg. NOAA)
@@ -1031,7 +1044,8 @@ function doCAP(dom) {
           { match: 'depression', icon: 'tropical-depression.png' },
           { match: 'tropical', icon: 'cyclone.png' },
           { match: 'landslide', icon: 'landslide.png' },
-          { match: 'high daytime temperature', icon: 'high-temperature.png' },
+          { match: 'high daytime temperature', icon: 'high-day-temp.png' },
+          { match: 'high nighttime temperature', icon: 'high-night-temp.png' },
           { match: 'high temperature', icon: 'high-temperature.png' },
           { match: 'low temperature', icon: 'low-temperature.png' },
           { match: 'temperature', icon: 'temperature.png' },
