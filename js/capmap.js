@@ -1181,7 +1181,9 @@ function doCAP(dom) {
     var popup = L.popup({
       maxWidth: 350,
       minWidth: 350,
-      maxHeight: alertOptions.popUpMaxHeight || 500,
+      // Cap the height to what fits in the viewport so Leaflet shows a scrollbar
+      // whenever the full warning text would otherwise overflow the screen.
+      maxHeight: Math.min(alertOptions.popUpMaxHeight || 500, window.innerHeight - 80),
       autoPan: window.innerWidth > 500,
       autoPanPadding: [2, 2]
     });
@@ -1202,7 +1204,11 @@ function doCAP(dom) {
             var w = el.offsetWidth
             var h = el.offsetHeight
             el.style.marginLeft = -(w / 2 + 1) + 'px'
-            el.style.marginBottom = -(h - 22.2) + 'px'
+            // Keep the popup's top edge aligned with the icon as the icon size
+            // changes. The offset tracks half the icon height + a fixed 7.2px gap:
+            //   iconHeight 30 -> 22.2 (unchanged),  iconHeight 38 -> 26.2 (4px higher).
+            var topOffset = (alertOptions.iconHeight || 30) / 2 + 7.2
+            el.style.marginBottom = -(h - topOffset) + 'px'
           }
         }
       }, 0)
