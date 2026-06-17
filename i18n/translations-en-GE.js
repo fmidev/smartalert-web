@@ -52,6 +52,7 @@ translations['en-CO'] = {
   "Flood": "Flood",
   "Snow avalanche": "Snow avalanche",
   "Map legend": "Map legend",
+  "Filters": "Filters",
   "Updated": "Updated",
   "Mon": "Mon",
   "Tue": "Tue",

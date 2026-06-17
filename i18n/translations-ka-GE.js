@@ -50,6 +50,7 @@ translations['ka-GE'] = {
     "and": "და",
     "Minor threat": "უმნიშვნელო საფრთხე",
     "Map legend": "რუკის ლეგენდა",
+    "Filters": "ფილტრები",
     "Updated": "განახლებულია",
     "Click to show alerts for today": "დააწკაპეთ რომ ნახოთ გაფრთხილება დღევანდელი დღისთვის",
     "Click to show alerts for tomorrow": "დააწკაპეთ რომ ნახოთ გაფრთხილება ხვალინდელი დღისთვის",
