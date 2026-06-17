@@ -9,7 +9,7 @@ $basePaths = [
 
 // Return the lexicographically greatest immediate subdirectory name, or null.
 // For zero-padded timestamp names (YYYY, MM, YYYYMMDDHHmmss) this is the latest.
-function latestSubdir(string $dir): ?string {
+function latestSubdir($dir) {
     if (!is_dir($dir)) return null;
     $best = null;
     foreach (scandir($dir) as $entry) {

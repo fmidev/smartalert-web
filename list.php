@@ -30,7 +30,7 @@ if (!$DIRS) {
   }
 }
 
-function findLatestCapDir(string $root): ?string {
+function findLatestCapDir($root) {
   if (!is_dir($root)) return null;
   $latest = $root;
   $it = new RecursiveIteratorIterator(
