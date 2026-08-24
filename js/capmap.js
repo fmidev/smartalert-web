@@ -1051,6 +1051,8 @@ function doCAP(dom) {
           { match: 'depression', icon: 'tropical-depression.png' },
           { match: 'tropical', icon: 'cyclone.png' },
           { match: 'landslide', icon: 'landslide.png' },
+          { match: 'low soil moisture', icon: 'drought.png' },
+          { match: 'soil moisture', icon: 'flood.png' },
           { match: 'high daytime temperature', icon: 'high-day-temp.png' },
           { match: 'high nighttime temperature', icon: 'high-night-temp.png' },
           { match: 'high temperature', icon: 'high-temperature.png' },
