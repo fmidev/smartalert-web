@@ -1,6 +1,6 @@
 translations['sw-UG'] = {
     "en-UG": "English",
-    "ug-UG": "Luganda",
+    "lg-UG": "Luganda",
     "sw-UG": "Swahili",
     "All": "Zote",
     "day": "siku",

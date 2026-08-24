@@ -1,5 +1,5 @@
-translations['en-CO'] = {
-  "en-CO": "English",
+translations['en-GE'] = {
+  "en-GE": "English",
   "Today": "Today",
   "Tomorrow": "Tomorrow",
   "Day after tomorrow": "Day after tomorrow",

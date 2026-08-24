@@ -88,6 +88,11 @@ Date.prototype.dateDiff = function () {
 }
 
 function initialize() {
+  // Translation files load after this script, so an unknown stored language
+  // can only be detected here, not where selectedLANGUAGE is first read.
+  if (translations[selectedLANGUAGE] === undefined) {
+    selectedLANGUAGE = translations[alertOptions.defaultLanguage] !== undefined ? alertOptions.defaultLanguage : Object.keys(translations)[0]
+  }
   buildLegend()
   map = L.map('map-canvas', {
     zoom: alertOptions.zoom,
@@ -403,6 +408,16 @@ function findMatchingName(name) {
     }
   }
   return "No key/value pair found";
+}
+
+function getSenderName(alert, info) {
+  var configured = alertOptions.senderName
+  if (configured && typeof configured === 'object') {
+    configured = configured[selectedLANGUAGE] !== undefined ? configured[selectedLANGUAGE] : configured['default']
+  }
+  if (configured) { return configured }
+  if (info.querySelector('senderName')) { return info.querySelector('senderName').textContent }
+  return alert.querySelector('sender').textContent
 }
 
 function showMarkers(day) {
@@ -1051,6 +1066,8 @@ function doCAP(dom) {
           { match: 'depression', icon: 'tropical-depression.png' },
           { match: 'tropical', icon: 'cyclone.png' },
           { match: 'landslide', icon: 'landslide.png' },
+          { match: 'low soil moisture', icon: 'drought.png' },
+          { match: 'soil moisture', icon: 'flood.png' },
           { match: 'high daytime temperature', icon: 'high-day-temp.png' },
           { match: 'high nighttime temperature', icon: 'high-night-temp.png' },
           { match: 'high temperature', icon: 'high-temperature.png' },
@@ -1116,8 +1133,7 @@ function doCAP(dom) {
     }
 
     // create an infowindow
-    var sender
-    if (info.querySelector('senderName')) { sender = info.querySelector('senderName').textContent } else { sender = alert.querySelector('sender').textContent }
+    var sender = getSenderName(alert, info)
 
     if (alert.querySelector('web')) { sender = '<a href="http://' + dom.querySelector('web').textContent + '">' + sender + '</a>' }
 
