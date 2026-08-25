@@ -1,5 +1,5 @@
-translations['en-CO'] = {
-  "en-CO": "English",
+translations['en-GE'] = {
+  "en-GE": "English",
   "Today": "Today",
   "Tomorrow": "Tomorrow",
   "Day after tomorrow": "Day after tomorrow",
@@ -52,6 +52,7 @@ translations['en-CO'] = {
   "Flood": "Flood",
   "Snow avalanche": "Snow avalanche",
   "Map legend": "Map legend",
+  "Filters": "Filters",
   "Updated": "Updated",
   "Mon": "Mon",
   "Tue": "Tue",

@@ -1,39 +1,46 @@
 <?php
 
-// Base directory paths
+// Base directory paths (absolute, independent of the PHP working directory)
 $basePaths = [
-    "data/published",
-    "data/hydrology/published",
-    "data/meteorology/published"
-    
+    __DIR__ . "/data/published",
+    __DIR__ . "/data/hydrology/published",
+    __DIR__ . "/data/meteorology/published",
 ];
+
+// Return the lexicographically greatest immediate subdirectory name, or null.
+// For zero-padded timestamp names (YYYY, MM, YYYYMMDDHHmmss) this is the latest.
+function latestSubdir($dir) {
+    if (!is_dir($dir)) return null;
+    $best = null;
+    foreach (scandir($dir) as $entry) {
+        if ($entry === "." || $entry === "..") continue;
+        if (!is_dir($dir . "/" . $entry)) continue;
+        if ($best === null || strcmp($entry, $best) > 0) $best = $entry;
+    }
+    return $best;
+}
 
 $latestDirName = null;
 $latestTimestamp = 0;
 
 foreach ($basePaths as $basePath) {
-    // Find the latest year directory
-    $latestYearDir = trim(`find $basePath -mindepth 1 -maxdepth 1 -type d | sort -nr | head -1`);
+    // Find the latest year -> month -> folder using PHP-native directory scanning
+    $latestYear = latestSubdir($basePath);
+    if ($latestYear === null) continue;
 
-    if ($latestYearDir) {
-        // Find the latest month directory within the latest year directory
-        $latestMonthDir = trim(`find $latestYearDir -mindepth 1 -maxdepth 1 -type d | sort -nr | head -1`);
+    $latestMonth = latestSubdir($basePath . "/" . $latestYear);
+    if ($latestMonth === null) continue;
 
-        if ($latestMonthDir) {
-            // Find the latest folder within the latest month directory
-            $latestFolderDir = trim(`find $latestMonthDir -mindepth 1 -maxdepth 1 -type d | sort -nr | head -1`);
+    $latestFolder = latestSubdir($basePath . "/" . $latestYear . "/" . $latestMonth);
+    if ($latestFolder === null) continue;
 
-            if ($latestFolderDir) {
-                // Get the modification time of the latest folder
-                $folderTimestamp = filemtime($latestFolderDir);
+    $folderPath = $basePath . "/" . $latestYear . "/" . $latestMonth . "/" . $latestFolder;
 
-                // **Ensure global comparison is performed correctly**
-                if ($folderTimestamp > $latestTimestamp) {
-                    $latestTimestamp = $folderTimestamp;
-                    $latestDirName = basename($latestFolderDir);
-                }
-            }
-        }
+    // Cross-path comparison: keep the folder with the most recent modification time
+    $folderTimestamp = filemtime($folderPath);
+    if ($folderTimestamp > $latestTimestamp) {
+        $latestTimestamp = $folderTimestamp;
+        $latestDirName = $latestFolder;
     }
 }
 

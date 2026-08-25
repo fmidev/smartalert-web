@@ -1,4 +1,3 @@
-
 var DEBUG = false
 var map
 var markers = []
@@ -89,6 +88,11 @@ Date.prototype.dateDiff = function () {
 }
 
 function initialize() {
+  // Translation files load after this script, so an unknown stored language
+  // can only be detected here, not where selectedLANGUAGE is first read.
+  if (translations[selectedLANGUAGE] === undefined) {
+    selectedLANGUAGE = translations[alertOptions.defaultLanguage] !== undefined ? alertOptions.defaultLanguage : Object.keys(translations)[0]
+  }
   buildLegend()
   map = L.map('map-canvas', {
     zoom: alertOptions.zoom,
@@ -127,7 +131,7 @@ function initialize() {
   nameLayer = L.tileLayer(alertOptions.mapTileSource, {
     attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors, <a href="' + alertOptions.attributionLink + '">' + alertOptions.attribution + '</a>',
     pane: 'labels',
-    opacity: 0.5
+    opacity: 0.35
   }).addTo(map)
 
   nameLayer = L.tileLayer(alertOptions.mapTileSource, {
@@ -216,11 +220,7 @@ function initialize() {
   setInterval(updateData, alertOptions.refresh * 1000)
   changeLanguage()
 
-  alertOptions.showIconLegend && initIconLegendButton()
-  if (!alertOptions.showIconLegend) {
-    document.getElementById("icon-legend-container").style.display = 'none'
-    document.getElementById("icon-legend-button").style.display = 'none'
-  }
+  initTopRightToolbar()
 
 }
 
@@ -246,10 +246,16 @@ function changeLanguage() {
   $('#levelYellowText').text(t('potentially dangerous'))
   $('#levelOrangeText').text(t('dangerous'))
   $('#levelRedText').text(t('very dangerous'))
-  $('#icon-legend-header').text(t('Map legend'))
 
   document.querySelector('.leaflet-control-zoom-in').title = t('Zoom in');
   document.querySelector('.leaflet-control-zoom-out').title = t('Zoom out');
+
+  // Translate top-right toolbar button tooltips on language change
+  var filterToggleBtn = document.getElementById('filter-toggle-btn')
+  if (filterToggleBtn) filterToggleBtn.title = t('Filters')
+  var iconLegendToggleBtn = document.getElementById('icon-legend-btn')
+  if (iconLegendToggleBtn) iconLegendToggleBtn.title = t('Map legend')
+
   var dayControlDiv = document.createElement('div')
   DayControl(dayControlDiv, map)
 
@@ -272,42 +278,32 @@ function buildLegend() {
   // Rebuild legend if useMinorThreat is true
   if (alertOptions.useMinorThreat) {
     var div = document.getElementById('legend-warning-types');
-    div.innerHTML = ''; // Clear existing content
+    div.innerHTML = '';
 
-    // Legend data
     var levels = [
       { id: 'levelGreen', textId: 'levelGreenText', text: 'minor threat' },
-      { id: 'levelOrange', textId: 'levelOrangeText', text: 'dangerous' },
       { id: 'levelYellow', textId: 'levelYellowText', text: 'potentially dangerous' },
+      { id: 'levelOrange', textId: 'levelOrangeText', text: 'dangerous' },
       { id: 'levelRed', textId: 'levelRedText', text: 'very dangerous' }
     ];
 
-    // Create table rows for the legend
-    for (let i = 0; i < levels.length; i += 2) {
-      var tr = document.createElement('tr');
+    for (var i = 0; i < levels.length; i++) {
+      var row = document.createElement('div');
+      row.className = 'warning-row';
 
-      // Create and append first column (color and text)
-      appendLegendCell(tr, levels[i].id, 'colorLegend');
-      appendLegendCell(tr, levels[i].textId, '', levels[i].text);
+      var colorSpan = document.createElement('span');
+      colorSpan.className = 'colorLegend';
+      colorSpan.id = levels[i].id;
 
-      // Create and append second column (color and text)
-      if (levels[i + 1]) {
-        appendLegendCell(tr, levels[i + 1].id, 'colorLegend');
-        appendLegendCell(tr, levels[i + 1].textId, '', levels[i + 1].text);
-      }
+      var textSpan = document.createElement('span');
+      textSpan.id = levels[i].textId;
+      textSpan.textContent = levels[i].text;
 
-      div.appendChild(tr);
+      row.appendChild(colorSpan);
+      row.appendChild(textSpan);
+      div.appendChild(row);
     }
   }
-}
-
-// Helper function to append a cell to a row
-function appendLegendCell(row, id, className = '', innerHTML = '') {
-  var td = document.createElement('td');
-  td.id = id;
-  if (className) td.className = className;
-  td.innerHTML = innerHTML;
-  row.appendChild(td);
 }
 
 
@@ -318,9 +314,8 @@ const addToMapLegend = (object, day) => {
   var row = table.insertRow(table.rows.length)
   var cell1 = row.insertCell(0)
   var cell2 = row.insertCell(1)
-  cell1.innerHTML = `<img src=\"${object.iconUrl}" width=\"30px\" height=\"30px\" border=\"1px solid black\">`
+  cell1.innerHTML = `<img src=\"${object.iconUrl}" width=\"30px\" height=\"30px\" style=\"border-radius:3px\">`
   cell2.innerHTML = object.name
-  cell1.style.width = '45px';
 }
 
 // Create additional Control placeholders
@@ -408,12 +403,21 @@ function centerUserLocation() {
 
 function findMatchingName(name) {
   for (let key in alertOptions.eventTypes) {
-    const subKeys = key.split(',').map(s => s.trim());
-    if (subKeys.some(subKey => name.includes(subKey))) {
+    if (name.includes(key)) {
       return t(alertOptions.eventTypes[key]);
     }
   }
   return "No key/value pair found";
+}
+
+function getSenderName(alert, info) {
+  var configured = alertOptions.senderName
+  if (configured && typeof configured === 'object') {
+    configured = configured[selectedLANGUAGE] !== undefined ? configured[selectedLANGUAGE] : configured['default']
+  }
+  if (configured) { return configured }
+  if (info.querySelector('senderName')) { return info.querySelector('senderName').textContent }
+  return alert.querySelector('sender').textContent
 }
 
 function showMarkers(day) {
@@ -644,18 +648,7 @@ const setActiveButton = (selectedButton) => {
 
   selectedButton.classList.add('active')
   if (prevButton !== null && prevButton != selectedButton) {
-
     prevButton.classList.remove('active')
-
-    var prevSquare = prevButton.querySelector('.color-square')
-    if (prevSquare) {
-      prevSquare.innerHTML = ''
-    }
-  }
-
-  var square = selectedButton.querySelector('.color-square')
-  if (square) {
-    square.innerHTML = '&#10003;'
   }
   prevButton = selectedButton
 }
@@ -713,7 +706,7 @@ function DayControl(controlDiv) {
   controlDiv.classList.add('controlDiv');
 
   const isExtended = alertOptions.extendedDayControl
-
+  
   if (alertOptions.day0Control) {
     const setDay0UI = document.createElement('div')
     setDay0UI.id = 'setDay0UI'
@@ -722,11 +715,10 @@ function DayControl(controlDiv) {
     const dayText = isExtended ? generateDayText(day) + '<br>' + generateDate(0) : t('Today')
 
     dayTextElement.innerHTML = dayText
+    setDay0UI.appendChild(dayTextElement)
     if (isExtended) {
       setDay0UI.appendChild(square0)
-      dayTextElement.style.marginLeft = '30px'
     }
-    setDay0UI.appendChild(dayTextElement)
     controlDiv.appendChild(setDay0UI)
     selectedDAY === 0 && setActiveButton(setDay0UI)
     setEventListener(setDay0UI, 0)
@@ -740,12 +732,10 @@ function DayControl(controlDiv) {
     const dayText = isExtended ? generateDayText(day + 1) + '<br>' + generateDate(1) : t('Tomorrow')
 
     dayTextElement.innerHTML = dayText
+    setDay1UI.appendChild(dayTextElement)
     if (isExtended) {
       setDay1UI.appendChild(square1)
-      dayTextElement.style.marginLeft = '30px'
     }
-
-    setDay1UI.appendChild(dayTextElement)
     controlDiv.appendChild(setDay1UI)
     setEventListener(setDay1UI, 1, 'Show events for tomorrow.')
   }
@@ -758,11 +748,10 @@ function DayControl(controlDiv) {
     const dayText = isExtended ? generateDayText(day + 2) + '<br>' + generateDate(2) : t('Day after tomorrow')
 
     dayTextElement.innerHTML = dayText
+    setDay2UI.appendChild(dayTextElement)
     if (isExtended) {
       setDay2UI.appendChild(square2)
-      dayTextElement.style.marginLeft = '30px'
     }
-    setDay2UI.appendChild(dayTextElement)
     controlDiv.appendChild(setDay2UI)
     setEventListener(setDay2UI, 2, 'Show events for day after tomorrow.')
   }
@@ -776,12 +765,10 @@ function DayControl(controlDiv) {
     const dayText = isExtended ? generateDayText(day + 3) + '<br>' + generateDate(3) : t('Day 4')
 
     dayTextElement.innerHTML = dayText
+    setDay3UI.appendChild(dayTextElement)
     if (isExtended) {
       setDay3UI.appendChild(square3)
-      dayTextElement.style.marginLeft = '30px'
     }
-
-    setDay3UI.appendChild(dayTextElement)
     controlDiv.appendChild(setDay3UI)
     setEventListener(setDay3UI, 3, 'Show events for day 4.')
   }
@@ -795,13 +782,10 @@ function DayControl(controlDiv) {
     const dayText = isExtended ? generateDayText(day + 4) + '<br>' + generateDate(4) : t('Day 5')
 
     dayTextElement.innerHTML = dayText
-    if (isExtended) {
-      const square = document.createElement('div')
-      setDay4UI.appendChild(square4)
-      dayTextElement.style.marginLeft = '30px'
-    }
-
     setDay4UI.appendChild(dayTextElement)
+    if (isExtended) {
+      setDay4UI.appendChild(square4)
+    }
     controlDiv.appendChild(setDay4UI)
     setEventListener(setDay4UI, 4, 'Show events for day 5.')
   }
@@ -815,12 +799,10 @@ function DayControl(controlDiv) {
     const dayText = isExtended ? `${t('All')} <br> ${t('days')}` : t('All')
 
     dayTextElement.innerHTML = dayText
+    setAllDaysUI.appendChild(dayTextElement)
     if (isExtended) {
       setAllDaysUI.appendChild(square5)
-      dayTextElement.style.marginLeft = '30px'
     }
-
-    setAllDaysUI.appendChild(dayTextElement)
     controlDiv.appendChild(setAllDaysUI)
     selectedDAY === null && setActiveButton(setAllDaysUI)
     setEventListener(setAllDaysUI, null, 'Show all events.')
@@ -839,7 +821,6 @@ function doCAP(dom) {
   var alert = dom.querySelector('alert')
   var info = alert.querySelector('info')
   var infos = alert.querySelectorAll('info')
-  var area = info.querySelector('areaDesc').textContent
   var severity = info.querySelector('severity').textContent
   var areapolygons = info.querySelectorAll('polygon')
   var parameters = info.querySelectorAll('parameter')
@@ -885,6 +866,20 @@ function doCAP(dom) {
   }
   debug('Languages: ' + languages)
 
+  // Collect area names from the selected-language <info> block, de-duplicated.
+  // Reading here (after the language is chosen above) makes the area names
+  // follow the selected language. Splitting on commas + de-duping avoids
+  // repeated names like "Shida Kartli, Shida Kartli, ...".
+  var areaDescs = info.querySelectorAll('areaDesc')
+  var areaParts = []
+  for (var ad = 0; ad < areaDescs.length; ad++) {
+    areaDescs[ad].textContent.split(',').forEach(function (part) {
+      var name = part.trim()
+      if (name && areaParts.indexOf(name) === -1) areaParts.push(name)
+    })
+  }
+  var area = areaParts.join(', ')
+
   // Use CAP field onset if available (f.eg. SmartAlert)
   // Otherwise use CAP field effective (f.eg. NOAA)
   if (info.querySelector('onset')) {
@@ -919,7 +914,6 @@ function doCAP(dom) {
   for (p = 0; p < areapolygons.length; p++) {
     var color
     var zindex
-    var opacity
     var latLngs = areapolygons[p].textContent.split(' ')
 
     // create polygon
@@ -930,57 +924,56 @@ function doCAP(dom) {
       path.push(new L.LatLng(parseFloat(latLng[0]), parseFloat(latLng[1])))
     }
 
+    var fillOpacity = alertOptions.polygonOptions.fillOpacity || 0.85
+
     switch (severity) {
       case 'Extreme':
-        // Red
         color = '#FF0000'
         strokeColor = '#cc0000'
         zindex = 4
-        opacity = 1
         break
       case 'Severe':
-        // Orange
         color = '#FFA500'
         strokeColor = '#ba7901'
         zindex = 3
-        opacity = 1
         break
       case 'Moderate':
-        // Yellow
         color = '#FFFF00'
         strokeColor = '#afaf01'
         zindex = 2
-        opacity = 1
         break
       case 'Minor':
-        // Green
         color = '#00FF00'
         strokeColor = '#01a801'
         zindex = 1
-        opacity = 1
         break
       default:
         color = '#FFFFFF'
         strokeColor = '#bcbcbc'
-        opacity = 1
     }
 
+    var strokeWeight = alertOptions.polygonOptions.strokeWeight || 1
     var areapolygon = L.polygon(path, {
       pane: severity,
       paths: path,
       fillColor: color,
-      fillOpacity: 1,
-      color: '#000000',
-      opacity: alertOptions.polygonOptions.strokeOpacity,
-      weight: alertOptions.polygonOptions.strokeWeight,
+      fillOpacity: fillOpacity,
+      color: '#303193',
+      opacity: alertOptions.polygonOptions.strokeOpacity || 1,
+      weight: strokeWeight,
       map: map,
       visible: false,
       fromDate: fromDateISO,
       toDate: info.querySelector('expires').textContent,
       capEvent: eventRaw,
-      // polygonArea: google.maps.geometry.spherical.computeArea(path),
       polygonArea: polygonArea(path),
       zIndex: zindex
+    })
+
+    // force style after creation
+    areapolygon.setStyle({
+      fillOpacity: fillOpacity,
+      weight: strokeWeight
     })
 
     // add polygons to a polygongroup
@@ -1073,6 +1066,10 @@ function doCAP(dom) {
           { match: 'depression', icon: 'tropical-depression.png' },
           { match: 'tropical', icon: 'cyclone.png' },
           { match: 'landslide', icon: 'landslide.png' },
+          { match: 'low soil moisture', icon: 'drought.png' },
+          { match: 'soil moisture', icon: 'flood.png' },
+          { match: 'high daytime temperature', icon: 'high-day-temp.png' },
+          { match: 'high nighttime temperature', icon: 'high-night-temp.png' },
           { match: 'high temperature', icon: 'high-temperature.png' },
           { match: 'low temperature', icon: 'low-temperature.png' },
           { match: 'temperature', icon: 'temperature.png' },
@@ -1088,14 +1085,12 @@ function doCAP(dom) {
           { match: 'flood', icon: 'flood.png' },
           { match: 'disturbance', icon: 'disturbance.png' },
           { match: 'high tide', icon: 'high-tide.png' },
-          { match: 'rising water level', icon: 'mudflow.png' },
-          { match: 'rise in river water', icon: 'mudflow.png' },
           { match: 'mudflow', icon: 'mudflow.png' },
           { match: 'uv radiation', icon: 'uv.png' },
-          { match: 'precipitation', icon: 'rainfall.png' },
-          { match: 'mixed precipitation', icon: 'mixed.png' },
-          { match: 'air quality', icon: 'air-quality.png' },
-          { match: 'glacier lake outburst', icon: 'glacier-lake-outburst.png' },
+          { match: 'precipitation', icon: 'rainfall.png'},
+          { match: 'mixed precipitation', icon: 'mixed.png'},
+          { match: 'air quality', icon: 'air-quality.png'},
+          { match: 'glacier lake outburst', icon: 'glacier-lake-outburst.png'},
         ];
 
         for (let event of eventMapping) {
@@ -1138,8 +1133,7 @@ function doCAP(dom) {
     }
 
     // create an infowindow
-    var sender
-    if (info.querySelector('senderName')) { sender = info.querySelector('senderName').textContent } else { sender = alert.querySelector('sender').textContent }
+    var sender = getSenderName(alert, info)
 
     if (alert.querySelector('web')) { sender = '<a href="http://' + dom.querySelector('web').textContent + '">' + sender + '</a>' }
 
@@ -1192,30 +1186,102 @@ function doCAP(dom) {
     let areaBlock = ''
 
     if (alertOptions.regionsUnderTitle === true && area) {
-      areaBlock = `<div class="area-name">${area}</div>`
+      areaBlock = `<hr class="popup-divider"><div class="popup-section"><div class="area-name">${area}</div></div>`
     }
 
     const content = `
-        <h4 class="iw-title">${info.querySelector('event').textContent}</h4>
+        <div class="popup-section"><h4 class="iw-title">${info.querySelector('event').textContent}</h4></div>
         ${areaBlock}
-        <i>${t('Valid from')} <b>${fromDateFormatted}</b> ${t('to')} <b>${toDateFormatted}</b></i>
-        ${active_str}
-        <p>${linkifiedDescription}</p>
-        <p><i>${t('Issued by')} ${sender} ${t('at')} ${dFormatted}</i></p>
+        <hr class="popup-divider">
+        <div class="popup-section"><i>${t('Valid from')} <b>${fromDateFormatted}</b> ${t('to')} <b>${toDateFormatted}</b></i>${active_str}</div>
+        <hr class="popup-divider">
+        <div class="popup-section">${linkifiedDescription}</div>
+        <hr class="popup-divider">
+        <div class="popup-section"><i>${t('Issued by')} ${sender} ${t('at')} ${dFormatted}</i></div>
       `;
 
     // bind markers to marker and polygon
     var popup = L.popup({
-      maxWidth: 220,
-      minWidth: 220,
-      maxHeight: alertOptions.popUpMaxHeight,
-      autoPan: true,
+      maxWidth: 350,
+      minWidth: 350,
+      // Cap the height to what fits in the viewport so Leaflet shows a scrollbar
+      // whenever the full warning text would otherwise overflow the screen.
+      maxHeight: Math.min(alertOptions.popUpMaxHeight || 500, window.innerHeight - 80),
+      autoPan: window.innerWidth > 500,
       autoPanPadding: [2, 2]
     });
 
     popup.setContent(content)
     marker.bindPopup(popup).addTo(map)
-    areapolygon.bindPopup(popup).addTo(map)
+    marker.on('popupopen', function () {
+      setTimeout(function () {
+        var el = popup._container
+        if (el) {
+          if (window.innerWidth <= 500) {
+            el.classList.add('popup-mobile-center')
+            // Move out of transformed parent so position:fixed works
+            popup._originalParent = el.parentNode
+            popup._originalNextSibling = el.nextSibling
+            document.body.appendChild(el)
+          } else {
+            var w = el.offsetWidth
+            var h = el.offsetHeight
+            el.style.marginLeft = -(w / 2 + 1) + 'px'
+            // Keep the popup's top edge aligned with the icon as the icon size
+            // changes. The offset tracks half the icon height + a fixed 7.2px gap:
+            //   iconHeight 30 -> 22.2 (unchanged),  iconHeight 38 -> 26.2 (4px higher).
+            var topOffset = (alertOptions.iconHeight || 30) / 2 + 7.2
+            el.style.marginBottom = -(h - topOffset) + 'px'
+          }
+        }
+      }, 0)
+      if (window.innerWidth <= 500) {
+        var fp = document.getElementById('filter-panel')
+        var ip = document.getElementById('icon-legend-panel')
+        var fb = document.getElementById('filter-toggle-btn')
+        var ib = document.getElementById('icon-legend-btn')
+        popup._savedPanels = {
+          filter: fp && fp.style.display !== 'none',
+          iconLegend: ip && ip.style.display !== 'none'
+        }
+        if (fp) fp.style.display = 'none'
+        if (ip) ip.style.display = 'none'
+        if (fb) fb.classList.remove('btn-active')
+        if (ib) ib.classList.remove('btn-active')
+      }
+    })
+    marker.on('popupclose', function () {
+      // Restore popup to its original parent if it was moved
+      var el = popup._container
+      if (el && popup._originalParent) {
+        el.classList.remove('popup-mobile-center')
+        if (popup._originalNextSibling) {
+          popup._originalParent.insertBefore(el, popup._originalNextSibling)
+        } else {
+          popup._originalParent.appendChild(el)
+        }
+        popup._originalParent = null
+        popup._originalNextSibling = null
+      }
+      if (window.innerWidth <= 500 && popup._savedPanels) {
+        if (popup._savedPanels.filter) {
+          var fp = document.getElementById('filter-panel')
+          var fb = document.getElementById('filter-toggle-btn')
+          if (fp) fp.style.display = 'block'
+          if (fb) fb.classList.add('btn-active')
+        }
+        if (popup._savedPanels.iconLegend) {
+          var ip = document.getElementById('icon-legend-panel')
+          var ib = document.getElementById('icon-legend-btn')
+          if (ip) ip.style.display = 'block'
+          if (ib) ib.classList.add('btn-active')
+        }
+        popup._savedPanels = null
+      }
+    })
+    areapolygon.on('click', function () {
+      marker.openPopup()
+    })
     markers.push(marker)
   }
   showMarkers(selectedDAY)
@@ -1308,20 +1374,47 @@ function getCentroid2(arr) {
 }
 
 
-const initIconLegendButton = () => {
-  const button = document.getElementById('icon-legend-button')
-  button.innerHTML = '&#8505'
+const initTopRightToolbar = () => {
+  const filterBtn = document.getElementById('filter-toggle-btn')
+  const iconLegendBtn = document.getElementById('icon-legend-btn')
+  const filterPanel = document.getElementById('filter-panel')
+  const iconLegendPanel = document.getElementById('icon-legend-panel')
 
-  let visible = true
-  button.addEventListener('click', function () {
-    if (visible) {
-      document.getElementById('icon-legend-container').style.visibility = 'hidden'
-      visible = false
-    }
-    else if (!visible) {
-      document.getElementById('icon-legend-container').style.visibility = 'visible'
-      visible = true
-    }
+  // Hide icon legend button if showIconLegend is false
+  if (!alertOptions.showIconLegend) {
+    iconLegendBtn.style.display = 'none'
+    iconLegendPanel.style.display = 'none'
+  }
+
+  // Mark filter button as active since filter panel is open by default
+  if (filterPanel.style.display !== 'none') {
+    filterBtn.classList.add('btn-active')
+  }
+
+  function togglePanel(panel, btn) {
+    const isOpen = panel.style.display !== 'none'
+    panel.style.display = isOpen ? 'none' : 'block'
+    btn.classList.toggle('btn-active', !isOpen)
+  }
+
+  filterBtn.addEventListener('click', function () {
+    togglePanel(filterPanel, filterBtn)
+  })
+
+  iconLegendBtn.addEventListener('click', function () {
+    togglePanel(iconLegendPanel, iconLegendBtn)
+  })
+
+  // Close buttons inside panels
+  document.querySelectorAll('.panel-close-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var panelId = btn.getAttribute('data-panel')
+      var panel = document.getElementById(panelId)
+      panel.style.display = 'none'
+      // Deactivate the corresponding toolbar button
+      if (panelId === 'filter-panel') filterBtn.classList.remove('btn-active')
+      if (panelId === 'icon-legend-panel') iconLegendBtn.classList.remove('btn-active')
+    })
   })
 }
 

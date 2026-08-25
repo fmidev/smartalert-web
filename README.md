@@ -10,7 +10,7 @@ All customizations are to be done to capmap-config.js, index.html and capfeed.ph
   * specify which day buttons will be shown
   * add event types for the dropdown menu (events can also be combined as a comam separated list, i,e. `"rain,showers" : "Rain warnings"`)
   * add map bounds
-  * add your google analytics id
+  * optionally set the name of the issuing organization with `senderName`. Without it the name is read from the CAP file.
 
 2. edit index.html
   * load relevant language files
@@ -85,30 +85,35 @@ Important: Keep the same filenames to ensure the system recognizes them.
 | `subDirectories`      | `String`  | `''`  | A comma separated list of data source subdirectories. E.g. 'meteorology,hydrology'. By default data/ is used. |
 | `useLocation`         | `Boolean` | `false`         | Allow user location. |
 | `useMinorThreat`      | `Boolean` | `false`         | Display minor threat level warning. |
-| `defaultLanguage`     | `String`  | `'en-US'`       | Choose the defaylt language. |
+| `defaultLanguage`     | `String`  | `'en-US'`       | Choose the default language. |
 | `customLangCode`     | `Object`  | `'null'`       | Choose a custom language code for date formatting, day.js doesn't always use ISO standard language codes. I.e. `customLangCode: {'ua-UA':'uk'}` |
 | `dateFormat`          | `String`  | `'ISOString'`   | Use longer date format. Available options are `long` and (default) `ISOString`. |
-| `dateFormatString`    | `Object`  | `null`        | Define the date format used in warning popups if `dateFormat:long`. It's also possible to define date formats. For example:<pre>dateFormatString: {<br>  "default": "MMMM Do YYYY, HH:mm",<br>  'vi-VN': 'HH [giá»] mm [phÃºt], [ngÃ y] DD/MM/YYYY', <br>  "en-VN": "MMMM Do YYYY, HH:mm"<br>},</pre>
-| `displayIssueTimeDirrefence`    | `Boolean`  | `true`        | Display time difference to time of issue (i.e. Issued by Ukrainian Hydrometeorological Center at 29.11.2022, 13:28 (10 days 22 hours 11 minutes ago)) |
+| `dateFormatString`    | `String` or `Object`  | `null`        | Define the date format used in warning popups if `dateFormat:long`. It's also possible to define date formats. For example:<pre>dateFormatString: {<br>  "default": "MMMM Do YYYY, HH:mm",<br>  'vi-VN': 'HH [giá»] mm [phÃºt], [ngÃ y] DD/MM/YYYY', <br>  "en-VN": "MMMM Do YYYY, HH:mm"<br>},</pre>
+| `displayActiveFor`    | `Boolean` | `false`         | Display how long the warning stays active in the warning popup, i.e. `Active for next 2 days 3 hours 15 minutes`. Only shown for warnings that have already started. |
+| `senderName`          | `String` or `Object`  | `null`  | Name of the issuing organization shown in the warning popup and in the filter panel. Use a string for a single name, or an object keyed by language with an optional `default` key. When not set, or when the selected language is missing from the object, the name is read from the CAP file (`senderName`, falling back to `sender`). For example:<pre>senderName: {<br>  "default": "Department of Meteorological Services",<br>  "lg-UG": "Ekitongole ekivunaanyizibwa ku mbeera y'obudde"<br>},</pre> |
+| `hideSender`          | `Boolean` | `false`         | Hide the name of the issuing organization from the filter panel. Does not affect the warning popup. |
+| `regionsUnderTitle`   | `Boolean` | `false`         | Display the area names of the warning under the title in the warning popup. |
 | `mapTileSource`       | `String`  | `''` | Map tile source. See examples from here: https://leaflet-extras.github.io/leaflet-providers/preview/ |
 | `zoom`                | `Number`  | `7`             | Default map zoom level. |
-| `attribution`         | `String`  | `null`          | Attribution text/link. |
+| `attribution`         | `String`  | `null`          | Attribution text. |
+| `attributionLink`     | `String`  | `null`          | URL the attribution text links to. |
 | `displayWMS`          | `Boolean` | `null`          | Display additional content (country borders, regions etc.) as a WMS layer. |
 | `displayOptions`      | `Object`  | `null`          | Settings passed to Tilelayer.WMS. Documentation: https://leafletjs.com/reference.html#tilelayer-wms-l-tilelayer-wms
 | `displayOptions.endpoint`   | `String`  | `null`    | WMS server endpoint. E.g.: https://openwms.fmi.fi/geoserver/wms
 | `displayOptions.params`     | `String`  | `null`    | Required query parameters. If any custom options not documented here are used, they will be sent to the WMS server as extra parameters in each request URL. This can be useful for non-standard vendor WMS parameters. E.g. {layers:'nexrad-n0r-900913', format:'image/png', transparent:true} 
-| `polygonOptions.fillOpaity`    | `Number` | `0.2`   | Warning polygon fill opacity in pixels. |
+| `polygonOptions.fillOpacity`   | `Number` | `0.85`  | Warning polygon fill opacity. |
 | `polygonOptions.strokeOpacity` | `Number` | `1`     | Warning polygon stroke opacity in pixels.  |
-| `polygonOptions.strokeWeight`  | `Number` | `3`     | Warning polygon stroke wight in pixels. |
+| `polygonOptions.strokeWeight`  | `Number` | `1`     | Warning polygon stroke width in pixels. |
+| `polygonOptions.preventSymbolOverlapping` | `Boolean` | `false` | Move warning symbols sideways when several warnings share the same location, so that the symbols do not overlap. |
 | `dayControl`          | `Boolean` | `true`          | Display day control buttons. |
 | `day0Control`         | `Boolean` | `true`          | Display Day 1 button. |
 | `day1Control`         | `Boolean` | `true`          | Display Day 2 button.  |
 | `day2Control`         | `Boolean` | `true`          | Display Day 3 button.  |
-| `day4Control`         | `Boolean` | `true`          | Display Day 4 button.  |
+| `day3Control`         | `Boolean` | `true`          | Display Day 4 button.  |
 | `day4Control`         | `Boolean` | `true`          | Display Day 5 button.  |
 | `allDayControl`       | `Boolean` | `true`          | Display All days button.  |
 | `extendedDayControl`  | `Boolean` | `false`         | Display extended day selection buttons that include weekday, date and color of the highest warning of the that day. |
-| `showDayNames`  | `Boolean` | `false`         | Displays weekdays as "Today," "Tomorrow," etc., instead of standard names like "Tuesday" or "Wednesday." |
+| `showDayNames`  | `Boolean` | `false`         | Display weekday names like "Tue" and "Wed" on the day buttons. When `false`, the buttons read "Today", "Tomorrow", "Day after tomorrow", "Day 4" and "Day 5". Requires `extendedDayControl`. |
 | `dayDateFormat`       | `String`  | `DD.MM`         | Date displayed on day selection buttons if extendedDayControl is true |
 | `popUpMaxHeight`      | `Number`  | `false`         | Warning popup maximum height in pixels. |
 | `refresh`             | `Number`  | `300`           | Warning refresh interval in seconds. |
@@ -120,7 +125,7 @@ Important: Keep the same filenames to ensure the system recognizes them.
 | `customLocations`     | `Boolean` | `false`         | Use configurable custom locations. Custom locations need to be added to locations.js file.  |
 | `numberIcons`         | `Boolean` | `false`         | Display the numeric value instead of icon for wave height, wind speed, swell height and surf height.  |
 | `showIconLegend`      | `Boolean` | `false`         | Display legend that tells meaning of active markers. |
-| `ShowUpdateTime`      | `Boolean` | `false`         | Display latest update time on legend |
+| `showUpdateTime`      | `Boolean` | `false`         | Display latest update time on legend |
 | `hideOffset`      | `Boolean` | `false`         | Hides the time offset from update time. |
 | `timeZone`      | `String` | `""`         | Must be set using an IANA time zone identifier (e.g., "Region/City") to correctly display local time.  |
 | `eventTypes`          | `Object`  | `{}`            | List of used events, key is unique word appearing in event tag. Use comma separated keys to combine multiple warning events to be displayed with one selection in the dropdown list, i.e.: `"shower,rain": "Rain",` |
