@@ -1,7 +1,10 @@
 <?php
 
+require_once __DIR__ . "/capsite.php";
+
 $capfiles = [];
-$basePath = __DIR__ . "/data";
+$siteDir = capSiteDir();
+$basePath = $siteDir . "/data";
 
 $DIRS = filter_input(INPUT_GET, 'dir');
 
@@ -10,7 +13,7 @@ if (!$DIRS) {
   if (is_dir("$basePath/publishedCap")) {
     // If "data/publishedCap" exists, just use that
     $SUBDIRS[] = "";
-  } else {
+  } elseif (is_dir($basePath)) {
     // Otherwise, auto-discover subdirectories under "data/" containing "publishedCap"
     foreach (scandir($basePath) as $d) {
       if ($d === "." || $d === "..") continue;
@@ -48,12 +51,12 @@ function findLatestCapDir($root) {
 
 foreach ($SUBDIRS as $DIR) {
   $relRoot = $DIR === "" ? "data/publishedCap" : "data/$DIR/publishedCap";
-  $absLatest = findLatestCapDir(__DIR__ . "/" . $relRoot);
+  $absLatest = findLatestCapDir($siteDir . "/" . $relRoot);
   if ($absLatest === null) continue;
 
-  // Keep the response paths relative to the document root, but do all
+  // Keep the response paths relative to the site directory, but do all
   // filesystem reads against the absolute path (independent of the PHP CWD).
-  $relLatest = substr($absLatest, strlen(__DIR__) + 1);
+  $relLatest = substr($absLatest, strlen($siteDir) + 1);
 
   foreach (scandir($absLatest) as $file) {
     if (preg_match("/_ALERT_/", $file) || preg_match("/_UPDATE_/", $file)) {

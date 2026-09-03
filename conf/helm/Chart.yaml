@@ -1,0 +1,12 @@
+apiVersion: v2
+name: smartalert-web-chart
+description: Helm chart for smartalert-web
+type: application
+dependencies:
+- name: application
+  version: v6.8.0
+  repository: https://stakater.github.io/stakater-charts
+# DON'T TOUCH THIS
+# This is the chart version. This version number is incremented automatically each time you make changes
+# to the application or helm values file; and pushed to artifact store
+version: 0.0.0

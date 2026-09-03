@@ -1,0 +1,91 @@
+application:
+  applicationName: smartalert-web
+
+  ## Deployment
+  deployment:
+    additionalLabels:
+      app: smartalert-web
+      appCategory: backend
+    imagePullSecrets:
+    - name: fmi-openshift-pull-secret
+    image:
+      repository: quay.io/fmi/smartalert-web
+    volumeMounts:
+      # One share holds every country: sites/<cc>/capmap-config.js, its data/
+      # tree and any custom icons. Countries are discovered from it at runtime,
+      # so adding one needs no change here and no new image.
+      #
+      # Until the share exists this mount can stay commented out: the pod still
+      # starts and the landing page says there are no countries yet.
+      #      smartalert-sites:
+      #        mountPath: /smartmet/www/smartalert/sites
+      #        readOnly: true
+      #
+      # Required mount for ModSecurity
+      mod-sec-tmp:
+        mountPath: /var/lib/mod_security
+        readOnly: false
+    volumes:
+      #      smartalert-sites:
+      #        nfs:
+      #          path: <share path>
+      #          server: <server>.fmi.fi
+      #          readOnly: true
+      #
+      # Required mount for ModSecurity
+      mod-sec-tmp:
+        emptyDir: {} # /var/lib/mod_security
+    containerSecurityContext:
+      readOnlyRootFilesystem: false
+      runAsNonRoot: true
+    securityContext:
+      runAsGroup: 48
+    replicas: 1
+    resources:
+      # Template default, sized for 12 PHP-FPM workers. The endpoints only walk
+      # a directory tree and parse small XML files, so this is likely generous
+      # for a dev environment; worth revisiting once there is real traffic.
+      requests:
+        memory: 1Gi
+        cpu: 0.5
+      limits:
+        memory: 5Gi
+        cpu: 2
+    readinessProbe:
+      enabled: true
+      failureThreshold: 4
+      periodSeconds: 15
+      successThreshold: 1
+      timeoutSeconds: 1
+      initialDelaySeconds: 10
+      httpGet:
+        path: /node-health-status/
+        port: 8080
+    livenessProbe:
+      enabled: true
+      failureThreshold: 2
+      periodSeconds: 15
+      successThreshold: 1
+      timeoutSeconds: 1
+      initialDelaySeconds: 60
+      httpGet:
+        path: /node-health-status/
+        port: 8080
+    terminationGracePeriodSeconds: 30
+
+  ## Service
+  service:
+    ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+    - name: https
+      port: 443
+      targetPort: 8081
+
+  ## Service account
+  rbac:
+    enabled: true
+    serviceAccount:
+      enabled: false
+      name: default

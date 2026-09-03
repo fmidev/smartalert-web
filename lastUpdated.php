@@ -1,10 +1,13 @@
 <?php
 
+require_once __DIR__ . "/capsite.php";
+
 // Base directory paths (absolute, independent of the PHP working directory)
+$siteDir = capSiteDir();
 $basePaths = [
-    __DIR__ . "/data/published",
-    __DIR__ . "/data/hydrology/published",
-    __DIR__ . "/data/meteorology/published",
+    $siteDir . "/data/published",
+    $siteDir . "/data/hydrology/published",
+    $siteDir . "/data/meteorology/published",
 ];
 
 // Return the lexicographically greatest immediate subdirectory name, or null.

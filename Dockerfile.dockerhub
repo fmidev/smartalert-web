@@ -1,0 +1,6 @@
+FROM php:7.2-apache
+COPY *.php *.js *.xsl *.png index.html LICENSE /var/www/html/
+COPY i18n/ /var/www/html/i18n/
+COPY css/ /var/www/html/css/
+COPY js/ /var/www/html/js/
+COPY img/ /var/www/html/img/

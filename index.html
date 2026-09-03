@@ -18,7 +18,6 @@
   <script type="text/javascript" src="js/leaflet.js"></script>
 
   <script type="text/javascript" src="capmap-config.js?v=2"></script>
-  <script type="text/javascript" src="locations.js"></script>
   <script type="text/javascript" src="js/capmap.js?v=2"></script>
   <script type="text/javascript" src="ethiopian_calendar.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/dayjs@latest"></script>
@@ -33,12 +32,27 @@
     dayjs.extend(dayjs_plugin_timezone);
     dayjs.extend(dayjs_plugin_customParseFormat);
   </script>
-  <!-- Add translation files for required languages-->
-  <!--<script type="text/javascript" src="i18n/translations-en-US.js"></script-->
-  <script type="text/javascript" src="i18n/translations-ka-GE.js"></script>
-  <script type="text/javascript" src="i18n/translations-en-GE.js"></script>
-  <!--<script type="text/javascript" src="i18n/translations-ru-KG.js"></script>
-      <script type="text/javascript" src="i18n/translations-ky-KG.js"></script>-->
+  <!--
+    Translation files come from alertOptions.languages in capmap-config.js.
+    They are inserted with async=false so they run in that order, which is also
+    the order the language dropdown ends up in. This must stay after capmap.js,
+    which declares the translations object the files write into.
+  -->
+  <script type="text/javascript">
+    (function () {
+      var options = window.alertOptions || {}
+      var sources = (options.languages || ['en-US']).map(function (lang) {
+        return 'i18n/translations-' + lang + '.js'
+      })
+      if (options.customLocations) { sources.push('locations.js') }
+      sources.forEach(function (src) {
+        var script = document.createElement('script')
+        script.src = src
+        script.async = false
+        document.head.appendChild(script)
+      })
+    })()
+  </script>
 
   <script type="text/javascript">
     $(document).ready(function () {

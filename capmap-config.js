@@ -1,4 +1,7 @@
 var alertOptions = {
+    // Languages offered in the dropdown, in this order. Each entry loads
+    // i18n/translations-<entry>.js.
+    languages: ['en-US'],
     subDirectories: false,  //'meteorology,hydrology' etc.
     useLocation: false,
     defaultLanguage: 'en-US',

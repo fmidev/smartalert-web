@@ -1,3 +1,7 @@
 .git
 .github
 .dockerignore
+data
+**/data
+docs
+sites

@@ -2,6 +2,15 @@
 
 All customizations are to be done to capmap-config.js, index.html and capfeed.php files.
 
+## OpenShift (dev)
+
+On OpenShift a single deployment serves every country as its own page under
+`/<country code>/` (`/ge/`, `/kg/`, …). The application code below is shared by
+all of them; each country's own `capmap-config.js` and CAP data come from a
+mounted share and are not kept in this repository. See
+[docs/openshift-deployment.md](docs/openshift-deployment.md)
+([PDF](docs/openshift-deployment.pdf)).
+
 ## Initial set up
 
 1. edit capmap-config.js 
@@ -40,6 +49,7 @@ Fill in these values at initial se up
 
 | Option                | Type |  Default         | Description
 | --------------------- | ---- | ---------------- | ------------------------------------------- |
+| `languages`           | `Array`   | `['en-US']`     | Translation files to load, as language codes. Each entry loads `i18n/translations-<code>.js`. **The order is also the order of the language dropdown.** E.g. `['ka-GE', 'en-GE']`. |
 | `center`              | `Array`   | `null`          | Default map center point in `[latitude, longitude]`. |
 | `bounds.north`        | `Number`  | `null`          | Default northern map boundary. |
 | `bounds.east`         | `Number`  | `null`          | Default eastern map boundary. |
@@ -48,6 +58,14 @@ Fill in these values at initial se up
 
 
 ## Using Custom Icons
+
+> On OpenShift this works differently and more simply: put only the icons you
+> actually want to replace in the country's own `img/` directory on the mounted
+> share, next to its `capmap-config.js`, and set `customIcons: true`. Anything
+> you do not supply falls back to the default set, so there is nothing to copy.
+> See [docs/openshift-deployment.md](docs/openshift-deployment.md).
+>
+> The recipe below applies to the single-site Docker Hub / RPM installs.
 
 To use custom icons, you’ll need to copy the default icons into a new folder and then replace them with your own.
 
