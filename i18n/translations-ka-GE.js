@@ -30,6 +30,7 @@ translations['ka-GE'] = {
     "Starting:": "დაწყება:",
     "Ending:": "დამთავრება:",
     "Issued by": "გავრცელებულია",
+    "Issued by suffix": "მიერ",
     "no awareness needed": "არ არის გაფრთხილება",
     "potentially dangerous": "დაბალი",
     "dangerous": "საშუალო",

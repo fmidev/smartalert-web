@@ -1183,6 +1183,13 @@ function doCAP(dom) {
       '<a href="$1" target="_blank">$1</a>' // Wrap in anchor tags
     );
 
+    // Read directly, not via t(): a missing key must yield no suffix, and t()
+    // returns the key itself when a translation is missing.
+    var senderSuffix = translations[selectedLANGUAGE]['Issued by suffix']
+    var issuedBy = [t('Issued by'), sender, senderSuffix, t('at'), dFormatted]
+      .filter(function (part) { return part })
+      .join(' ')
+
     let areaBlock = ''
 
     if (alertOptions.regionsUnderTitle === true && area) {
@@ -1197,7 +1204,7 @@ function doCAP(dom) {
         <hr class="popup-divider">
         <div class="popup-section">${linkifiedDescription}</div>
         <hr class="popup-divider">
-        <div class="popup-section"><i>${t('Issued by')} ${sender} ${t('at')} ${dFormatted}</i></div>
+        <div class="popup-section"><i>${issuedBy}</i></div>
       `;
 
     // bind markers to marker and polygon
