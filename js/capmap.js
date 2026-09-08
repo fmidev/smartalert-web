@@ -1133,9 +1133,16 @@ function doCAP(dom) {
     }
 
     // create an infowindow
-    var sender = getSenderName(alert, info)
+    var senderName = getSenderName(alert, info)
+    var senderWeb = alert.querySelector('web') ? dom.querySelector('web').textContent : null
 
-    if (alert.querySelector('web')) { sender = '<a href="http://' + dom.querySelector('web').textContent + '">' + sender + '</a>' }
+    // The panel shows the plain name, the popup sentence adds a case ending to
+    // it, so both need to be wrapped in the same link.
+    var linkSender = function (text) {
+      return senderWeb ? '<a href="http://' + senderWeb + '">' + text + '</a>' : text
+    }
+
+    var sender = linkSender(senderName)
 
     alertOptions.hideSender ? $('#senderName').html('') : $('#senderName').html(sender)
 
@@ -1185,8 +1192,15 @@ function doCAP(dom) {
 
     // Read directly, not via t(): a missing key must yield no suffix, and t()
     // returns the key itself when a translation is missing.
+    //
+    // Two separate keys, because they are different things grammatically:
+    // 'Issued by name suffix' is a case ending that belongs to the name itself
+    // and is glued to it without a space (Georgian genitive: სააგენტო ->
+    // სააგენტოს), while 'Issued by suffix' is a standalone word placed after
+    // the name (the postposition მიერ).
+    var senderNameSuffix = translations[selectedLANGUAGE]['Issued by name suffix'] || ''
     var senderSuffix = translations[selectedLANGUAGE]['Issued by suffix']
-    var issuedBy = [t('Issued by'), sender, senderSuffix, t('at'), dFormatted]
+    var issuedBy = [t('Issued by'), linkSender(senderName + senderNameSuffix), senderSuffix, t('at'), dFormatted]
       .filter(function (part) { return part })
       .join(' ')
 
