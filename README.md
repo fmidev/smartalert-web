@@ -7,9 +7,7 @@ All customizations are to be done to capmap-config.js, index.html and capfeed.ph
 On OpenShift a single deployment serves every country as its own page under
 `/<country code>/` (`/ge/`, `/kg/`, …). The application code below is shared by
 all of them; each country's own `capmap-config.js` and CAP data come from a
-mounted share and are not kept in this repository. See
-[docs/openshift-deployment.md](docs/openshift-deployment.md)
-([PDF](docs/openshift-deployment.pdf)).
+mounted share and are not kept in this repository.
 
 ## Initial set up
 
@@ -63,7 +61,6 @@ Fill in these values at initial se up
 > actually want to replace in the country's own `img/` directory on the mounted
 > share, next to its `capmap-config.js`, and set `customIcons: true`. Anything
 > you do not supply falls back to the default set, so there is nothing to copy.
-> See [docs/openshift-deployment.md](docs/openshift-deployment.md).
 >
 > The recipe below applies to the single-site Docker Hub / RPM installs.
 
