@@ -51,10 +51,15 @@ Icons: default set in `img/`. To customize, copy to `img/custom/` (keep filename
 
 `.github/workflows/docker-image.yml` runs on push to master and on PRs:
 
-1. Lints all PHP by running `php -l` inside `php:7.2-cli` (matches the runtime Dockerfile base).
-2. Builds the image from `Dockerfile` (just `php:7.2-apache` + `COPY . /var/www/html/`).
+1. Lints all PHP by running `php -l` inside `php:7.2-cli` (matches the `Dockerfile.dockerhub` base).
+2. Builds the image from `Dockerfile.dockerhub` (`php:7.2-apache` + an explicit `COPY` list).
 3. Smoke-tests the running container with fixtures bind-mounted at `/var/www/html/data`: exercises flat layout, subdir layout, auto-discovery, `?dir=` single / multi / rejected values, and asserts that `capfeed.php` emits the stylesheet PI and `capatom.xsl` is served.
 4. Pushes to both `docker.io/fmidev/smartmetalert` and `ghcr.io/fmidev/smartalert-web`. Master builds tag `latest` + `YY.MM.DD` + `YY.MM.DD-<sha7>`; PR builds tag `pr-<N>`. Fork PRs skip login/push (secrets unavailable).
+
+Two more workflows cover the OpenShift path, which `docker-image.yml` does not touch:
+
+- `.github/workflows/test.yml` runs on PRs: `php -l` on the runner's PHP 8 (the OpenShift base image runtime, so the two workflows together lint against both supported PHP versions), `helm lint` on `conf/helm`, and a build of the OpenShift `Dockerfile`. Nothing is pushed.
+- `.github/workflows/deploy.yml` runs on `N.N.N` tags only, on any branch. It calls FMI's reusable `openshift-deploy.yml`, which pushes the image and the Helm chart to Quay and bumps the version in `fmidev/openshift-apps-gitops`. Tags are how OpenShift releases happen; branch pushes never deploy.
 
 Fixtures live at `.github/fixtures/{flat,subdirs}/` and must be valid CAP 1.2 XML with `<expires>` in the far future. When changing CAP field handling, keep the fixtures aligned with what the assertions grep for.
 

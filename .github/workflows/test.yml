@@ -17,7 +17,8 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: PHP lint
+      # Runner PHP 8.x — matches the OpenShift base image runtime.
+      - name: PHP 8 syntax check
         shell: bash -l {0}
         run: |
           php --version

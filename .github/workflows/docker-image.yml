@@ -20,7 +20,8 @@ jobs:
         clean: true
         persist-credentials: false
 
-    - name: PHP syntax check
+    # php:7.2-cli — matches the Dockerfile.dockerhub / RPM runtime.
+    - name: PHP 7.2 syntax check
       run: |
         docker run --rm -v "$PWD":/app -w /app php:7.2-cli \
           sh -c 'find . -name "*.php" -print0 | xargs -0 -n1 php -l'
