@@ -333,6 +333,36 @@ fmi-routes:
         insecureEdgeTerminationPolicy: Allow
 ```
 
+Kolmas tiedosto menee eri hakemistoon. **Ilman tätä ArgoCD ei tiedä
+sovelluksesta mitään eikä synkkaa sitä**, vaikka kaksi edellistä tiedostoa
+olisivat paikallaan.
+
+`pak/argocd-apps/development/smartalert-web.yml`:
+
+```yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: smartalert-web-development
+  namespace: openshift-gitops
+spec:
+  destination:
+    namespace: smartalert-web-development
+    server: 'https://kubernetes.default.svc'
+  project: pak
+  source:
+    path: pak/smartalert-web/development
+    repoURL: 'git@github.com:fmidev/openshift-apps-gitops.git'
+    targetRevision: main
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+```
+
+Nimiavaruus on `<sovellus>-<ympäristö>`, eli **`smartalert-web-development`**.
+Sama konventio on kaikilla pak-sovelluksilla.
+
 Huomioita:
 
 - `0.0.0` on alkuarvo; workflow ylikirjoittaa sen jokaisella tagilla.
@@ -686,3 +716,33 @@ ennen kuin epäilet sovelluslogiikkaa.
 
 Ikonimäärät ovat oletuksesta poikkeavia tiedostoja. Nykyisiltä sivuilta haettiin
 318 tiedostoa, joista 212 osoittautui oletuksen kopioiksi ja karsittiin.
+
+# 17. Liite — mounttipyyntö
+
+Uutta levytilaa ei tarvita: `/smartdev` on `iller.weatherproof.fmi.fi:/pal_dev`,
+jossa on tilaa. Kaikki maakohtainen aineisto — konfiguraatio, CAP-data ja omat
+ikonit — menee saman jaon alle, joten riittää yksi mountti.
+
+---
+
+Hei,
+
+Saisiko SmartAlertille NFS-mountin? Klusteri **ock**, nimiavaruus
+`smartalert-web-development`.
+
+- `iller.weatherproof.fmi.fi:/pal_dev/www/smartalert-sites`
+- kontissa `/smartmet/www/smartalert/sites`
+- **read-only**
+
+Tiedostot ovat www:n omistuksessa (uid 320 / gid 92) ja kontti ajaa uid 1002,
+gid 48 — tarvitaanko podille lisäryhmä 92, vai riittääkö että pidän tiedostot
+world-readablena?
+
+Kiitos!
+
+---
+
+Tiketin ulkopuolelle jää yksi tehtävä: **CAP-datan julkaisu pitää ohjata
+kirjoittamaan** hakemistoon `/smartdev/www/smartalert-sites/<cc>/data`. Se ei
+ole levypyyntö vaan muutos siihen prosessiin joka nykyään kirjoittaa
+CAP-tiedostot.

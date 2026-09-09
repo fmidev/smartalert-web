@@ -17,21 +17,13 @@ application:
       #
       # Until the share exists this mount can stay commented out: the pod still
       # starts and the landing page says there are no countries yet.
-      #      smartalert-sites:
-      #        mountPath: /smartmet/www/smartalert/sites
-      #        readOnly: true
-      #
+      # The per-country share is mounted per environment from the deploy
+      # configuration repository, not from here.
       # Required mount for ModSecurity
       mod-sec-tmp:
         mountPath: /var/lib/mod_security
         readOnly: false
     volumes:
-      #      smartalert-sites:
-      #        nfs:
-      #          path: <share path>
-      #          server: <server>.fmi.fi
-      #          readOnly: true
-      #
       # Required mount for ModSecurity
       mod-sec-tmp:
         emptyDir: {} # /var/lib/mod_security
