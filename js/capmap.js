@@ -410,6 +410,14 @@ function findMatchingName(name) {
   return "No key/value pair found";
 }
 
+function findConfiguredIcon(eventRaw) {
+  var icons = alertOptions.eventIcons || {}
+  for (var key in icons) {
+    if (eventRaw.includes(key.toLowerCase())) { return icons[key] }
+  }
+  return null
+}
+
 function getSenderName(alert, info) {
   var configured = alertOptions.senderName
   if (configured && typeof configured === 'object') {
@@ -1009,8 +1017,13 @@ function doCAP(dom) {
       let iconAnchor = [alertOptions.iconWidth / 2 + alertOptions.xDisplacement || 0, alertOptions.iconWidth / 2];
       let popupAnchor = [0, 0];
 
-      // Determine icon URL based on conditions
-      if (windSpeed > 0) {
+      // A configured icon wins over the parameter-based ones below, so a country
+      // can give e.g. all strong wind warnings one symbol even when some of them
+      // carry a WindSpeed parameter.
+      const configuredIcon = findConfiguredIcon(eventRaw);
+      if (configuredIcon) {
+        iconUrl = symbolPath + configuredIcon;
+      } else if (windSpeed > 0) {
         iconUrl = alertOptions.numberIcons
           ? `${symbolPath}wind.php?speed=${windSpeed}&direction=${windDirection}`
           : symbolPath + 'wind-speed.png';

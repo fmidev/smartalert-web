@@ -9,7 +9,7 @@ translations['en-UG'] = {
   "Day 5": "Day 5",
   "Click to show alerts for today": "Click to show alerts for today.",
   "Click to show alerts for tomorrow": "Click to show alerts for tomorrow.",
-  "Click to show alerts for day after tomorrow": "Click to show alerts for day after tomorrow.",
+  "Click to show alerts for day after tomorrow": "Click to show alerts for the day after tomorrow.",
   "Click to show all active alerts": "Click to show all active alerts.",
   "Zoom in": "Zoom in",
   "Zoom out": "Zoom out",

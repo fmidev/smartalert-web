@@ -48,7 +48,7 @@ translations['sw-UG'] = {
     "Updated": "Imesasishwa",
     "Click to show alerts for today": "Bofya ili kuonyesha arifa za leo",
     "Click to show alerts for tomorrow": "Bofya ili kuonyesha arifa za kesho",
-    "Click to show alerts for day after tomorrow": "Bofya ili kuonyesha arifa za kesho.",
+    "Click to show alerts for day after tomorrow": "Bofya ili kuonyesha arifa za siku baada ya kesho.",
     "Click to show all active alerts": "Bofya ili kuonyesha arifa zote zinazotumika.",
     "Zoom in": "Vuta karibu",
     "Zoom out": "Kuza nje"
