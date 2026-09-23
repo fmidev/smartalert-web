@@ -17,6 +17,7 @@ translations['ka-GE'] = {
     "Snow avalanche": "თოვლის ზვავი",
     "Flood": "წყალდიდობა",
     "Flash flood": "წყალმოვარდნა",
+    "Flash flood/urban flood": "წყალმოვარდნა/ურბანული წყალდიდობა",
     "Mudflow": "ღვარცოფი",
     "Landslide": "მეწყერი",
     "Snowfall": "ძლიერი თოვა",

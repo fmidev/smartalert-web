@@ -401,13 +401,33 @@ function centerUserLocation() {
   }
 }
 
-function findMatchingName(name) {
-  for (let key in alertOptions.eventTypes) {
-    if (name.includes(key)) {
-      return t(alertOptions.eventTypes[key]);
+// Pick the eventTypes entry an alert belongs to. A phrase at the START of the
+// event text wins (longest one, so "flash flood" beats "flood" for "Flash flood
+// warning"), which is what lets flood and flash flood/urban flood be separate
+// rows. Only when nothing matches at the start does this fall back to the
+// original "first entry whose phrase occurs anywhere" rule, which is what keys
+// like "wind" ("Strong wind warning") rely on. Config order therefore only
+// matters where it already did.
+function eventCategory(eventRaw) {
+  var startMatch = null, startLength = 0, anywhereMatch = null;
+  for (var key in alertOptions.eventTypes) {
+    var phrases = key.split(',');
+    for (var i = 0; i < phrases.length; i++) {
+      var phrase = phrases[i].trim().toLowerCase();
+      if (!phrase) { continue }
+      if (eventRaw.indexOf(phrase) === 0) {
+        if (phrase.length > startLength) { startMatch = key; startLength = phrase.length }
+      } else if (anywhereMatch === null && eventRaw.includes(phrase)) {
+        anywhereMatch = key;
+      }
     }
   }
-  return "No key/value pair found";
+  return startMatch || anywhereMatch
+}
+
+function findMatchingName(name) {
+  var key = eventCategory(name);
+  return key ? t(alertOptions.eventTypes[key]) : "No key/value pair found";
 }
 
 function findConfiguredIcon(eventRaw) {
@@ -459,17 +479,10 @@ function showMarkers(day) {
     var fromDate = new Date(markers[i].options.fromDate);
     var toDate = new Date(markers[i].options.toDate);
 
-    if (selectedEVENT !== null)
-      var combinedEvents = selectedEVENT.split(',');
-    else
-      combinedEvents = [selectedEVENT];
+    var combinedEvents = [selectedEVENT];
 
-    function shouldDisplayMarker(polygon, event, combinedEvents) {
-      return (
-        polygon.options.capEvent.includes(event) ||
-        event === null ||
-        combinedEvents.some(substring => polygon.options.capEvent.includes(substring))
-      );
+    function shouldDisplayMarker(polygon, event) {
+      return event === null || eventCategory(polygon.options.capEvent) === event;
     }
 
     for (let n = 0; n < combinedEvents.length; n++) {
@@ -488,7 +501,7 @@ function showMarkers(day) {
       const locationCount = markerLocations.filter(loc => loc === markerLocationKey).length;
 
       if (!day && day !== 0) {
-        if (shouldDisplayMarker(polygon, combinedEvents[n], combinedEvents)) {
+        if (shouldDisplayMarker(polygon, combinedEvents[n])) {
           marker.style.display = 'inline'; // Show marker
 
           if (locationCount > 0) {
@@ -509,7 +522,7 @@ function showMarkers(day) {
 
       // Handle cases where the day is within range
       if (fromDate.isBeforeDay(day) && toDate.isAfterDay(day)) {
-        if (shouldDisplayMarker(polygon, combinedEvents[n], combinedEvents)) {
+        if (shouldDisplayMarker(polygon, combinedEvents[n])) {
           marker.style.display = 'inline'; // Show marker
 
           if (locationCount > 0) {
@@ -550,28 +563,10 @@ function showPolygons(day) {
     var fromDate = new Date(polygons[i].options.fromDate)
     var toDate = new Date(polygons[i].options.toDate)
 
-    if (selectedEVENT !== null)
-      var combinedEvents = selectedEVENT.split(',')
-    else
-      combinedEvents = [selectedEVENT]
+    var matchesEvent = selectedEVENT === null || eventCategory(polygons[i].options.capEvent) === selectedEVENT
+    var inRange = day == null || (fromDate.isBeforeDay(day) && toDate.isAfterDay(day))
 
-    for (var n = 0; n < combinedEvents.length; n++) {
-      if (day == null) {
-        if (~polygons[i].options.capEvent.indexOf(combinedEvents[n]) || combinedEvents[n] == null) {
-          polygons[i].getElement().style.display = 'inline'
-        } else {
-          if (!combinedEvents.some(substring => (polygons[i].options.capEvent).includes(substring)))
-            polygons[i].getElement().style.display = 'none'
-        }
-      } else if (fromDate.isBeforeDay(day) && toDate.isAfterDay(day)) {
-        if (~polygons[i].options.capEvent.indexOf(combinedEvents[n]) || combinedEvents[n] == null) {
-          polygons[i].getElement().style.display = 'inline'
-        } else {
-          if (!combinedEvents.some(substring => (polygons[i].options.capEvent).includes(substring)))
-            polygons[i].getElement().style.display = 'none'
-        }
-      } else { polygons[i].getElement().style.display = 'none' }
-    }
+    polygons[i].getElement().style.display = (matchesEvent && inRange) ? 'inline' : 'none'
   }
   debug('Number of polygons: ' + polygons.length)
 }
@@ -1095,6 +1090,7 @@ function doCAP(dom) {
           { match: 'flash flood reservoir', icon: 'flash-flood-reservoir.png' },
           { match: 'flash flood probability', icon: 'flash-flood-probability.png' },
           { match: 'flash flood', icon: 'flash-flood.png' },
+          { match: 'urban flood', icon: 'flash-flood.png' },
           { match: 'flood', icon: 'flood.png' },
           { match: 'disturbance', icon: 'disturbance.png' },
           { match: 'high tide', icon: 'high-tide.png' },
