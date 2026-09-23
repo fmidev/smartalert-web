@@ -481,8 +481,10 @@ function showMarkers(day) {
 
     var combinedEvents = [selectedEVENT];
 
+    // No selection is null from the dropdown but '' before the user has touched
+    // it, and both mean "show everything".
     function shouldDisplayMarker(polygon, event) {
-      return event === null || eventCategory(polygon.options.capEvent) === event;
+      return !event || eventCategory(polygon.options.capEvent) === event;
     }
 
     for (let n = 0; n < combinedEvents.length; n++) {
@@ -563,7 +565,7 @@ function showPolygons(day) {
     var fromDate = new Date(polygons[i].options.fromDate)
     var toDate = new Date(polygons[i].options.toDate)
 
-    var matchesEvent = selectedEVENT === null || eventCategory(polygons[i].options.capEvent) === selectedEVENT
+    var matchesEvent = !selectedEVENT || eventCategory(polygons[i].options.capEvent) === selectedEVENT
     var inRange = day == null || (fromDate.isBeforeDay(day) && toDate.isAfterDay(day))
 
     polygons[i].getElement().style.display = (matchesEvent && inRange) ? 'inline' : 'none'
