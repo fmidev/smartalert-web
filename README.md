@@ -19,6 +19,14 @@ All customizations are to be done to capmap-config.js, index.html and capfeed.ph
   * create one, if missing
   * make sure that there is translations for event types that you
     added to capmap-config.js
+  * the "Issued by" line in the popup is built as
+    `Issued by` + name + `Issued by suffix` + `at` + date. For languages that
+    inflect the name, add `Issued by name suffix`: it is appended directly to
+    the name with no space, while `Issued by suffix` is a separate word after
+    it. In Georgian, for example, `"Issued by name suffix": "ს"` and
+    `"Issued by suffix": "მიერ"` turn `გარემოს ეროვნული სააგენტო` into
+    `გავრცელებულია გარემოს ეროვნული სააგენტოს მიერ`. Leave either key out when
+    the language does not need it.
 
 4. make symbolic link to smartalert data directory
   * ln -s /smartmet/editor/smartalert data
@@ -128,4 +136,4 @@ Important: Keep the same filenames to ensure the system recognizes them.
 | `showUpdateTime`      | `Boolean` | `false`         | Display latest update time on legend |
 | `hideOffset`      | `Boolean` | `false`         | Hides the time offset from update time. |
 | `timeZone`      | `String` | `""`         | Must be set using an IANA time zone identifier (e.g., "Region/City") to correctly display local time.  |
-| `eventTypes`          | `Object`  | `{}`            | List of used events, key is unique word appearing in event tag. Use comma separated keys to combine multiple warning events to be displayed with one selection in the dropdown list, i.e.: `"shower,rain": "Rain",` |
+| `eventTypes`          | `Object`  | `{}`            | List of used events, key is unique word appearing in event tag. Use comma separated keys to combine multiple warning events to be displayed with one selection in the dropdown list, i.e.: `"shower,rain": "Rain",` An alert is shown on one row only, in the dropdown and in the icon legend alike. A key that matches at the **start** of the event text wins (the longest such key), so `"flood": "Flood",` and `"flash flood,urban flood": "Flash flood/urban flood",` are separate rows: `Flood warning` goes to the first, `Flash flood warning` and `Urban flood warning` to the second. Keys that match elsewhere in the text, like `"wind"` for `Strong wind warning`, keep working as before. |

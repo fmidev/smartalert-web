@@ -430,14 +430,6 @@ function findMatchingName(name) {
   return key ? t(alertOptions.eventTypes[key]) : "No key/value pair found";
 }
 
-function findConfiguredIcon(eventRaw) {
-  var icons = alertOptions.eventIcons || {}
-  for (var key in icons) {
-    if (eventRaw.includes(key.toLowerCase())) { return icons[key] }
-  }
-  return null
-}
-
 function getSenderName(alert, info) {
   var configured = alertOptions.senderName
   if (configured && typeof configured === 'object') {
@@ -1014,28 +1006,26 @@ function doCAP(dom) {
       let iconAnchor = [alertOptions.iconWidth / 2 + alertOptions.xDisplacement || 0, alertOptions.iconWidth / 2];
       let popupAnchor = [0, 0];
 
-      // A configured icon wins over the parameter-based ones below, so a country
-      // can give e.g. all strong wind warnings one symbol even when some of them
-      // carry a WindSpeed parameter.
-      const configuredIcon = findConfiguredIcon(eventRaw);
-      if (configuredIcon) {
-        iconUrl = symbolPath + configuredIcon;
-      } else if (windSpeed > 0) {
-        iconUrl = alertOptions.numberIcons
-          ? `${symbolPath}wind.php?speed=${windSpeed}&direction=${windDirection}`
-          : symbolPath + 'wind-speed.png';
+      // The numeric icons are what the CAP parameters exist for, so they win when
+      // numberIcons is on. Without them the event name decides, and the static
+      // parameter symbols are only a fallback for events the list does not know:
+      // otherwise one WindSpeed parameter would give the same phenomenon two
+      // different symbols depending on whether the parameter happens to be there.
+      let parameterIcon = null;
+      if (windSpeed > 0) {
+        parameterIcon = alertOptions.numberIcons
+          ? `wind.php?speed=${windSpeed}&direction=${windDirection}`
+          : 'wind-speed.png';
       } else if (waveHeight > 0) {
-        iconUrl = alertOptions.numberIcons
-          ? `${symbolPath}wave.php?height=${waveHeight}`
-          : symbolPath + 'wave-height.png';
+        parameterIcon = alertOptions.numberIcons ? `wave.php?height=${waveHeight}` : 'wave-height.png';
       } else if (swellHeight > 0) {
-        iconUrl = alertOptions.numberIcons
-          ? `${symbolPath}wave.php?height=${swellHeight}`
-          : symbolPath + 'swell-height.png';
+        parameterIcon = alertOptions.numberIcons ? `wave.php?height=${swellHeight}` : 'swell-height.png';
       } else if (surfHeight > 0) {
-        iconUrl = alertOptions.numberIcons
-          ? `${symbolPath}wave.php?height=${surfHeight}`
-          : symbolPath + 'surf-height.png';
+        parameterIcon = alertOptions.numberIcons ? `wave.php?height=${surfHeight}` : 'surf-height.png';
+      }
+
+      if (alertOptions.numberIcons && parameterIcon) {
+        iconUrl = symbolPath + parameterIcon;
       } else {
         // Handle events based on eventRaw or eventSelector
         let eventMapping = [
@@ -1043,6 +1033,7 @@ function doCAP(dom) {
           { match: 'fire', icon: 'fire.png' },
           { match: 'drought', icon: 'drought.png' },
           { match: 'craft', icon: 'smallcraft.png' },
+          { match: 'large wave', icon: 'wave.png' },
           { match: 'wave', icon: 'wave-height.png' },
           { match: 'dust', icon: 'dust.png' },
           { match: 'gale', icon: 'gale.png' },
@@ -1076,8 +1067,7 @@ function doCAP(dom) {
           { match: 'depression', icon: 'tropical-depression.png' },
           { match: 'tropical', icon: 'cyclone.png' },
           { match: 'landslide', icon: 'landslide.png' },
-          { match: 'low soil moisture', icon: 'drought.png' },
-          { match: 'soil moisture', icon: 'flood.png' },
+          { match: 'soil moisture', icon: 'soil-moisture.png' },
           { match: 'high daytime temperature', icon: 'high-day-temp.png' },
           { match: 'high nighttime temperature', icon: 'high-night-temp.png' },
           { match: 'high temperature', icon: 'high-temperature.png' },
@@ -1104,12 +1094,14 @@ function doCAP(dom) {
           { match: 'glacier lake outburst', icon: 'glacier-lake-outburst.png'},
         ];
 
+        let matched = null;
         for (let event of eventMapping) {
           if (eventRaw.includes(event.match)) {
-            iconUrl = symbolPath + event.icon;
+            matched = event.icon;
             break;
           }
         }
+        iconUrl = symbolPath + (matched || parameterIcon || 'gale.png');
       }
 
       // Create the icon using Leaflet's L.icon
