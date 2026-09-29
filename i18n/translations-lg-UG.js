@@ -42,10 +42,12 @@ translations['lg-UG'] = {
     "and": "ne",
     "Map legend": "Obubonero mu map",
     "Updated": "Ebipya",
-    "Click to show alerts for today": "Nyiga okulaga okulabula kwa leero",
-    "Click to show alerts for tomorrow": "Nyiga okulaga okulabula kw’enkya",
-    "Click to show alerts for day after tomorrow": "Nyiga okulaga okulabula kw’oludilira enkya",
-    "Click to show all active alerts": "Nyiga okulaga okulabula kwonna",
+    "Click to show alerts for today": "",
+    "Click to show alerts for tomorrow": "",
+    "Click to show alerts for day after tomorrow": "",
+    "Click to show alerts for day 4": "",
+    "Click to show alerts for day 5": "",
+    "Click to show all active alerts": "",
     "Zoom in": "Gaziya",
     "Zoom out": "Kendeeza"
 }

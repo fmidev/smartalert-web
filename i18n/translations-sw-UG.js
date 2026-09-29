@@ -46,10 +46,12 @@ translations['sw-UG'] = {
     "and": "na",
     "Map legend": "Alama za ramani",
     "Updated": "Imesasishwa",
-    "Click to show alerts for today": "Bofya ili kuonyesha arifa za leo",
-    "Click to show alerts for tomorrow": "Bofya ili kuonyesha arifa za kesho",
-    "Click to show alerts for day after tomorrow": "Bofya ili kuonyesha arifa za siku baada ya kesho.",
-    "Click to show all active alerts": "Bofya ili kuonyesha arifa zote zinazotumika.",
+    "Click to show alerts for today": "",
+    "Click to show alerts for tomorrow": "",
+    "Click to show alerts for day after tomorrow": "",
+    "Click to show alerts for day 4": "",
+    "Click to show alerts for day 5": "",
+    "Click to show all active alerts": "",
     "Zoom in": "Vuta karibu",
     "Zoom out": "Kuza nje"
 }
