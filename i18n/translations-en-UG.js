@@ -60,6 +60,8 @@ translations['en-UG'] = {
   "Poor visibility": "Poor visibility",
   "Map legend": "Map symbols",
   "Updated": "Updated",
+  "Unknown": "Unknown",
+  "Filters": "Select",
   "Mon": "Mon",
   "Tue": "Tue",
   "Wed": "Wed",
