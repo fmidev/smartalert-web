@@ -22,7 +22,7 @@ jobs:
 
     - name: PHP syntax check
       run: |
-        docker run --rm -v "$PWD":/app -w /app php:7.2-cli \
+        docker run --rm -v "$PWD":/app -w /app php:8.5.12-cli \
           sh -c 'find . -name "*.php" -print0 | xargs -0 -n1 php -l'
 
     - name: Docker build
