@@ -3,7 +3,7 @@ FROM quay.io/fmi/asi-www-baseimage:rocky9-php85-5.0.0@sha256:e53f58f47d35c6a87d7
 USER root
 
 # Copy Apache configuration files
-COPY ./conf/httpd/virtual-host.conf ./conf/httpd/common.inc ./conf/httpd/http-only.inc ./conf/httpd/https-only.inc ./conf/httpd/x-additional.conf ./conf/httpd/sites.conf \
+COPY ./conf/httpd/virtual-host.conf ./conf/httpd/common.inc ./conf/httpd/http-only.inc ./conf/httpd/https-only.inc ./conf/httpd/x-additional.conf ./conf/httpd/sites.conf ./conf/httpd/upload.conf \
        ${HTTPD_MAIN_CONF_D_PATH}/
 
 # Shared application. This image carries no country content at all: every
