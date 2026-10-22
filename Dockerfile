@@ -1,4 +1,4 @@
-FROM quay.io/fmi/asi-www-baseimage:rocky97-php85-4.1.2
+FROM quay.io/fmi/asi-www-baseimage:rocky9-php85-5.0.0@sha256:e53f58f47d35c6a87d7bb83cec922afa45d9b17365829b96269ff19dbe5d0bbf
 
 USER root
 

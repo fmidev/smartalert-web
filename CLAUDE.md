@@ -67,7 +67,7 @@ Fixtures live at `.github/fixtures/{flat,subdirs}/` and must be valid CAP 1.2 XM
 
 The repo is deployed three ways, so keep all of them in mind when adding files:
 
-- **OpenShift / Quay**: `Dockerfile` builds on FMI's `asi-www-baseimage` and serves every country at `/<cc>/` from one DocumentRoot. The image carries **no country content at all** — each country's `capmap-config.js`, `data/` and optional `img/custom/` come from a share mounted at `sites/`, and `conf/httpd/sites.conf` routes `/<cc>/…` to either the share or the shared app. Countries are discovered at runtime, so adding one needs no image change.
+- **OpenShift / Quay**: `Dockerfile` builds on FMI's `asi-www-baseimage` and serves every country at `/<cc>/` from one DocumentRoot. The image carries **no country content at all** — each country's `capmap-config.js`, `data/` and optional `img/custom/` come from a share mounted at `sites/`, and `conf/httpd/sites.conf` routes `/<cc>/…` to either the share or the shared app. Countries are discovered at runtime, so adding one needs no image change. The share is writable by people outside this repo, so `sites.conf` serves its `data/` only as plain `*.xml` files; never let a handler (PHP or otherwise) apply to anything under `sites/`.
 - **Docker Hub / GHCR**: `Dockerfile.dockerhub` copies a hand-picked set into `/var/www/html/` as a single-site install. Adding a new shared top-level file means extending its `COPY` list.
 - **RPM**: `smartalert-web.spec` copies a hand-picked set — `*.php`, `*.js`, `index.html`, `cap-logo.png`, `i18n/`, `css/`, `js/`, `img/`. If you add a new top-level file that must ship (e.g. `capatom.xsl`), extend the `%install` section of the spec.
 
