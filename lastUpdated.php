@@ -16,7 +16,7 @@ function latestSubdir($dir) {
     if (!is_dir($dir)) return null;
     $best = null;
     foreach (scandir($dir) as $entry) {
-        if ($entry === "." || $entry === "..") continue;
+        if ($entry[0] === ".") continue;
         if (!is_dir($dir . "/" . $entry)) continue;
         if ($best === null || strcmp($entry, $best) > 0) $best = $entry;
     }

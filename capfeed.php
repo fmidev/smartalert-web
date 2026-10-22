@@ -52,10 +52,13 @@ $capfeed = $protocol . "://" . $host . $script_name;
 function findLatestCapDir($root) {
     if (!is_dir($root)) return null;
     $latest = $root;
-    $it = new RecursiveIteratorIterator(
+    // Hidden directories are skipped: the WebDAV upload keeps a .DAV property
+    // store next to every file it writes, and it would sort after the real one.
+    $visible = new RecursiveCallbackFilterIterator(
         new RecursiveDirectoryIterator($root, FilesystemIterator::SKIP_DOTS),
-        RecursiveIteratorIterator::SELF_FIRST
+        function ($entry) { return $entry->getFilename()[0] !== '.'; }
     );
+    $it = new RecursiveIteratorIterator($visible, RecursiveIteratorIterator::SELF_FIRST);
     foreach ($it as $fileInfo) {
         if ($fileInfo->isDir()) {
             $path = $fileInfo->getPathname();
