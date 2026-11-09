@@ -51,8 +51,8 @@ Icons: default set in `img/`. To customize, copy to `img/custom/` (keep filename
 
 `.github/workflows/docker-image.yml` runs on push to master and on PRs:
 
-1. Lints all PHP by running `php -l` inside `php:7.2-cli` (matches the `Dockerfile.dockerhub` base).
-2. Builds the image from `Dockerfile.dockerhub` (`php:7.2-apache` + an explicit `COPY` list).
+1. Lints all PHP by running `php -l` inside `php:8.5.12-cli` (matches the `Dockerfile.dockerhub` base).
+2. Builds the image from `Dockerfile.dockerhub` (`php:8.5.12-apache` + an explicit `COPY` list).
 3. Smoke-tests the running container with fixtures bind-mounted at `/var/www/html/data`: exercises flat layout, subdir layout, auto-discovery, `?dir=` single / multi / rejected values, and asserts that `capfeed.php` emits the stylesheet PI and `capatom.xsl` is served.
 4. Pushes to both `docker.io/fmidev/smartmetalert` and `ghcr.io/fmidev/smartalert-web`. Master builds tag `latest` + `YY.MM.DD` + `YY.MM.DD-<sha7>`; PR builds tag `pr-<N>`. Fork PRs skip login/push (secrets unavailable).
 

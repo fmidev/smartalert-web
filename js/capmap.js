@@ -401,13 +401,33 @@ function centerUserLocation() {
   }
 }
 
-function findMatchingName(name) {
-  for (let key in alertOptions.eventTypes) {
-    if (name.includes(key)) {
-      return t(alertOptions.eventTypes[key]);
+// Pick the eventTypes entry an alert belongs to. A phrase at the START of the
+// event text wins (longest one, so "flash flood" beats "flood" for "Flash flood
+// warning"), which is what lets flood and flash flood/urban flood be separate
+// rows. Only when nothing matches at the start does this fall back to the
+// original "first entry whose phrase occurs anywhere" rule, which is what keys
+// like "wind" ("Strong wind warning") rely on. Config order therefore only
+// matters where it already did.
+function eventCategory(eventRaw) {
+  var startMatch = null, startLength = 0, anywhereMatch = null;
+  for (var key in alertOptions.eventTypes) {
+    var phrases = key.split(',');
+    for (var i = 0; i < phrases.length; i++) {
+      var phrase = phrases[i].trim().toLowerCase();
+      if (!phrase) { continue }
+      if (eventRaw.indexOf(phrase) === 0) {
+        if (phrase.length > startLength) { startMatch = key; startLength = phrase.length }
+      } else if (anywhereMatch === null && eventRaw.includes(phrase)) {
+        anywhereMatch = key;
+      }
     }
   }
-  return "No key/value pair found";
+  return startMatch || anywhereMatch
+}
+
+function findMatchingName(name) {
+  var key = eventCategory(name);
+  return key ? t(alertOptions.eventTypes[key]) : "No key/value pair found";
 }
 
 function getSenderName(alert, info) {
@@ -451,17 +471,12 @@ function showMarkers(day) {
     var fromDate = new Date(markers[i].options.fromDate);
     var toDate = new Date(markers[i].options.toDate);
 
-    if (selectedEVENT !== null)
-      var combinedEvents = selectedEVENT.split(',');
-    else
-      combinedEvents = [selectedEVENT];
+    var combinedEvents = [selectedEVENT];
 
-    function shouldDisplayMarker(polygon, event, combinedEvents) {
-      return (
-        polygon.options.capEvent.includes(event) ||
-        event === null ||
-        combinedEvents.some(substring => polygon.options.capEvent.includes(substring))
-      );
+    // No selection is null from the dropdown but '' before the user has touched
+    // it, and both mean "show everything".
+    function shouldDisplayMarker(polygon, event) {
+      return !event || eventCategory(polygon.options.capEvent) === event;
     }
 
     for (let n = 0; n < combinedEvents.length; n++) {
@@ -480,7 +495,7 @@ function showMarkers(day) {
       const locationCount = markerLocations.filter(loc => loc === markerLocationKey).length;
 
       if (!day && day !== 0) {
-        if (shouldDisplayMarker(polygon, combinedEvents[n], combinedEvents)) {
+        if (shouldDisplayMarker(polygon, combinedEvents[n])) {
           marker.style.display = 'inline'; // Show marker
 
           if (locationCount > 0) {
@@ -501,7 +516,7 @@ function showMarkers(day) {
 
       // Handle cases where the day is within range
       if (fromDate.isBeforeDay(day) && toDate.isAfterDay(day)) {
-        if (shouldDisplayMarker(polygon, combinedEvents[n], combinedEvents)) {
+        if (shouldDisplayMarker(polygon, combinedEvents[n])) {
           marker.style.display = 'inline'; // Show marker
 
           if (locationCount > 0) {
@@ -542,28 +557,10 @@ function showPolygons(day) {
     var fromDate = new Date(polygons[i].options.fromDate)
     var toDate = new Date(polygons[i].options.toDate)
 
-    if (selectedEVENT !== null)
-      var combinedEvents = selectedEVENT.split(',')
-    else
-      combinedEvents = [selectedEVENT]
+    var matchesEvent = !selectedEVENT || eventCategory(polygons[i].options.capEvent) === selectedEVENT
+    var inRange = day == null || (fromDate.isBeforeDay(day) && toDate.isAfterDay(day))
 
-    for (var n = 0; n < combinedEvents.length; n++) {
-      if (day == null) {
-        if (~polygons[i].options.capEvent.indexOf(combinedEvents[n]) || combinedEvents[n] == null) {
-          polygons[i].getElement().style.display = 'inline'
-        } else {
-          if (!combinedEvents.some(substring => (polygons[i].options.capEvent).includes(substring)))
-            polygons[i].getElement().style.display = 'none'
-        }
-      } else if (fromDate.isBeforeDay(day) && toDate.isAfterDay(day)) {
-        if (~polygons[i].options.capEvent.indexOf(combinedEvents[n]) || combinedEvents[n] == null) {
-          polygons[i].getElement().style.display = 'inline'
-        } else {
-          if (!combinedEvents.some(substring => (polygons[i].options.capEvent).includes(substring)))
-            polygons[i].getElement().style.display = 'none'
-        }
-      } else { polygons[i].getElement().style.display = 'none' }
-    }
+    polygons[i].getElement().style.display = (matchesEvent && inRange) ? 'inline' : 'none'
   }
   debug('Number of polygons: ' + polygons.length)
 }
@@ -1009,23 +1006,26 @@ function doCAP(dom) {
       let iconAnchor = [alertOptions.iconWidth / 2 + alertOptions.xDisplacement || 0, alertOptions.iconWidth / 2];
       let popupAnchor = [0, 0];
 
-      // Determine icon URL based on conditions
+      // The numeric icons are what the CAP parameters exist for, so they win when
+      // numberIcons is on. Without them the event name decides, and the static
+      // parameter symbols are only a fallback for events the list does not know:
+      // otherwise one WindSpeed parameter would give the same phenomenon two
+      // different symbols depending on whether the parameter happens to be there.
+      let parameterIcon = null;
       if (windSpeed > 0) {
-        iconUrl = alertOptions.numberIcons
-          ? `${symbolPath}wind.php?speed=${windSpeed}&direction=${windDirection}`
-          : symbolPath + 'wind-speed.png';
+        parameterIcon = alertOptions.numberIcons
+          ? `wind.php?speed=${windSpeed}&direction=${windDirection}`
+          : 'wind-speed.png';
       } else if (waveHeight > 0) {
-        iconUrl = alertOptions.numberIcons
-          ? `${symbolPath}wave.php?height=${waveHeight}`
-          : symbolPath + 'wave-height.png';
+        parameterIcon = alertOptions.numberIcons ? `wave.php?height=${waveHeight}` : 'wave-height.png';
       } else if (swellHeight > 0) {
-        iconUrl = alertOptions.numberIcons
-          ? `${symbolPath}wave.php?height=${swellHeight}`
-          : symbolPath + 'swell-height.png';
+        parameterIcon = alertOptions.numberIcons ? `wave.php?height=${swellHeight}` : 'swell-height.png';
       } else if (surfHeight > 0) {
-        iconUrl = alertOptions.numberIcons
-          ? `${symbolPath}wave.php?height=${surfHeight}`
-          : symbolPath + 'surf-height.png';
+        parameterIcon = alertOptions.numberIcons ? `wave.php?height=${surfHeight}` : 'surf-height.png';
+      }
+
+      if (alertOptions.numberIcons && parameterIcon) {
+        iconUrl = symbolPath + parameterIcon;
       } else {
         // Handle events based on eventRaw or eventSelector
         let eventMapping = [
@@ -1033,6 +1033,7 @@ function doCAP(dom) {
           { match: 'fire', icon: 'fire.png' },
           { match: 'drought', icon: 'drought.png' },
           { match: 'craft', icon: 'smallcraft.png' },
+          { match: 'large wave', icon: 'wave.png' },
           { match: 'wave', icon: 'wave-height.png' },
           { match: 'dust', icon: 'dust.png' },
           { match: 'gale', icon: 'gale.png' },
@@ -1066,8 +1067,7 @@ function doCAP(dom) {
           { match: 'depression', icon: 'tropical-depression.png' },
           { match: 'tropical', icon: 'cyclone.png' },
           { match: 'landslide', icon: 'landslide.png' },
-          { match: 'low soil moisture', icon: 'drought.png' },
-          { match: 'soil moisture', icon: 'flood.png' },
+          { match: 'soil moisture', icon: 'soil-moisture.png' },
           { match: 'high daytime temperature', icon: 'high-day-temp.png' },
           { match: 'high nighttime temperature', icon: 'high-night-temp.png' },
           { match: 'high temperature', icon: 'high-temperature.png' },
@@ -1082,6 +1082,7 @@ function doCAP(dom) {
           { match: 'flash flood reservoir', icon: 'flash-flood-reservoir.png' },
           { match: 'flash flood probability', icon: 'flash-flood-probability.png' },
           { match: 'flash flood', icon: 'flash-flood.png' },
+          { match: 'urban flood', icon: 'flash-flood.png' },
           { match: 'flood', icon: 'flood.png' },
           { match: 'disturbance', icon: 'disturbance.png' },
           { match: 'high tide', icon: 'high-tide.png' },
@@ -1093,12 +1094,14 @@ function doCAP(dom) {
           { match: 'glacier lake outburst', icon: 'glacier-lake-outburst.png'},
         ];
 
+        let matched = null;
         for (let event of eventMapping) {
           if (eventRaw.includes(event.match)) {
-            iconUrl = symbolPath + event.icon;
+            matched = event.icon;
             break;
           }
         }
+        iconUrl = symbolPath + (matched || parameterIcon || 'gale.png');
       }
 
       // Create the icon using Leaflet's L.icon
@@ -1133,9 +1136,16 @@ function doCAP(dom) {
     }
 
     // create an infowindow
-    var sender = getSenderName(alert, info)
+    var senderName = getSenderName(alert, info)
+    var senderWeb = alert.querySelector('web') ? dom.querySelector('web').textContent : null
 
-    if (alert.querySelector('web')) { sender = '<a href="http://' + dom.querySelector('web').textContent + '">' + sender + '</a>' }
+    // The panel shows the plain name, the popup sentence adds a case ending to
+    // it, so both need to be wrapped in the same link.
+    var linkSender = function (text) {
+      return senderWeb ? '<a href="http://' + senderWeb + '">' + text + '</a>' : text
+    }
+
+    var sender = linkSender(senderName)
 
     alertOptions.hideSender ? $('#senderName').html('') : $('#senderName').html(sender)
 
@@ -1183,6 +1193,20 @@ function doCAP(dom) {
       '<a href="$1" target="_blank">$1</a>' // Wrap in anchor tags
     );
 
+    // Read directly, not via t(): a missing key must yield no suffix, and t()
+    // returns the key itself when a translation is missing.
+    //
+    // Two separate keys, because they are different things grammatically:
+    // 'Issued by name suffix' is a case ending that belongs to the name itself
+    // and is glued to it without a space (Georgian genitive: სააგენტო ->
+    // სააგენტოს), while 'Issued by suffix' is a standalone word placed after
+    // the name (the postposition მიერ).
+    var senderNameSuffix = translations[selectedLANGUAGE]['Issued by name suffix'] || ''
+    var senderSuffix = translations[selectedLANGUAGE]['Issued by suffix']
+    var issuedBy = [t('Issued by'), linkSender(senderName + senderNameSuffix), senderSuffix, t('at'), dFormatted]
+      .filter(function (part) { return part })
+      .join(' ')
+
     let areaBlock = ''
 
     if (alertOptions.regionsUnderTitle === true && area) {
@@ -1197,7 +1221,7 @@ function doCAP(dom) {
         <hr class="popup-divider">
         <div class="popup-section">${linkifiedDescription}</div>
         <hr class="popup-divider">
-        <div class="popup-section"><i>${t('Issued by')} ${sender} ${t('at')} ${dFormatted}</i></div>
+        <div class="popup-section"><i>${issuedBy}</i></div>
       `;
 
     // bind markers to marker and polygon
