@@ -48,6 +48,7 @@ translations['om-ET'] = {
   "Wind": "Bubbee",
   "Visibility": "Mul’achuu",
   "Forest fire": "Ibidda bosona",
+  "Frost": "Qorraa",
   "Map legend": "Oduu durii kaartaa",
   "Updated": "Haaromfame",
   "and": "fi",
