@@ -40,6 +40,7 @@ var alertOptions = {
     timeZone: '',
 	hideOffset: false,
     hideSender: false,
+    regionsUnderTitle: false, // Area names under the title in the warning popup
     eventTypes: {
         // edit: "edit capmap-config.js",
         "tropical storm": "Tropical Storm",
