@@ -21,7 +21,7 @@ jobs:
         persist-credentials: false
 
     # php:8.5.12-cli — matches the Dockerfile.dockerhub runtime.
-    - name: PHP 7.2 syntax check
+    - name: PHP 8.5.12 syntax check
       run: |
         docker run --rm -v "$PWD":/app -w /app php:8.5.12-cli \
           sh -c 'find . -name "*.php" -print0 | xargs -0 -n1 php -l'
