@@ -30,7 +30,7 @@ jobs:
           cd conf/helm
           helm version
           helm dependency build
-          helm lint
+          helm lint .
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v4.2.0
