@@ -49,6 +49,7 @@ translations['am-ET'] = {
   "Wind": "ነፋስ",
   "Visibility": "ህይታ",
   "Forest fire": "የደን እሳት",
+  "Frost": "ውርጭ",
   "Map legend": "የካርታ መግለጫ",
   "Updated": "ማሻሻል",
   ",": "፣"

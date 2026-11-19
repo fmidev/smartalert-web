@@ -20,13 +20,14 @@ jobs:
         clean: true
         persist-credentials: false
 
-    - name: PHP syntax check
+    # php:8.5.12-cli — matches the Dockerfile.dockerhub runtime.
+    - name: PHP 8.5.12 syntax check
       run: |
         docker run --rm -v "$PWD":/app -w /app php:8.5.12-cli \
           sh -c 'find . -name "*.php" -print0 | xargs -0 -n1 php -l'
 
     - name: Docker build
-      run: docker build . --file Dockerfile --tag smartalert:local
+      run: docker build . --file Dockerfile.dockerhub --tag smartalert:local
 
     - name: Smoke tests
       run: |

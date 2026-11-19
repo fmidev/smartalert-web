@@ -1,10 +1,18 @@
 <?php
 
-// Base directory paths (absolute, independent of the PHP working directory)
+require_once __DIR__ . "/capsite.php";
+
+// Base directory paths (absolute, independent of the PHP working directory).
+// publishedCap carries the same timestamp directories as published, so the
+// update time is also found when only the CAP files are present.
+$siteDir = capSiteDir();
 $basePaths = [
-    __DIR__ . "/data/published",
-    __DIR__ . "/data/hydrology/published",
-    __DIR__ . "/data/meteorology/published",
+    $siteDir . "/data/published",
+    $siteDir . "/data/hydrology/published",
+    $siteDir . "/data/meteorology/published",
+    $siteDir . "/data/publishedCap",
+    $siteDir . "/data/hydrology/publishedCap",
+    $siteDir . "/data/meteorology/publishedCap",
 ];
 
 // Return the lexicographically greatest immediate subdirectory name, or null.
@@ -13,7 +21,7 @@ function latestSubdir($dir) {
     if (!is_dir($dir)) return null;
     $best = null;
     foreach (scandir($dir) as $entry) {
-        if ($entry === "." || $entry === "..") continue;
+        if ($entry[0] === ".") continue;
         if (!is_dir($dir . "/" . $entry)) continue;
         if ($best === null || strcmp($entry, $best) > 0) $best = $entry;
     }
@@ -36,9 +44,12 @@ foreach ($basePaths as $basePath) {
 
     $folderPath = $basePath . "/" . $latestYear . "/" . $latestMonth . "/" . $latestFolder;
 
-    // Cross-path comparison: keep the folder with the most recent modification time
+    // Cross-path comparison: keep the folder with the most recent modification
+    // time, and on a tie the later timestamp name -- published and publishedCap
+    // are written in the same second.
     $folderTimestamp = filemtime($folderPath);
-    if ($folderTimestamp > $latestTimestamp) {
+    if ($folderTimestamp > $latestTimestamp
+        || ($folderTimestamp === $latestTimestamp && strcmp($latestFolder, (string) $latestDirName) > 0)) {
         $latestTimestamp = $folderTimestamp;
         $latestDirName = $latestFolder;
     }

@@ -387,7 +387,7 @@ function centerUserLocation() {
       }
 
       var icon = L.icon({
-        iconUrl: '../img/location.svg'
+        iconUrl: 'img/location.svg'
       })
 
       var marker = L.marker(pos, { icon: icon }).addTo(map)

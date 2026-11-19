@@ -1,0 +1,17 @@
+name: Deploy
+
+on:
+  push:
+    tags:
+      # Intentionally support only a subset of Semantic Versioning
+      - '[0-9]+.[0-9]+.[0-9]+'
+
+jobs:
+  deploy:
+    name: Deploy
+    uses: fmidev/.github/.github/workflows/openshift-deploy.yml@0.3.3
+    with:
+      APPLICATION_NAME: 'smartalert-web'
+      DEPLOY_CONFIG_REPOSITORY_BASE_PATH: 'pak'
+      DEPLOY_CONFIG_REPOSITORY_ENVIRONMENTS: 'development'
+    secrets: inherit

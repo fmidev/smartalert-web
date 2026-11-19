@@ -35,4 +35,5 @@ translations['en-ET'] = {
     "Wind": "Wind",
     "Visibility": "Visibility",
     "Forest fire": "Forest fire",
+    "Frost": "Frost",
 };

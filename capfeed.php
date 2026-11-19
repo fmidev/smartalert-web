@@ -1,13 +1,16 @@
 <?php
 
+require_once __DIR__ . "/capsite.php";
+
 $SUBDIRS = [];
-$basePath = __DIR__ . "/data";
+$siteDir = capSiteDir();
+$basePath = $siteDir . "/data";
 $directCap = "$basePath/publishedCap";
 
 if (is_dir($directCap)) {
     // If "data/publishedCap" exists, just use that
     $SUBDIRS[] = "";
-} else {
+} elseif (is_dir($basePath)) {
     // Otherwise, auto-discover subdirectories under "data/" containing "publishedCap"
     foreach (scandir($basePath) as $d) {
         if ($d === "." || $d === "..") continue;
@@ -49,10 +52,13 @@ $capfeed = $protocol . "://" . $host . $script_name;
 function findLatestCapDir($root) {
     if (!is_dir($root)) return null;
     $latest = $root;
-    $it = new RecursiveIteratorIterator(
+    // Hidden directories are skipped: the WebDAV upload keeps a .DAV property
+    // store next to every file it writes, and it would sort after the real one.
+    $visible = new RecursiveCallbackFilterIterator(
         new RecursiveDirectoryIterator($root, FilesystemIterator::SKIP_DOTS),
-        RecursiveIteratorIterator::SELF_FIRST
+        function ($entry) { return $entry->getFilename()[0] !== '.'; }
     );
+    $it = new RecursiveIteratorIterator($visible, RecursiveIteratorIterator::SELF_FIRST);
     foreach ($it as $fileInfo) {
         if ($fileInfo->isDir()) {
             $path = $fileInfo->getPathname();
@@ -64,12 +70,12 @@ function findLatestCapDir($root) {
 
 foreach ($SUBDIRS as $subdir) {
     $relRoot = $subdir === "" ? "data/publishedCap" : "data/$subdir/publishedCap";
-    $absDir = findLatestCapDir(__DIR__ . "/" . $relRoot);
+    $absDir = findLatestCapDir($siteDir . "/" . $relRoot);
     if ($absDir === null) continue;
 
     // Filesystem reads use the absolute path (independent of the PHP CWD);
     // the relative form is what goes into the <id>/<link> URLs.
-    $relDir = substr($absDir, strlen(__DIR__) + 1);
+    $relDir = substr($absDir, strlen($siteDir) + 1);
 
     $FILES = scandir($absDir);
     foreach ($FILES as $file) {
