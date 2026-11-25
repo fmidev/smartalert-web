@@ -1,6 +1,6 @@
 translations['ru-TJ'] = {
   "ru-TJ": "Русский",
-  "All Hazard Types": "Все виды природных факторов",
+  "All Hazard Types": "Все виды природных явлений",
   "Rain": "Дождь",
   "Snow": "Снег",
   "Flood": "Паводок",
@@ -39,7 +39,7 @@ translations['ru-TJ'] = {
   "October": "Октябрь",
   "November": "Ноябрь",
   "December": "Декабрь",
-  "days": "Дни",
+  "days": "дни",
   "no awareness needed": "Предупреждений нет",
   "potentially dangerous": "Потенциально опасно",
   "dangerous": "Опасно",

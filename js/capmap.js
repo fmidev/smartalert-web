@@ -404,12 +404,13 @@ function centerUserLocation() {
 // Pick the eventTypes entry an alert belongs to. A phrase at the START of the
 // event text wins (longest one, so "flash flood" beats "flood" for "Flash flood
 // warning"), which is what lets flood and flash flood/urban flood be separate
-// rows. Only when nothing matches at the start does this fall back to the
-// original "first entry whose phrase occurs anywhere" rule, which is what keys
-// like "wind" ("Strong wind warning") rely on. Config order therefore only
-// matters where it already did.
+// rows. Only when nothing matches at the start does this fall back to a phrase
+// anywhere in the text, which is what keys like "wind" ("Strong wind warning")
+// rely on. There, too, the longest phrase wins, so "Heavy rain and thunderstorm
+// warning" goes to "thunderstorm" and not to "rain"; config order only breaks
+// ties.
 function eventCategory(eventRaw) {
-  var startMatch = null, startLength = 0, anywhereMatch = null;
+  var startMatch = null, startLength = 0, anywhereMatch = null, anywhereLength = 0;
   for (var key in alertOptions.eventTypes) {
     var phrases = key.split(',');
     for (var i = 0; i < phrases.length; i++) {
@@ -417,8 +418,8 @@ function eventCategory(eventRaw) {
       if (!phrase) { continue }
       if (eventRaw.indexOf(phrase) === 0) {
         if (phrase.length > startLength) { startMatch = key; startLength = phrase.length }
-      } else if (anywhereMatch === null && eventRaw.includes(phrase)) {
-        anywhereMatch = key;
+      } else if (phrase.length > anywhereLength && eventRaw.includes(phrase)) {
+        anywhereMatch = key; anywhereLength = phrase.length
       }
     }
   }
@@ -1094,11 +1095,13 @@ function doCAP(dom) {
           { match: 'glacier lake outburst', icon: 'glacier-lake-outburst.png'},
         ];
 
-        let matched = null;
+        // A country that names a symbol for each dropdown row in eventIcons gets
+        // exactly those, whatever words the event text happens to contain.
+        let matched = alertOptions.eventIcons ? alertOptions.eventIcons[eventCategory(eventRaw)] : null;
         for (let event of eventMapping) {
+          if (matched) break;
           if (eventRaw.includes(event.match)) {
             matched = event.icon;
-            break;
           }
         }
         iconUrl = symbolPath + (matched || parameterIcon || 'gale.png');

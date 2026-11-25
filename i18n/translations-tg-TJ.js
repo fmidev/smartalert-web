@@ -1,6 +1,6 @@
 translations['tg-TJ'] = {
   "tg-TJ": "Тоҷики",
-  "All Hazard Types": "Ҳама намуди омилҳои табиӣ",
+  "All Hazard Types": "Ҳамаи намуди омилҳои табиӣ",
   "Rain": "Борон",
   "Snow": "Барф",
   "Flood": "Обхези",
